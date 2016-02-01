@@ -52,6 +52,8 @@ namespace THelper {
         public static bool GetFile(DirectoryInfo dirInfo, out string path, out string csprojpath) {
             path = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
             csprojpath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
+            if (csprojpath==null)
+                csprojpath = Directory.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
             if (string.IsNullOrEmpty(path)) {
                 path = csprojpath;
             }
