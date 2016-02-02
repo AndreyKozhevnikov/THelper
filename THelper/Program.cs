@@ -16,11 +16,13 @@ namespace THelper {
             //Console.ReadLine();
             try {
                 if (args.Count() > 0 && args[0] is string) {
-                    string value = Properties.Settings.Default.WinRarPath;
-                    string arguments = " x \"" + args[0].ToString() + "\"";
-                    string fileName = args[0].ToString().Split('\\').LastOrDefault();
 
-                    string tmp = Directory.GetParent(args[0].ToString()) + "\\" + fileName.Replace(" ", "_");
+                    string flPath = args[0].ToString();
+                    string value = Properties.Settings.Default.WinRarPath;
+                    string arguments = " x \"" + flPath + "\"";
+                    string fileName = flPath.Split('\\').LastOrDefault();
+
+                    string tmp = Directory.GetParent(flPath) + "\\" + fileName.Replace(" ", "_");
                     int dotIndex = tmp.LastIndexOf('.');
                     string destFolder = tmp.Remove(dotIndex);
 
@@ -88,8 +90,11 @@ namespace THelper {
             //var vIndex = currentVersionFull.IndexOf("Version=");
             //var currentVersion = currentVersionFull.Substring(vIndex + 8, 9);
 
-            var st = currentVersionFull.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries)[1];
-            var currentVersion = st.Replace("Version=", "");
+            var stlist = currentVersionFull.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+            if (stlist.Length > 1) {
+                var st = stlist[1];
+                var currentVersion = st.Replace("Version=", "");
+            }
 
             string resultString = xlroot.ToString();
             StreamWriter sw = new StreamWriter(flPath, false);
