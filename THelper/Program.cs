@@ -73,9 +73,9 @@ namespace THelper {
             reader.Close();
 
             var elements = xlroot.Elements();
-            var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().First().Name.LocalName == "Reference");
+            var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count()>0&& x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.Contains("DevExpress"));
-
+           
             foreach (XElement dxlib in dxlibraries) {
 
                 var v = dxlib.Value;
