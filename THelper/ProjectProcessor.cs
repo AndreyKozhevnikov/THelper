@@ -40,8 +40,8 @@ namespace THelper {
                 if (ifGetFileSuccess) {
                     string stringVersion;
                     FixCsprojSpecificVersion(cspath, out stringVersion);
-                    // UpdgradeProject(stringVersion);
-                    Process.Start(path);
+                     UpdgradeProject(stringVersion);
+                    //Process.Start(path);
                 }
                 else {
                     Process.Start("Explorer.exe", destFolder);
@@ -57,17 +57,22 @@ namespace THelper {
             }
         }
         private void UpdgradeProject(string stringWithVersion) {
-            GetCurrentProject(stringWithVersion);
+            Version projectVersion = GetCurrentProjectVersion(stringWithVersion);
+
+          
+
         }
 
-        private Project GetCurrentProject(string stringWithVersion) {
+       
+
+        private Version GetCurrentProjectVersion(string stringWithVersion) {
             string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
             Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
             Match versionMatch = regexVersion.Match(stringWithVersion);
             if (versionMatch == null || !versionMatch.Success) {
-                return new Project(null) { Major = 0 };
+                return Version.Zero;
             }
-            return new Project(versionMatch.Groups["Version"].Value);
+            return new Version(versionMatch.Groups["Version"].Value);
         }
         public bool GetSolutionFile(DirectoryInfo dirInfo, out string path, out string csprojpath) {
             path = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
