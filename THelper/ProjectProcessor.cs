@@ -42,8 +42,8 @@ namespace THelper {
                 if (ifGetFileSuccess) {
                     string stringVersion;
                     FixCsprojSpecificVersion(cspath, out stringVersion);
-                    UpdgradeProject(cspath, stringVersion);
-                    //Process.Start(path);
+                    UpdgradeProject(destFolder, stringVersion);
+                    Process.Start(path);
                 }
                 else {
                     Process.Start("Explorer.exe", destFolder);
@@ -58,15 +58,12 @@ namespace THelper {
                 Console.ReadLine();
             }
         }
-        private void UpdgradeProject(string projecctPath, string stringWithVersion) {
-            ProjectUpgrader upgrader = new ProjectUpgrader(projecctPath, stringWithVersion);
+        private void UpdgradeProject(string projFolderPath, string stringWithVersion) {
+            ProjectUpgrader upgrader = new ProjectUpgrader(projFolderPath, stringWithVersion);
             upgrader.Start();
-            
-           
-
 
         }
-        Version dxGreatestVersion;
+        
        
     
        

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,7 +28,20 @@ namespace THelper {
 
         internal void Start() {
             projectVersion = GetVersionFromContainingString(fullLibraryString);
-            installedVersions = GetInstalledVersions();
+            PopulateInstalledVersions();
+
+            int compareResult=projectVersion.CompareTo( dxGreatestVersion);
+            switch (compareResult) {
+                case 0:
+                    return;
+                case 1:
+                    string toolPath = installedSupportedMajorsAndPCPaths[dxGreatestVersion.Major];
+                    string projectPath = projPath;
+                    Console.WriteLine(string.Format("Project version {0}, converted to {1}", projectVersion.ToString(), dxGreatestVersion));
+                    //Console.ReadLine();
+                    Process.Start(toolPath, projPath);
+                    return;
+            }
         }
 
         public  Version GetVersionFromContainingString(string stringWithVersion) {
@@ -40,11 +54,12 @@ namespace THelper {
             return new Version(versionMatch.Groups["Version"].Value);
         }
 
-        private List<Version> GetInstalledVersions() {
+        private void PopulateInstalledVersions() {
+            installedVersions = new List<Version>();
             RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
             string[] versions = dxpKey.GetSubKeyNames();
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
-            List<Version> installedVersions = new List<Version>();
+           // List<Version> installedVersions = new List<Version>();
             foreach (string strVersion in versions) {
                 RegistryKey dxVersionKey = dxpKey.OpenSubKey(strVersion);
                 string projectUpgradeToolPath = dxVersionKey.GetValue("RootDirectory") as string;
@@ -60,12 +75,13 @@ namespace THelper {
 
                 installedVersions.Add(projectUpgradeVersion);
 
+                projectUpgradeToolPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
                 installedSupportedMajorsAndPCPaths[projectUpgradeVersion.Major] = projectUpgradeToolPath;
                 if (dxGreatestVersion == null || dxGreatestVersion.CompareTo(projectUpgradeVersion) == -1) {
                     dxGreatestVersion = projectUpgradeVersion;
                 }
             }
-            return installedVersions;
+     //    installedVersions=_installedVersions;
 
         }
         Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {
