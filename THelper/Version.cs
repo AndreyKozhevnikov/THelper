@@ -37,7 +37,6 @@ namespace THelper {
               build = 0;
           }
       }
-      public string ToolsPath { get; set; }
       public int Major {
           get {
               return major;

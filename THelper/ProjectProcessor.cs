@@ -14,7 +14,7 @@ using System.Reflection;
 namespace THelper {
     public class ProjectProcessor {
         private string filePath;
-
+      
         public ProjectProcessor(string filePath) {
             // TODO: Complete member initialization
             this.filePath = filePath;
@@ -42,7 +42,7 @@ namespace THelper {
                 if (ifGetFileSuccess) {
                     string stringVersion;
                     FixCsprojSpecificVersion(cspath, out stringVersion);
-                    UpdgradeProject(stringVersion);
+                    UpdgradeProject(cspath, stringVersion);
                     //Process.Start(path);
                 }
                 else {
@@ -58,65 +58,20 @@ namespace THelper {
                 Console.ReadLine();
             }
         }
-        private void UpdgradeProject(string stringWithVersion) {
-            Version projectVersion = GetVersionFormContainingString(stringWithVersion);
-            var installedVersions = GetInstalledVersions();
+        private void UpdgradeProject(string projecctPath, string stringWithVersion) {
+            ProjectUpgrader upgrader = new ProjectUpgrader(projecctPath, stringWithVersion);
+            upgrader.Start();
+            
+           
 
 
         }
         Version dxGreatestVersion;
-        private object GetInstalledVersions() {
-            RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
-            string[] versions = dxpKey.GetSubKeyNames();
-            const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
-            List<Version> installedVersions = new List<Version>();
-            foreach (string strVersion in versions) {
-                RegistryKey dxVersionKey = dxpKey.OpenSubKey(strVersion);
-                string projectUpgradeToolPath = dxVersionKey.GetValue("RootDirectory") as string;
-                if (string.IsNullOrEmpty(projectUpgradeToolPath)) {
-                    continue;
-                }
-                int version = HelperMain.GetIntMajorVersion(strVersion);
+       
+    
+       
 
-                projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
-
-
-                Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
-             
-                installedVersions.Add(projectUpgradeVersion);
-
-                //installedSupportedMajorsAndPCPaths[projectUpgradeVersion.Major] = projectUpgradeToolPath;
-                if (dxGreatestVersion == null || dxGreatestVersion.CompareTo(projectUpgradeVersion) == -1) {
-                    dxGreatestVersion = projectUpgradeVersion;
-                }
-            }
-            return installedVersions;
-
-        }
-        Dictionary<int, Assembly> projectConverterAsseblies = new Dictionary<int, Assembly>();
-        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {
-            Assembly ass;
-            try {
-                ass = Assembly.LoadFile(projectUpgradeToolPath);
-            }
-            catch (Exception exc) {
-                return Version.Zero;
-            }
-            Version result = GetVersionFormContainingString(ass.FullName);
-            result.ToolsPath = projectUpgradeToolPath;
-            projectConverterAsseblies[result.Major] = ass;
-            return result;
-        }
-
-        private Version GetVersionFormContainingString(string stringWithVersion) {
-            string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
-            Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-            Match versionMatch = regexVersion.Match(stringWithVersion);
-            if (versionMatch == null || !versionMatch.Success) {
-                return Version.Zero;
-            }
-            return new Version(versionMatch.Groups["Version"].Value);
-        }
+     
         public bool GetSolutionFile(DirectoryInfo dirInfo, out string path, out string csprojpath) {
             path = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
             csprojpath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
@@ -161,17 +116,5 @@ namespace THelper {
         }
     }
 
-    public static class HelperMain {
-        public static int GetIntMajorVersion(string strVersion) {
-            if (string.IsNullOrEmpty(strVersion) || !strVersion.Contains(".")) {
-                return 0;
-            }
-            string preparedVersion = strVersion.Replace(".", string.Empty).Replace("v", string.Empty);
-            int intVersion;
-            if (int.TryParse(preparedVersion, out intVersion)) {
-                return intVersion;
-            }
-            return 0;
-        }
-    }
+  
 }
