@@ -11,15 +11,13 @@ using System.Threading.Tasks;
 
 namespace THelper {
     public class ProjectUpgrader {
+        const int minSupportedMajorVersion = 122;
         string projPath;
         string fullLibraryString;
-        Version projectVersion;
+        Version projectDXReferencesVersion;
         List<Version> installedVersions;
         Version dxGreatestVersion;
         Dictionary<int, string> installedSupportedMajorsAndPCPaths = new Dictionary<int, string>();
-      //  Dictionary<int, Assembly> projectConverterAsseblies = new Dictionary<int, Assembly>();
-
-
 
         public ProjectUpgrader(string _projPath, string _fullLibraryString) {
             projPath = _projPath;
@@ -27,24 +25,40 @@ namespace THelper {
         }
 
         internal void Start() {
-            projectVersion = GetVersionFromContainingString(fullLibraryString);
+            projectDXReferencesVersion = GetVersionFromContainingString(fullLibraryString);
             PopulateInstalledVersions();
 
-            int compareResult=projectVersion.CompareTo( dxGreatestVersion);
-            switch (compareResult) {
-                case 0:
-                    return;
-                case 1:
-                    string toolPath = installedSupportedMajorsAndPCPaths[dxGreatestVersion.Major];
-                    string projectPath = projPath;
-                    Console.WriteLine(string.Format("Project version {0}, converted to {1}", projectVersion.ToString(), dxGreatestVersion));
-                    //Console.ReadLine();
-                    Process.Start(toolPath, projPath);
-                    return;
+            Version currentProjectVersionInstalled = Version.Zero;
+            var f = installedVersions.Where(x => x.Major == projectDXReferencesVersion.Major).FirstOrDefault();
+            if (f != null) {
+                currentProjectVersionInstalled = f;
             }
+
+            Version versionForUpdate;
+            if (currentProjectVersionInstalled.IsZero) {
+                versionForUpdate = dxGreatestVersion;
+            }
+            else {
+                versionForUpdate = currentProjectVersionInstalled;
+            }
+
+            bool isVersionForUpdateGreatest;
+
+            isVersionForUpdateGreatest = versionForUpdate.CompareTo(projectDXReferencesVersion) > 0;
+            if (versionForUpdate.Major < minSupportedMajorVersion || projectDXReferencesVersion.IsZero || !isVersionForUpdateGreatest) {
+                return;
+            }
+            Console.WriteLine(string.Format("Press 1 to convert the project from the {0} version to {1}", projectDXReferencesVersion, versionForUpdate));
+            var v = Console.ReadKey(false);
+            if (!(v.Key == ConsoleKey.NumPad1 || v.Key == ConsoleKey.D1))
+                return;
+            string toolPath = installedSupportedMajorsAndPCPaths[dxGreatestVersion.Major];
+            string projectPath = projPath;
+            Process updgrade = Process.Start(toolPath, projPath);
+            updgrade.WaitForExit();
         }
 
-        public  Version GetVersionFromContainingString(string stringWithVersion) {
+        public Version GetVersionFromContainingString(string stringWithVersion) {
             string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
             Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
             Match versionMatch = regexVersion.Match(stringWithVersion);
@@ -59,7 +73,6 @@ namespace THelper {
             RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
             string[] versions = dxpKey.GetSubKeyNames();
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
-           // List<Version> installedVersions = new List<Version>();
             foreach (string strVersion in versions) {
                 RegistryKey dxVersionKey = dxpKey.OpenSubKey(strVersion);
                 string projectUpgradeToolPath = dxVersionKey.GetValue("RootDirectory") as string;
@@ -67,34 +80,27 @@ namespace THelper {
                     continue;
                 }
                 int version = GetIntMajorVersion(strVersion);
-
                 projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
-
-
                 Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
-
                 installedVersions.Add(projectUpgradeVersion);
-
                 projectUpgradeToolPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
                 installedSupportedMajorsAndPCPaths[projectUpgradeVersion.Major] = projectUpgradeToolPath;
                 if (dxGreatestVersion == null || dxGreatestVersion.CompareTo(projectUpgradeVersion) == -1) {
                     dxGreatestVersion = projectUpgradeVersion;
                 }
             }
-     //    installedVersions=_installedVersions;
-
         }
+
         Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {
             Assembly assembly;
             try {
                 assembly = Assembly.LoadFile(projectUpgradeToolPath);
             }
-            catch (Exception exc) {
+            catch  {
                 return Version.Zero;
             }
             Version result = GetVersionFromContainingString(assembly.FullName);
 
-         //   projectConverterAsseblies[result.Major] = assembly;
             return result;
         }
         public int GetIntMajorVersion(string strVersion) {
@@ -108,7 +114,8 @@ namespace THelper {
             }
             return 0;
         }
+
     }
 
-  
+
 }

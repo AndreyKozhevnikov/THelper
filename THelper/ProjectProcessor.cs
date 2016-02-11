@@ -14,48 +14,36 @@ using System.Reflection;
 namespace THelper {
     public class ProjectProcessor {
         private string filePath;
-      
+
         public ProjectProcessor(string filePath) {
-            // TODO: Complete member initialization
             this.filePath = filePath;
         }
 
-
         internal void ProcessProject() {
-            try {
-                string flPath = filePath;
-                string value = Properties.Settings.Default.WinRarPath;
-                string arguments = " x \"" + flPath + "\"";
-                string fileName = flPath.Split('\\').LastOrDefault();
+            string flPath = filePath;
+            string value = Properties.Settings.Default.WinRarPath;
+            string arguments = " x \"" + flPath + "\"";
+            string fileName = flPath.Split('\\').LastOrDefault();
 
-                string tmp = Directory.GetParent(flPath) + "\\" + fileName.Replace(" ", "_");
-                int dotIndex = tmp.LastIndexOf('.');
-                string destFolder = tmp.Remove(dotIndex);
+            string tmp = Directory.GetParent(flPath) + "\\" + fileName.Replace(" ", "_");
+            int dotIndex = tmp.LastIndexOf('.');
+            string destFolder = tmp.Remove(dotIndex);
 
-                var dirInfo = Directory.CreateDirectory(destFolder);
-                var argsforWR = arguments + " " + @"""" + destFolder + @"""";
-                var proc = Process.Start(value, argsforWR);
-                proc.WaitForExit();
-                string path = string.Empty;
-                string cspath = string.Empty;
-                bool ifGetFileSuccess = GetSolutionFile(dirInfo, out path, out cspath);
-                if (ifGetFileSuccess) {
-                    string stringVersion;
-                    FixCsprojSpecificVersion(cspath, out stringVersion);
-                    UpdgradeProject(destFolder, stringVersion);
-                    Process.Start(path);
-                }
-                else {
-                    Process.Start("Explorer.exe", destFolder);
-                }
-
+            var dirInfo = Directory.CreateDirectory(destFolder);
+            var argsforWR = arguments + " " + @"""" + destFolder + @"""";
+            var proc = Process.Start(value, argsforWR);
+            proc.WaitForExit();
+            string path = string.Empty;
+            string cspath = string.Empty;
+            bool ifGetFileSuccess = GetSolutionFile(dirInfo, out path, out cspath);
+            if (ifGetFileSuccess) {
+                string stringVersion;
+                FixCsprojSpecificVersion(cspath, out stringVersion);
+                UpdgradeProject(destFolder, stringVersion);
+                Process.Start(path);
             }
-            catch (Exception exp) {
-
-                Console.WriteLine(filePath);
-                Console.WriteLine("---");
-                Console.WriteLine(exp);
-                Console.ReadLine();
+            else {
+                Process.Start("Explorer.exe", destFolder);
             }
         }
         private void UpdgradeProject(string projFolderPath, string stringWithVersion) {
@@ -63,12 +51,7 @@ namespace THelper {
             upgrader.Start();
 
         }
-        
-       
-    
-       
 
-     
         public bool GetSolutionFile(DirectoryInfo dirInfo, out string path, out string csprojpath) {
             path = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
             csprojpath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
@@ -112,6 +95,4 @@ namespace THelper {
             sw.Close();
         }
     }
-
-  
 }
