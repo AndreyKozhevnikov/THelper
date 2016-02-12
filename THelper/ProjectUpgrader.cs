@@ -53,7 +53,7 @@ namespace THelper {
             if (!(v.Key == ConsoleKey.NumPad1 || v.Key == ConsoleKey.D1))
                 return;
             string toolPath = installedSupportedMajorsAndPCPaths[dxGreatestVersion.Major];
-            string projectPath = projPath;
+            projPath = "\"" + projPath + "\"";
             Process updgrade = Process.Start(toolPath, projPath);
             updgrade.WaitForExit();
         }
