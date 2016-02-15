@@ -20,7 +20,7 @@ namespace THelper {
         Dictionary<int, string> installedSupportedMajorsAndPCPaths = new Dictionary<int, string>();
         bool isDxSample;
 
-        public ProjectUpgrader(string _projPath, string _fullLibraryString,bool _isDxSample) {
+        public ProjectUpgrader(string _projPath, string _fullLibraryString, bool _isDxSample) {
             projPath = _projPath;
             fullLibraryString = _fullLibraryString;
             isDxSample = _isDxSample;
@@ -37,7 +37,7 @@ namespace THelper {
             }
 
             Version versionForUpdate;
-            if (currentProjectVersionInstalled.IsZero||isDxSample) {
+            if (currentProjectVersionInstalled.IsZero || isDxSample) {
                 versionForUpdate = dxGreatestVersion;
             }
             else {
@@ -50,7 +50,7 @@ namespace THelper {
             if (versionForUpdate.Major < minSupportedMajorVersion || projectDXReferencesVersion.IsZero || !isVersionForUpdateGreatest) {
                 return;
             }
-            Console.WriteLine(string.Format("Press 1 to convert the project from the {0} version to {1}", projectDXReferencesVersion, versionForUpdate));
+            PrintMessage(projectDXReferencesVersion, versionForUpdate);
             var v = Console.ReadKey(false);
             if (!(v.Key == ConsoleKey.NumPad1 || v.Key == ConsoleKey.D1))
                 return;
@@ -58,6 +58,18 @@ namespace THelper {
             projPath = "\"" + projPath + "\"";
             Process updgrade = Process.Start(toolPath, projPath);
             updgrade.WaitForExit();
+        }
+
+        void PrintMessage(Version version1, Version version2) {
+            Console.Write("Press 1 to convert the project from the ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(version1);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(" version to ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(version2);
+            Console.ForegroundColor = ConsoleColor.Gray;
+
         }
 
         public Version GetVersionFromContainingString(string stringWithVersion) {
@@ -98,7 +110,7 @@ namespace THelper {
             try {
                 assembly = Assembly.LoadFile(projectUpgradeToolPath);
             }
-            catch  {
+            catch {
                 return Version.Zero;
             }
             Version result = GetVersionFromContainingString(assembly.FullName);
