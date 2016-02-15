@@ -18,10 +18,12 @@ namespace THelper {
         List<Version> installedVersions;
         Version dxGreatestVersion;
         Dictionary<int, string> installedSupportedMajorsAndPCPaths = new Dictionary<int, string>();
+        bool isDxSample;
 
-        public ProjectUpgrader(string _projPath, string _fullLibraryString) {
+        public ProjectUpgrader(string _projPath, string _fullLibraryString,bool _isDxSample) {
             projPath = _projPath;
             fullLibraryString = _fullLibraryString;
+            isDxSample = _isDxSample;
         }
 
         internal void Start() {
@@ -35,7 +37,7 @@ namespace THelper {
             }
 
             Version versionForUpdate;
-            if (currentProjectVersionInstalled.IsZero) {
+            if (currentProjectVersionInstalled.IsZero||isDxSample) {
                 versionForUpdate = dxGreatestVersion;
             }
             else {

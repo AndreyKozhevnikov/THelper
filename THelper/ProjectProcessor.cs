@@ -28,7 +28,7 @@ namespace THelper {
             string tmp = Directory.GetParent(flPath) + "\\" + fileName.Replace(" ", "_");
             int dotIndex = tmp.LastIndexOf('.');
             string destFolder = tmp.Remove(dotIndex);
-
+            bool isDxSample = flPath.EndsWith(".dxsample");
             var dirInfo = Directory.CreateDirectory(destFolder);
             var argsforWR = arguments + " " + @"""" + destFolder + @"""";
             var proc = Process.Start(value, argsforWR);
@@ -39,15 +39,15 @@ namespace THelper {
             if (ifGetFileSuccess) {
                 string stringVersion;
                 FixCsprojSpecificVersion(cspath, out stringVersion);
-                UpdgradeProject(destFolder, stringVersion);
+                UpdgradeProject(destFolder, stringVersion,isDxSample);
                 Process.Start(path);
             }
             else {
                 Process.Start("Explorer.exe", destFolder);
             }
         }
-        private void UpdgradeProject(string projFolderPath, string stringWithVersion) {
-            ProjectUpgrader upgrader = new ProjectUpgrader(projFolderPath, stringWithVersion);
+        private void UpdgradeProject(string projFolderPath, string stringWithVersion,bool isDxSmpl) {
+            ProjectUpgrader upgrader = new ProjectUpgrader(projFolderPath, stringWithVersion,isDxSmpl);
             upgrader.Start();
 
         }
