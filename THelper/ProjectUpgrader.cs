@@ -52,24 +52,64 @@ namespace THelper {
             }
             PrintMessage(projectDXReferencesVersion, versionForUpdate);
             var v = Console.ReadKey(false);
-            if (!(v.Key == ConsoleKey.NumPad1 || v.Key == ConsoleKey.D1))
-                return;
-            string toolPath = installedSupportedMajorsAndPCPaths[versionForUpdate.Major];
+            switch (v.Key) {
+                case ConsoleKey.NumPad1:
+                case ConsoleKey.D1:
+                    DXProjectUpgrade(versionForUpdate.Major, projPath);
+                    break;
+                case ConsoleKey.NumPad2:
+                case ConsoleKey.D2:
+
+                    break;
+                case ConsoleKey.NumPad3:
+                case ConsoleKey.D3:
+                    DXProjectUpgrade(dxGreatestVersion.Major, projPath);
+                    break;
+            }
+
+            //if (!(v.Key == ConsoleKey.NumPad1 || v.Key == ConsoleKey.D1))
+            //    return;
+            
+            //string toolPath = installedSupportedMajorsAndPCPaths[versionForUpdate.Major];
+            //projPath = "\"" + projPath + "\"";
+            //Process updgrade = Process.Start(toolPath, projPath);
+            //updgrade.WaitForExit();
+        }
+
+        void DXProjectUpgrade(int major, string projPath) {
+            string toolPath = installedSupportedMajorsAndPCPaths[major];
             projPath = "\"" + projPath + "\"";
             Process updgrade = Process.Start(toolPath, projPath);
             updgrade.WaitForExit();
         }
 
-        void PrintMessage(Version version1, Version version2) {
-            Console.Write("Press 1 to convert the project from the ");
+        void PrintMessage(Version projectVersion, Version versionForUpdate) {
+            //Console.Write("Press 1 to convert the project from the ");
+            Console.Write("The current project version is ");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(version1);
+            Console.WriteLine(projectVersion);
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write(" version to ");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(version2);
-            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine();
 
+            PrintConvertTheProject(versionForUpdate, 1);
+            PrintConvertTheProject(projectVersion, 2);
+
+            if (versionForUpdate != dxGreatestVersion)
+                PrintConvertTheProject(dxGreatestVersion, 3);
+
+
+
+        }
+
+        public void PrintConvertTheProject(Version v, int key) {
+            Console.Write("To convert the project to the ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(v);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(", press ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(key);
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         public Version GetVersionFromContainingString(string stringWithVersion) {
