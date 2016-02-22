@@ -73,6 +73,13 @@ namespace THelper {
             reader.Close();
 
             var elements = xlroot.Elements();
+
+            var licGroup = elements.Where(x => x.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.Contains("licenses.licx")).Count() > 0).FirstOrDefault();
+            if (licGroup != null) {
+                var lic = licGroup.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.Contains("licenses.licx")).First();
+                lic.Remove();
+            }
+
             var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.Contains("DevExpress"));
             fullSolString = null;
