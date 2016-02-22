@@ -74,9 +74,9 @@ namespace THelper {
 
             var elements = xlroot.Elements();
 
-            var licGroup = elements.Where(x => x.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.Contains("licenses.licx")).Count() > 0).FirstOrDefault();
+            var licGroup = elements.Where(x => x.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).Count() > 0).FirstOrDefault();
             if (licGroup != null) {
-                var lic = licGroup.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.Contains("licenses.licx")).First();
+                var lic = licGroup.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx",StringComparison.InvariantCultureIgnoreCase)>-1).First();
                 lic.Remove();
             }
 
