@@ -14,7 +14,6 @@ namespace THelper {
         const int minSupportedMajorVersion = 122;
         string projPath;
         string fullLibraryString;
-        Version projectDXReferencesVersion;
         List<Version> installedVersions;
         Version dxGreatestVersion;
         Dictionary<int, string> installedSupportedMajorsAndPCPaths = new Dictionary<int, string>();
@@ -27,7 +26,7 @@ namespace THelper {
         }
 
         internal void Start() {
-            projectDXReferencesVersion = GetVersionFromContainingString(fullLibraryString);
+            Version projectDXReferencesVersion = GetVersionFromContainingString(fullLibraryString);
             PopulateInstalledVersions();
 
             Version currentProjectVersionInstalled = Version.Zero;
@@ -72,14 +71,6 @@ namespace THelper {
                     DXProjectUpgrade(dxGreatestVersion.Major, projPath);
                     break;
             }
-
-            //if (!(v.Key == ConsoleKey.NumPad1 || v.Key == ConsoleKey.D1))
-            //    return;
-            
-            //string toolPath = installedSupportedMajorsAndPCPaths[versionForUpdate.Major];
-            //projPath = "\"" + projPath + "\"";
-            //Process updgrade = Process.Start(toolPath, projPath);
-            //updgrade.WaitForExit();
         }
 
         void DXProjectUpgrade(int major, string projPath) {
@@ -90,7 +81,6 @@ namespace THelper {
         }
 
         void PrintMessage(Version projectVersion, Version versionForUpdate) {
-            //Console.Write("Press 1 to convert the project from the ");
             Console.Write("The current project version is ");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(projectVersion);
@@ -98,13 +88,12 @@ namespace THelper {
             Console.WriteLine();
 
             PrintConvertTheProject(versionForUpdate, 1);
-            PrintConvertTheProject(projectVersion, 2);
+           
+            if (projectVersion.Minor > 0)
+                PrintConvertTheProject(projectVersion, 2);
 
             if (versionForUpdate != dxGreatestVersion)
                 PrintConvertTheProject(dxGreatestVersion, 3);
-
-
-
         }
 
         public void PrintConvertTheProject(Version v, int key) {
