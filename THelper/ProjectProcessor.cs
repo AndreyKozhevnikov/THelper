@@ -39,15 +39,15 @@ namespace THelper {
             if (ifGetFileSuccess) {
                 string stringVersion;
                 FixCsprojSpecificVersion(cspath, out stringVersion);
-                UpdgradeProject(destFolder, stringVersion,isDxSample);
+                UpdgradeProject(destFolder, stringVersion, isDxSample);
                 Process.Start(path);
             }
             else {
                 Process.Start("Explorer.exe", destFolder);
             }
         }
-        private void UpdgradeProject(string projFolderPath, string stringWithVersion,bool isDxSmpl) {
-            ProjectUpgrader upgrader = new ProjectUpgrader(projFolderPath, stringWithVersion,isDxSmpl);
+        private void UpdgradeProject(string projFolderPath, string stringWithVersion, bool isDxSmpl) {
+            ProjectUpgrader upgrader = new ProjectUpgrader(projFolderPath, stringWithVersion, isDxSmpl);
             upgrader.Start();
 
         }
@@ -76,7 +76,7 @@ namespace THelper {
 
             var licGroup = elements.Where(x => x.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).Count() > 0).FirstOrDefault();
             if (licGroup != null) {
-                var lic = licGroup.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx",StringComparison.InvariantCultureIgnoreCase)>-1).First();
+                var lic = licGroup.Elements().Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).First();
                 lic.Remove();
             }
 
@@ -87,13 +87,15 @@ namespace THelper {
                 fullSolString = dxlibraries.First().Attribute("Include").ToString();
 
             foreach (XElement dxlib in dxlibraries) {
-
-                var v = dxlib.Value;
-                var v1 = dxlib.NodeType;
-                var v2 = dxlib.Name;
-                var v3 = dxlib.Elements();
-                var v4 = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
-                dxlib.SetElementValue(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName), false);
+                var specificVersionNode = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
+                if (specificVersionNode != null) {
+                    dxlib.SetElementValue(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName), false);
+                }
+                else {
+                    XName xName = XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName);
+                    XElement xatr = new XElement(xName, "False");
+                    dxlib.Add(xatr);
+                }
             }
 
             string resultString = xlroot.ToString();
