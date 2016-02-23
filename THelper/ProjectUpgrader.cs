@@ -50,6 +50,12 @@ namespace THelper {
             if (versionForUpdate.Major < minSupportedMajorVersion || projectDXReferencesVersion.IsZero || !isVersionForUpdateGreatest) {
                 return;
             }
+            if (isDxSample) {
+                DXProjectUpgrade(versionForUpdate.Major, projPath);
+                return;
+            }
+
+
             PrintMessage(projectDXReferencesVersion, versionForUpdate);
             var v = Console.ReadKey(false);
             switch (v.Key) {
