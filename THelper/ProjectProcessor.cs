@@ -15,62 +15,58 @@ namespace THelper {
     public class ProjectProcessor {
         private string filePath;
 
-        public ProjectProcessor(string filePath) {
-            this.filePath = filePath;
+        public ProjectProcessor(string _filePath) {
+            this.filePath = _filePath;
         }
 
         internal void ProcessProject() {
-            string flPath = filePath;
             string value = Properties.Settings.Default.WinRarPath;
-            string arguments = " x \"" + flPath + "\"";
-            string fileName = flPath.Split('\\').LastOrDefault();
+            string argumentsFilePath = " x \"" + filePath + "\"";
 
-            string tmp = Directory.GetParent(flPath) + "\\" + fileName.Replace(" ", "_");
-            int dotIndex = tmp.LastIndexOf('.');
-            string destFolder = tmp.Remove(dotIndex);
-            bool isDxSample = flPath.EndsWith(".dxsample");
+          //  string fileName = filePath.Split('\\').LastOrDefault();
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            string destFolder = Directory.GetParent(filePath) + "\\" + fileName.Replace(" ", "_");
+            //int dotIndex = tmp.LastIndexOf('.');
+            //string destFolder = tmp.Remove(dotIndex);
+            bool isDxSample = filePath.EndsWith(".dxsample");
             var dirInfo = Directory.CreateDirectory(destFolder);
-            var argsforWR = arguments + " " + @"""" + destFolder + @"""";
-            var proc = Process.Start(value, argsforWR);
-            proc.WaitForExit();
-            string path = string.Empty;
+            var argsFullWinRar = argumentsFilePath + " " + @"""" + destFolder + @"""";
+            var winrarProc = Process.Start(value, argsFullWinRar);
+            winrarProc.WaitForExit();
+            string slnPath = string.Empty;
             string cspath = string.Empty;
-            bool ifGetFileSuccess = GetSolutionFile(dirInfo, out path, out cspath);
-            if (ifGetFileSuccess) {
-                string stringVersion;
-                FixCsprojSpecificVersion(cspath, out stringVersion);
-                if (stringVersion != null)
-                    UpdgradeProject(destFolder, stringVersion, isDxSample);
-                Process.Start(path);
+            bool isSoluiton = GetSolutionFiles(dirInfo, out slnPath, out cspath);
+            if (isSoluiton) {
+        
+                string dxLibraryString = ProcessCsprojFile(cspath);
+                if (dxLibraryString != null)
+                    UpdgradeProject(destFolder, dxLibraryString, isDxSample);
+                Process.Start(slnPath);
             }
             else {
                 Process.Start("Explorer.exe", destFolder);
             }
         }
-        private void UpdgradeProject(string projFolderPath, string stringWithVersion, bool isDxSmpl) {
-            ProjectUpgrader upgrader = new ProjectUpgrader(projFolderPath, stringWithVersion, isDxSmpl);
+        private void UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
+            ProjectUpgrader upgrader = new ProjectUpgrader(_projFolderPath, _dxLibraryString, _isDxSample);
             upgrader.Start();
 
         }
 
-        public bool GetSolutionFile(DirectoryInfo dirInfo, out string path, out string csprojpath) {
-            path = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
-            csprojpath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
-            if (csprojpath == null)
-                csprojpath = Directory.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
-            if (string.IsNullOrEmpty(path)) {
-                path = csprojpath;
+        public bool GetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) {
+            _slnPath = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+            _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
+            if (_csprojPath == null)
+                _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
+            if (string.IsNullOrEmpty(_slnPath)) {
+                _slnPath = _csprojPath;
             }
-            return !string.IsNullOrEmpty(path);
+            return !string.IsNullOrEmpty(_slnPath);
         }
 
-        private void FixCsprojSpecificVersion(string cspath, out string fullSolString) {
-            var flPath = cspath;
-            StreamReader sr = new StreamReader(flPath);
-            XmlTextReader reader = new XmlTextReader(flPath);
-            sr.Close();
+        private string ProcessCsprojFile(string _csPath) {
+            XmlTextReader reader = new XmlTextReader(_csPath);
             XElement xlroot = XElement.Load(reader);
-            sr.Close();
             reader.Close();
 
             var elements = xlroot.Elements();
@@ -83,9 +79,11 @@ namespace THelper {
 
             var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.Contains("DevExpress"));
-            fullSolString = null;
+
+            string _dxLibraryString = null;
             if (dxlibraries.Count() > 0)
-                fullSolString = dxlibraries.First().Attribute("Include").ToString();
+                _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
+           
 
             foreach (XElement dxlib in dxlibraries) {
                 var specificVersionNode = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
@@ -100,9 +98,10 @@ namespace THelper {
             }
 
             string resultString = xlroot.ToString();
-            StreamWriter sw = new StreamWriter(flPath, false);
+            StreamWriter sw = new StreamWriter(_csPath, false);
             sw.Write(resultString);
             sw.Close();
+            return _dxLibraryString;
         }
     }
 }

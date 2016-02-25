@@ -11,10 +11,6 @@ using System.Xml.Linq;
 namespace THelper {
     class Program {
         static void Main(string[] args) {
-            //Console.WriteLine("---");
-            //Console.WriteLine(args[0]);
-            //Console.ReadLine();
-
             if (args.Count() > 0 && args[0] is string) {
                 string filePath = args[0];
                 ProjectProcessor p = new ProjectProcessor(filePath);
