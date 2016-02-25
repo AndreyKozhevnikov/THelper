@@ -39,7 +39,8 @@ namespace THelper {
             if (ifGetFileSuccess) {
                 string stringVersion;
                 FixCsprojSpecificVersion(cspath, out stringVersion);
-                UpdgradeProject(destFolder, stringVersion, isDxSample);
+                if (stringVersion != null)
+                    UpdgradeProject(destFolder, stringVersion, isDxSample);
                 Process.Start(path);
             }
             else {
