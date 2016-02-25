@@ -67,6 +67,16 @@ namespace THelper {
       public override string ToString() {
           return String.Format("{0}.{1}.{2}", major, minor, build);
       }
+      public string ToString(bool isSplittedMajor) {
+          if (isSplittedMajor) {
+              var majorString = major.ToString();
+              var resultString = String.Format("{0}.{1}.{2}", majorString.Substring(0, 2), majorString.Substring(2, 1), minor);
+              return resultString;
+          }
+          else {
+              return this.ToString();
+          }
+      }
 
     
   }

@@ -64,7 +64,12 @@ namespace THelper {
                     break;
                 case ConsoleKey.NumPad2:
                 case ConsoleKey.D2:
-
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "converter";
+                    string versionConverterFormat = projectDXReferencesVersion.ToString(true);
+                    psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, projPath);
+                    var proc = System.Diagnostics.Process.Start(psi);
+                    proc.WaitForExit();
                     break;
                 case ConsoleKey.NumPad3:
                 case ConsoleKey.D3:
@@ -88,7 +93,7 @@ namespace THelper {
             Console.WriteLine();
 
             PrintConvertTheProject(versionForUpdate, 1);
-           
+
             if (projectVersion.Minor > 0)
                 PrintConvertTheProject(projectVersion, 2);
 
