@@ -33,14 +33,14 @@ namespace THelper {
             string cspath = string.Empty;
             bool isSoluiton = GetSolutionFiles(dirInfo, out slnPath, out cspath);
             if (isSoluiton) {
-        
+
                 string dxLibraryString = ProcessCsprojFile(cspath);
                 if (dxLibraryString != null)
                     UpdgradeProject(destFolder, dxLibraryString, isDxSample);
                 Process.Start(slnPath);
             }
             else {
-                Process.Start("Explorer.exe", destFolder);
+                Process.Start(destFolder);
             }
         }
         private void UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
@@ -79,7 +79,7 @@ namespace THelper {
             string _dxLibraryString = null;
             if (dxlibraries.Count() > 0)
                 _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
-           
+
 
             foreach (XElement dxlib in dxlibraries) {
                 var specificVersionNode = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
