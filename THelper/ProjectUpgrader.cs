@@ -66,7 +66,7 @@ namespace THelper {
                 case ConsoleKey.NumPad2:
                 case ConsoleKey.D2:
                     ProcessStartInfo psi = new ProcessStartInfo();
-                    psi.FileName = "converter";
+                    psi.FileName=@"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
                     string versionConverterFormat = projectVersion.ToString(true);
                     psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, projPath);
                     var proc = System.Diagnostics.Process.Start(psi);
