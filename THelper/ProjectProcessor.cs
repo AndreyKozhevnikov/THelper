@@ -22,12 +22,8 @@ namespace THelper {
         internal void ProcessProject() {
             string value = Properties.Settings.Default.WinRarPath;
             string argumentsFilePath = " x \"" + filePath + "\"";
-
-          //  string fileName = filePath.Split('\\').LastOrDefault();
             var fileName = Path.GetFileNameWithoutExtension(filePath);
             string destFolder = Directory.GetParent(filePath) + "\\" + fileName.Replace(" ", "_");
-            //int dotIndex = tmp.LastIndexOf('.');
-            //string destFolder = tmp.Remove(dotIndex);
             bool isDxSample = filePath.EndsWith(".dxsample");
             var dirInfo = Directory.CreateDirectory(destFolder);
             var argsFullWinRar = argumentsFilePath + " " + @"""" + destFolder + @"""";
