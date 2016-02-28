@@ -88,20 +88,16 @@ namespace THelper {
 
         void PrintMessage(Version _projectVersion, Version _versionForUpdate, Version _dxGreatestVersion, bool _isDllPersist) {
             if (_isDllPersist) {
-                Console.Write("The current project ");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("contains DevExpress libraries ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Write("to skip updgrade press ");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("0");
-                Console.ForegroundColor = ConsoleColor.Gray;
+                ConsoleWrite("The current project ");
+                ConsoleWrite("contains DevExpress libraries ",ConsoleColor.Red);
+                ConsoleWrite("to skip updgrade press ");
+                ConsoleWrite("0",ConsoleColor.Red);
+                Console.WriteLine();
                 Console.WriteLine();
             }
-            Console.Write("The current project version is ");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(_projectVersion);
-            Console.ForegroundColor = ConsoleColor.Gray;
+            ConsoleWrite("The current project version is ");
+            ConsoleWrite(_projectVersion,ConsoleColor.Red);
+            Console.WriteLine();
             Console.WriteLine();
 
             PrintConvertTheProject(_versionForUpdate, 1);
@@ -114,14 +110,12 @@ namespace THelper {
         }
 
         public void PrintConvertTheProject(Version v, int key) {
-            Console.Write("To convert the project to the ");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(v);
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write(", press ");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(key);
-            Console.ForegroundColor = ConsoleColor.Gray;
+            ConsoleWrite("To convert the project to the ");
+            ConsoleWrite(v,ConsoleColor.Red);
+            ConsoleWrite(", press ");
+            ConsoleWrite(key,ConsoleColor.Red);
+            Console.WriteLine();
+       
         }
 
         public Version GetVersionFromContainingString(string stringWithVersion) {
@@ -174,8 +168,16 @@ namespace THelper {
             return v.Count>0;
         }
 
-        
+        void ConsoleWrite(object _message, ConsoleColor color) {
+           
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(_message);
+                Console.ForegroundColor = ConsoleColor.Gray;
+        }
+        void ConsoleWrite(object _message) {
+            Console.Write(_message);
+        }
+
+      
     }
-
-
 }
