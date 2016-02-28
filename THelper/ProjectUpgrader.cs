@@ -53,10 +53,10 @@ namespace THelper {
             if (versionForUpdate.Major < minSupportedMajorVersion || projectVersion.IsZero || !isVersionForUpdateGreatest) {
                 return;
             }
-      
 
+            bool isDllsPersist = GetIsDllsPersist();
 
-            PrintMessage(projectVersion, versionForUpdate, dxGreatestVersion);
+            PrintMessage(projectVersion, versionForUpdate, dxGreatestVersion,isDllsPersist);
             var enterKey = Console.ReadKey(false);
             switch (enterKey.Key) {
                 case ConsoleKey.NumPad1:
@@ -86,7 +86,18 @@ namespace THelper {
             updgrade.WaitForExit();
         }
 
-        void PrintMessage(Version _projectVersion, Version _versionForUpdate, Version _dxGreatestVersion) {
+        void PrintMessage(Version _projectVersion, Version _versionForUpdate, Version _dxGreatestVersion, bool _isDllPersist) {
+            if (_isDllPersist) {
+                Console.Write("The current project ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("contains DevExpress libraries ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write("to skip updgrade press ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("0");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine();
+            }
             Console.Write("The current project version is ");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(_projectVersion);
@@ -157,6 +168,13 @@ namespace THelper {
             return result;
         }
 
+        bool GetIsDllsPersist() {
+            DirectoryInfo dirInfo = new DirectoryInfo(projPath);
+            var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
+            return v.Count>0;
+        }
+
+        
     }
 
 
