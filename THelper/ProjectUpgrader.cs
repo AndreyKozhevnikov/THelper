@@ -132,6 +132,13 @@ namespace THelper {
             Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
             Match versionMatch = regexVersion.Match(stringWithVersion);
             if (versionMatch == null || !versionMatch.Success) {
+                string versionAssemblypatternShort = @".*DevExpress.*(?<Version>\d{2}\.\d)";
+                Regex regexVersionShort = new Regex(versionAssemblypatternShort, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+                Match versionMatchShort = regexVersionShort.Match(stringWithVersion);
+                if (versionMatchShort != null && versionMatchShort.Success) {
+                    string versValueShort = versionMatchShort.Groups["Version"].Value;
+                    return new Version(versValueShort);
+                }
                 return Version.Zero;
             }
             string versValue = versionMatch.Groups["Version"].Value;
