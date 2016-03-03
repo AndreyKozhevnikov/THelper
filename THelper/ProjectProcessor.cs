@@ -32,20 +32,23 @@ namespace THelper {
             string slnPath = string.Empty;
             string cspath = string.Empty;
             bool isSoluiton = GetSolutionFiles(dirInfo, out slnPath, out cspath);
+            bool isNeedToOpenSolution = false;
             if (isSoluiton) {
 
                 string dxLibraryString = ProcessCsprojFile(cspath);
                 if (dxLibraryString != null)
-                    UpdgradeProject(destFolder, dxLibraryString, isDxSample);
+                    isNeedToOpenSolution = UpdgradeProject(destFolder, dxLibraryString, isDxSample);
+
+            }
+            if (isNeedToOpenSolution)
                 Process.Start(slnPath);
-            }
-            else {
+            else
                 Process.Start(destFolder);
-            }
+
         }
-        private void UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
+        private bool UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
             ProjectUpgrader upgrader = new ProjectUpgrader(_projFolderPath, _dxLibraryString, _isDxSample);
-            upgrader.Start();
+            return upgrader.Start();
 
         }
 

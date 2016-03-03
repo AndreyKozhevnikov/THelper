@@ -25,15 +25,15 @@ namespace THelper {
             isDxSample = _isDxSample;
         }
 
-        internal void Start() {
+        internal bool Start() {
             Version projectVersion = GetVersionFromContainingString(dxLibraryString);
             List<Version> installedVersions = PopulateInstalledDxVersions();
             int maxMajor = installedVersions.Max(x => x.Major);
             Version dxGreatestVersion = installedVersions.Where(x => x.Major == maxMajor).First();
-         
+
             if (isDxSample) {
                 DXProjectUpgrade(dxGreatestVersion.Major, projPath);
-                return;
+                return true;
             }
 
             Version currentProjectVersionInstalled = installedVersions.Where(x => x.Major == projectVersion.Major).FirstOrDefault();
@@ -51,12 +51,12 @@ namespace THelper {
 
             isVersionForUpdateGreatest = versionForUpdate.CompareTo(projectVersion) > 0;
             if (versionForUpdate.Major < minSupportedMajorVersion || projectVersion.IsZero || !isVersionForUpdateGreatest) {
-                return;
+                return true;
             }
 
             bool isDllsPersist = GetIsDllsPersist();
 
-            PrintMessage(projectVersion, versionForUpdate, dxGreatestVersion,isDllsPersist);
+            PrintMessage(projectVersion, versionForUpdate, dxGreatestVersion, isDllsPersist);
             var enterKey = Console.ReadKey(false);
             switch (enterKey.Key) {
                 case ConsoleKey.NumPad1:
@@ -66,7 +66,7 @@ namespace THelper {
                 case ConsoleKey.NumPad2:
                 case ConsoleKey.D2:
                     ProcessStartInfo psi = new ProcessStartInfo();
-                    psi.FileName=@"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
+                    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
                     string versionConverterFormat = projectVersion.ToString(true);
                     psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, projPath);
                     var proc = System.Diagnostics.Process.Start(psi);
@@ -76,7 +76,12 @@ namespace THelper {
                 case ConsoleKey.D3:
                     DXProjectUpgrade(dxGreatestVersion.Major, projPath);
                     break;
+                case ConsoleKey.NumPad9:
+                case ConsoleKey.D9:
+                    return false;
+
             }
+            return true;
         }
 
         void DXProjectUpgrade(int _major, string _projPath) {
@@ -89,14 +94,14 @@ namespace THelper {
         void PrintMessage(Version _projectVersion, Version _versionForUpdate, Version _dxGreatestVersion, bool _isDllPersist) {
             if (_isDllPersist) {
                 ConsoleWrite("The current project ");
-                ConsoleWrite("contains DevExpress libraries ",ConsoleColor.Red);
+                ConsoleWrite("contains DevExpress libraries ", ConsoleColor.Red);
                 ConsoleWrite("to skip updgrade press ");
-                ConsoleWrite("0",ConsoleColor.Red);
+                ConsoleWrite("0", ConsoleColor.Red);
                 Console.WriteLine();
                 Console.WriteLine();
             }
             ConsoleWrite("The current project version is ");
-            ConsoleWrite(_projectVersion,ConsoleColor.Red);
+            ConsoleWrite(_projectVersion, ConsoleColor.Red);
             Console.WriteLine();
             Console.WriteLine();
 
@@ -107,15 +112,19 @@ namespace THelper {
 
             if (_versionForUpdate != _dxGreatestVersion)
                 PrintConvertTheProject(_dxGreatestVersion, 3);
+
+            Console.WriteLine();
+            ConsoleWrite("To just open the folder press ");
+            ConsoleWrite("9", ConsoleColor.Red);
         }
 
         public void PrintConvertTheProject(Version v, int key) {
             ConsoleWrite("To convert the project to the ");
-            ConsoleWrite(v,ConsoleColor.Red);
+            ConsoleWrite(v, ConsoleColor.Red);
             ConsoleWrite(", press ");
-            ConsoleWrite(key,ConsoleColor.Red);
+            ConsoleWrite(key, ConsoleColor.Red);
             Console.WriteLine();
-       
+
         }
 
         public Version GetVersionFromContainingString(string stringWithVersion) {
@@ -165,19 +174,19 @@ namespace THelper {
         bool GetIsDllsPersist() {
             DirectoryInfo dirInfo = new DirectoryInfo(projPath);
             var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
-            return v.Count>0;
+            return v.Count > 0;
         }
 
         void ConsoleWrite(object _message, ConsoleColor color) {
-           
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write(_message);
-                Console.ForegroundColor = ConsoleColor.Gray;
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(_message);
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
         void ConsoleWrite(object _message) {
             Console.Write(_message);
         }
 
-      
+
     }
 }
