@@ -116,6 +116,7 @@ namespace THelper {
             Console.WriteLine();
             ConsoleWrite("To just open the folder press ");
             ConsoleWrite("9", ConsoleColor.Red);
+            Console.WriteLine();
         }
 
         public void PrintConvertTheProject(Version v, int key) {
