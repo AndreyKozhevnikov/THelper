@@ -54,10 +54,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Distrib\NUnit-2.6.4\NUnit-2.6.4\bin\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="NUnit.VisualStudio.TestAdapter">
-      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -69,7 +65,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="ProjectUpgrader.cs" />
-    <Compile Include="THelperTest.cs" />
+    <Compile Include="Tests\THelperTest.cs" />
     <Compile Include="Version.cs" />
     <Compile Include="ProjectProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
