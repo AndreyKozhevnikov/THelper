@@ -28,7 +28,8 @@ namespace THelper {
         internal bool Start() {
             Version projectVersion = GetVersionFromContainingString(dxLibraryString);
             List<Version> installedVersions = PopulateInstalledDxVersions();
-            int maxMajor = installedVersions.Max(x => x.Major);
+         //   int maxMajor = installedVersions.Max(x => x.Major);
+            int maxMajor = 152;
             Version dxGreatestVersion = installedVersions.Where(x => x.Major == maxMajor).First();
 
             if (isDxSample) {
