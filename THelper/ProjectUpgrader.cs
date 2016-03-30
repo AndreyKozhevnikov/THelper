@@ -28,7 +28,7 @@ namespace THelper {
         internal bool Start() {
             Version projectVersion = GetVersionFromContainingString(dxLibraryString);
             List<Version> installedVersions = PopulateInstalledDxVersions();
-         //   int maxMajor = installedVersions.Max(x => x.Major);
+            //   int maxMajor = installedVersions.Max(x => x.Major);
             int maxMajor = 152;
             Version dxGreatestVersion = installedVersions.Where(x => x.Major == maxMajor).First();
 
@@ -36,10 +36,13 @@ namespace THelper {
                 DXProjectUpgrade(dxGreatestVersion.Major, projPath);
                 return true;
             }
-
+            bool isMajorInstalled = false;
             Version currentProjectVersionInstalled = installedVersions.Where(x => x.Major == projectVersion.Major).FirstOrDefault();
             if (currentProjectVersionInstalled == null) {
                 currentProjectVersionInstalled = Version.Zero;
+            }
+            else {
+                isMajorInstalled = true;
             }
 
             Version versionForUpdate;
@@ -62,7 +65,8 @@ namespace THelper {
             switch (enterKey.Key) {
                 case ConsoleKey.NumPad1:
                 case ConsoleKey.D1:
-                    DXProjectUpgrade(versionForUpdate.Major, projPath);
+                    if (!isMajorInstalled)
+                        DXProjectUpgrade(versionForUpdate.Major, projPath);
                     break;
                 case ConsoleKey.NumPad2:
                 case ConsoleKey.D2:
