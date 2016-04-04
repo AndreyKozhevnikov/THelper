@@ -25,6 +25,17 @@ namespace THelper {
             isDxSample = _isDxSample;
         }
 
+        bool IfNeedJustOpenFolder() {
+            PrintJustOpenFolderMessage();
+            var key = Console.ReadKey(false);
+            switch (key.Key) {
+                case ConsoleKey.NumPad9:
+                case ConsoleKey.D9:
+                    return false;
+            }
+            return true;
+        }
+
         internal bool Start() {
             Version projectVersion = GetVersionFromContainingString(dxLibraryString);
             List<Version> installedVersions = PopulateInstalledDxVersions();
@@ -33,8 +44,14 @@ namespace THelper {
             Version dxGreatestVersion = installedVersions.Where(x => x.Major == maxMajor).First();
 
             if (isDxSample) {
-                DXProjectUpgrade(dxGreatestVersion.Major, projPath);
-                return true;
+                var b = IfNeedJustOpenFolder();
+                if (b) {
+                    DXProjectUpgrade(dxGreatestVersion.Major, projPath);
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
             bool isMajorInstalled = false;
             Version currentProjectVersionInstalled = installedVersions.Where(x => x.Major == projectVersion.Major).FirstOrDefault();
@@ -55,7 +72,8 @@ namespace THelper {
 
             isVersionForUpdateGreatest = versionForUpdate.CompareTo(projectVersion) > 0;
             if (versionForUpdate.Major < minSupportedMajorVersion || projectVersion.IsZero || !isVersionForUpdateGreatest) {
-                return true;
+                var b = IfNeedJustOpenFolder();
+                return b;
             }
 
             bool isDllsPersist = GetIsDllsPersist();
@@ -119,9 +137,13 @@ namespace THelper {
                 PrintConvertTheProject(_dxGreatestVersion, 3);
 
             Console.WriteLine();
+            PrintJustOpenFolderMessage();
+            Console.WriteLine();
+        }
+
+        void PrintJustOpenFolderMessage() {
             ConsoleWrite("To just open the folder press ");
             ConsoleWrite("9", ConsoleColor.Red);
-            Console.WriteLine();
         }
 
         public void PrintConvertTheProject(Version v, int key) {
