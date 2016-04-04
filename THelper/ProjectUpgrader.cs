@@ -138,12 +138,13 @@ namespace THelper {
 
             Console.WriteLine();
             PrintJustOpenFolderMessage();
-            Console.WriteLine();
+        
         }
 
         void PrintJustOpenFolderMessage() {
             ConsoleWrite("To just open the folder press ");
             ConsoleWrite("9", ConsoleColor.Red);
+            Console.WriteLine();
         }
 
         public void PrintConvertTheProject(Version v, int key) {
