@@ -77,7 +77,7 @@ namespace THelper {
             }
 
             var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
-            var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.Contains("DevExpress"));
+            var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
 
             string _dxLibraryString = null;
             if (dxlibraries.Count() > 0)
