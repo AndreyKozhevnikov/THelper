@@ -72,8 +72,10 @@ namespace THelper {
 
             isVersionForUpdateGreatest = versionForUpdate.CompareTo(projectVersion) > 0;
             if (versionForUpdate.Major < minSupportedMajorVersion || projectVersion.IsZero || !isVersionForUpdateGreatest) {
-                var b = IfNeedJustOpenFolder();
-                return b;
+                return GetIfNeedJustOpenFolder(projectVersion);
+            }
+            if (!currentProjectVersionInstalled.IsZero && projectVersion.Minor == 0) {
+                return GetIfNeedJustOpenFolder(projectVersion);
             }
 
             bool isDllsPersist = GetIsDllsPersist();
@@ -105,6 +107,14 @@ namespace THelper {
 
             }
             return true;
+        }
+
+        private bool GetIfNeedJustOpenFolder(Version projectVersion) {
+            ConsoleWrite("The current project version is ");
+            ConsoleWrite(projectVersion, ConsoleColor.Red);
+            Console.WriteLine();
+            var b = IfNeedJustOpenFolder();
+            return b;
         }
 
         void DXProjectUpgrade(int _major, string _projPath) {
