@@ -77,14 +77,18 @@ namespace THelper {
                     Match versionMatchShort = regexVersionShort.Match(_stringWithVersion);
                     if (versionMatchShort != null && versionMatchShort.Success) {
                         string versValueShort = versionMatchShort.Groups["Version"].Value;
-                       this.ParseString(versValueShort,false);
+                        this.ParseString(versValueShort, false);
                     }
-                    this.major = 0;
-                    this.minor = 0;
-                    this.build = 0;
+                    else {
+                        this.major = 0;
+                        this.minor = 0;
+                        this.build = 0;
+                    }
                 }
-                string versValue = versionMatch.Groups["Version"].Value;
-                this.ParseString(versValue,false);
+                else {
+                    string versValue = versionMatch.Groups["Version"].Value;
+                    this.ParseString(versValue, false);
+                }
             }
             else {
                 string[] versionParts = _stringWithVersion.Split('.');
