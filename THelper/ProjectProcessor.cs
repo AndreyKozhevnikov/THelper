@@ -45,6 +45,11 @@ namespace THelper {
             currentProjectVersion = csProjProccessor.GetCurrentVersion();
         }
         private void GetInstalledVersions() {
+#if DEBUGTEST
+             installedVersions = new List<Version>();
+            installedVersions.Add(new Version("11.1.5"));
+            return;
+#endif
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
 
@@ -59,7 +64,7 @@ namespace THelper {
                 projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
                 Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
                 installedVersions.Add(projectUpgradeVersion);
-                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1) {
+                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 &&projectUpgradeVersion.Major!=161) {
                     mainMajorLastVersion = projectUpgradeVersion;
                     mmlvConverterPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
                 }
@@ -163,7 +168,7 @@ namespace THelper {
             sw.Close();
             return _dxLibraryString;
         }
-        private void ProcessSolution() {
+        private void ProcessFolder() {
             string slnPath = string.Empty;
             cspath = string.Empty;
             bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
@@ -182,7 +187,7 @@ namespace THelper {
 
         internal void ProcessProject() {
             ExtractFiles();
-            ProcessSolution();
+            ProcessFolder();
 
 
             //bool isNeedToOpenSolution = false;
