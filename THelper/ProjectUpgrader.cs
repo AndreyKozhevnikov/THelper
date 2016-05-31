@@ -37,7 +37,7 @@ namespace THelper {
         }
 
         internal bool Start() {
-            Version projectVersion = GetVersionFromContainingString(dxLibraryString);
+            Version projectVersion = new Version(dxLibraryString,true);
             List<Version> installedVersions = PopulateInstalledDxVersions();
             //   int maxMajor = installedVersions.Max(x => x.Major);
             int maxMajor = 152;
@@ -167,23 +167,23 @@ namespace THelper {
 
         }
 
-        public Version GetVersionFromContainingString(string stringWithVersion) {
-            string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
-            Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-            Match versionMatch = regexVersion.Match(stringWithVersion);
-            if (versionMatch == null || !versionMatch.Success) {
-                string versionAssemblypatternShort = @".*DevExpress.*(?<Version>\d{2}\.\d)";
-                Regex regexVersionShort = new Regex(versionAssemblypatternShort, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-                Match versionMatchShort = regexVersionShort.Match(stringWithVersion);
-                if (versionMatchShort != null && versionMatchShort.Success) {
-                    string versValueShort = versionMatchShort.Groups["Version"].Value;
-                    return new Version(versValueShort);
-                }
-                return Version.Zero;
-            }
-            string versValue = versionMatch.Groups["Version"].Value;
-            return new Version(versValue);
-        }
+        //public Version GetVersionFromContainingString(string stringWithVersion) {
+        //    string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
+        //    Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        //    Match versionMatch = regexVersion.Match(stringWithVersion);
+        //    if (versionMatch == null || !versionMatch.Success) {
+        //        string versionAssemblypatternShort = @".*DevExpress.*(?<Version>\d{2}\.\d)";
+        //        Regex regexVersionShort = new Regex(versionAssemblypatternShort, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        //        Match versionMatchShort = regexVersionShort.Match(stringWithVersion);
+        //        if (versionMatchShort != null && versionMatchShort.Success) {
+        //            string versValueShort = versionMatchShort.Groups["Version"].Value;
+        //            return new Version(versValueShort);
+        //        }
+        //        return Version.Zero;
+        //    }
+        //    string versValue = versionMatch.Groups["Version"].Value;
+        //    return new Version(versValue);
+        //}
 
         private List<Version> PopulateInstalledDxVersions() {
             var installedVersions = new List<Version>();
@@ -213,7 +213,7 @@ namespace THelper {
             catch {
                 return Version.Zero;
             }
-            Version result = GetVersionFromContainingString(assembly.FullName);
+            Version result = new Version(assembly.FullName,true);
 
             return result;
         }
