@@ -9,6 +9,7 @@ using NUnit.Framework;
 using System.Windows.Forms;
 
 namespace THelper {
+#if DEBUGTEST
     [TestFixture]
     public class THelperTest {
         [Test]
@@ -147,6 +148,7 @@ namespace THelper {
             Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
         }
     }
+#endif
 }
 
 

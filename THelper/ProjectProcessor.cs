@@ -11,6 +11,8 @@ using Microsoft.Win32;
 
 namespace THelper {
     public enum ConverterMessages { OpenSolution, MainMajorLastVersion, LastMinor, ExactConversion, OpenFolder }
+ 
+
 
     public class ProjectProcessor {
         private string archiveFilePath;
@@ -186,12 +188,75 @@ namespace THelper {
             string slnPath = string.Empty;
             cspath = string.Empty;
             bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
-            if (isSoluiton)
+            if (isSoluiton) {
                 GetMessageInfo();
+                PrintMessage();
+            }
             else
                 OpenFolder();
         }
+        private void PrintMessage() {
+            if (isExample) {
+                ConsoleWrite("The current project version is an ");
+                ConsoleWrite("example", ConsoleColor.Red);
+            }
+            else {
+                ConsoleWrite("The current project version is ");
+                ConsoleWrite(currentProjectVersion, ConsoleColor.Red);
+            }
+            Console.WriteLine();
+            int k = 1;
+            foreach (ConverterMessages msg in MessagesList) {
+                PrintConverterMessage(msg, k++.ToString());
+            }
+          var v=  Console.ReadKey(false);
+        }
 
+        private void PrintConverterMessage(ConverterMessages msg,string key) {
+            if (msg == ConverterMessages.OpenSolution) {
+                ConsoleWrite("To open solution press: ");
+                ConsoleWrite(key, ConsoleColor.Red);
+                Console.WriteLine();
+                return;
+            }
+            if (msg == ConverterMessages.OpenFolder) {
+                ConsoleWrite("To open folder press: ");
+                ConsoleWrite("9", ConsoleColor.Red);
+                Console.WriteLine();
+                return;
+            }
+            string vers = GetMessageVersion(msg);
+            ConsoleWrite("To convert to : ");
+            ConsoleWrite(vers, ConsoleColor.Red);
+            ConsoleWrite(" press ");
+            ConsoleWrite(key, ConsoleColor.Red);
+            Console.WriteLine();
+        }
+
+        string  GetMessageVersion(ConverterMessages msg) {
+            switch (msg) {
+                case ConverterMessages.ExactConversion:
+                    return currentProjectVersion.ToString();
+                case ConverterMessages.LastMinor:
+                    return currentInstalled.ToString();
+                case ConverterMessages.MainMajorLastVersion:
+                    return mainMajorLastVersion.ToString();
+                default:
+                    return null;
+            }
+            
+        }
+
+
+        void ConsoleWrite(object _message, ConsoleColor color) {
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(_message);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+        void ConsoleWrite(object _message) {
+            Console.Write(_message);
+        }
 
         private bool UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
             ProjectUpgrader upgrader = new ProjectUpgrader(_projFolderPath, _dxLibraryString, _isDxSample);
