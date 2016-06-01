@@ -40,16 +40,17 @@ namespace THelper {
             //var winrarProc = Process.Start(winRarPath, argsFullWinRar);
             //winrarProc.WaitForExit();
         }
+
         private void GetCurrentVersion() {
+
             csProjProccessor = new CSProjProcessor(cspath);
             currentProjectVersion = csProjProccessor.GetCurrentVersion();
         }
+
         private void GetInstalledVersions() {
-#if DEBUGTEST
-             installedVersions = new List<Version>();
-            installedVersions.Add(new Version("11.1.5"));
-            return;
-#endif
+
+
+
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
 
@@ -64,7 +65,7 @@ namespace THelper {
                 projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
                 Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
                 installedVersions.Add(projectUpgradeVersion);
-                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 &&projectUpgradeVersion.Major!=161) {
+                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 161) {
                     mainMajorLastVersion = projectUpgradeVersion;
                     mmlvConverterPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
                 }
@@ -78,8 +79,10 @@ namespace THelper {
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
+#if !DEBUGTEST
                 GetInstalledVersions();
                 GetCurrentVersion();
+#endif
                 currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                 isCurrentVersionMajorInstalled = currentInstalled != null;
                 if (isCurrentVersionMajorInstalled) {
@@ -88,19 +91,30 @@ namespace THelper {
                             MessagesList.Add(ConverterMessages.OpenSolution);
                         }
                         else {
-                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                            MessagesList.Add(ConverterMessages.ExactConversion);
+                            if (currentProjectVersion.Minor == 0) {
+                                MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                            }
+                            else {
+                                MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                                MessagesList.Add(ConverterMessages.ExactConversion);
+                            }
                         }
                     }
                     else {
                         if (currentProjectVersion.CompareTo(currentInstalled) == 0) {
-                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                             MessagesList.Add(ConverterMessages.OpenSolution);
+                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                         }
                         else {
-                            MessagesList.Add(ConverterMessages.ExactConversion);
-                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                            MessagesList.Add(ConverterMessages.LastMinor);
+                            if (currentProjectVersion.Minor == 0) {
+                                MessagesList.Add(ConverterMessages.LastMinor);
+                                MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                            }
+                            else {
+                                MessagesList.Add(ConverterMessages.LastMinor);
+                                MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                                MessagesList.Add(ConverterMessages.ExactConversion);
+                            }
                         }
                     }
                 }
@@ -233,7 +247,24 @@ namespace THelper {
             string versValue = versionMatch.Groups[nameof(Version)].Value;
             return new Version(versValue);
         }
+
+#if DEBUGTEST
+        public void TestSetCurrentVersion(string st) {
+            currentProjectVersion = new Version(st);
+        }
+
+        public void TestAddToInstalledVersions(string st) {
+            if (installedVersions == null)
+                installedVersions = new List<Version>();
+            installedVersions.Add(new Version(st));
+        }
+        public void TestGetMessageInfo() {
+            GetMessageInfo();
+        }
+        public List<ConverterMessages> TestMessageList { get { return MessagesList; } }
+        public void TestSetMainMajorLastVersion(string st) {
+            mainMajorLastVersion = new Version(st);
+        }
+#endif
     }
-
-
 }

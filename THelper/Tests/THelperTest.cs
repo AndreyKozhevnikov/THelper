@@ -1,4 +1,4 @@
-﻿#define DEBUGTEST
+﻿
 
 using System;
 using System.Collections.Generic;
@@ -13,32 +13,140 @@ namespace THelper {
     public class THelperTest {
         [Test]
         public void GetVersionFromContainingStringTest() {
-            
-           string  st=@"Include=""DevExpress.Data.v15.1, Version=15.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL""";
-           Version v = new Version(st,true);
-           Assert.AreEqual(v.Major, 151,"major");
-           Assert.AreEqual(v.Minor, 5,"minor");
-        
 
-            string st2 =@"Include=""DevExpress.Data.v15.1""";
-            Version v2 = new Version(st2,true);
-            Assert.AreEqual(v2.Major, 151, "major2");
-            Assert.AreEqual(v2.Minor, 0, "minor2");
+            string st = @"Include=""DevExpress.Data.v15.1сргу, Version=15.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL""";
+            Version v = new Version(st, true);
+            Assert.AreEqual(v.Major, 151, "major");
+            Assert.AreEqual(v.Minor, 5, "minor");
+
+
+            string st2 = @"Include=""DevExpress.Data.v15.1""";
+            Version v2 = new Version(st2, true);
+            Assert.AreEqual( 151, v2.Major, "major2");
+            Assert.AreEqual(0, v2.Minor, "minor2");
         }
+
 
         [Test]
-        public void GetMessageInfoTest() {
-            ProjectProcessor proc = new ProjectProcessor(@"c:\!Tickets\!Test\DXSample.zip");
-            proc.ProcessProject();
+        public void Message_MainMajor() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            proc.TestSetCurrentVersion("15.2.2");
 
+            proc.TestAddToInstalledVersions("15.1.13");
+            proc.TestAddToInstalledVersions("15.2.9");
+
+            proc.TestSetMainMajorLastVersion("15.2.9");
+
+            //act
+            proc.TestGetMessageInfo();
+
+            //assert
+            Assert.AreEqual(3,proc.TestMessageList.Count);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[0]);
+            Assert.AreEqual( ConverterMessages.ExactConversion,proc.TestMessageList[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder,proc.TestMessageList[2] );
         }
-      //  [Test]
-        //public void KeyboardTests() {
-        //    string st = @"Include=""DevExpress.Data.v15.1, Version=15.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL""";
-        //    ProjectUpgrader upgr = new ProjectUpgrader(@"f:\temp\THelper\dxSampleGrid1517", st, false);
-        //    var b = upgr.Start();
-        //   // SendKeys.Send("9");
-        //    Assert.AreEqual(b, false);
-        //}
+        [Test]
+        public void Message_MainMajorLastMinor() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            proc.TestSetCurrentVersion("15.2.9");
+
+            proc.TestAddToInstalledVersions("15.1.13");
+            proc.TestAddToInstalledVersions("15.2.9");
+
+            proc.TestSetMainMajorLastVersion("15.2.9");
+
+            //act
+            proc.TestGetMessageInfo();
+
+            //assert
+            Assert.AreEqual(2,proc.TestMessageList.Count);
+            Assert.AreEqual( ConverterMessages.OpenSolution, proc.TestMessageList[0]);
+            Assert.AreEqual( ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+        }
+        [Test]
+        public void Message_MainMajorZeroMinor() { 
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            proc.TestSetCurrentVersion("15.2");
+
+            proc.TestAddToInstalledVersions("15.1.13");
+            proc.TestAddToInstalledVersions("15.2.9");
+
+            proc.TestSetMainMajorLastVersion("15.2.9");
+
+            //act
+            proc.TestGetMessageInfo();
+
+            //assert
+            Assert.AreEqual(2, proc.TestMessageList.Count);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[0]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+        }
+        [Test]
+        public void Message_InstalledMajor() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            proc.TestSetCurrentVersion("15.1.5");
+
+            proc.TestAddToInstalledVersions("15.1.13");
+            proc.TestAddToInstalledVersions("15.2.9");
+
+            proc.TestSetMainMajorLastVersion("15.2.9");
+
+            //act
+            proc.TestGetMessageInfo();
+
+            //assert
+            Assert.AreEqual(4, proc.TestMessageList.Count);
+            Assert.AreEqual(ConverterMessages.LastMinor, proc.TestMessageList[0]);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
+            Assert.AreEqual(ConverterMessages.ExactConversion, proc.TestMessageList[2]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[3]);
+        }
+        [Test]
+        public void Message_InstalledMajorLastMinor() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            proc.TestSetCurrentVersion("15.1.13");
+
+            proc.TestAddToInstalledVersions("15.1.13");
+            proc.TestAddToInstalledVersions("15.2.9");
+
+            proc.TestSetMainMajorLastVersion("15.2.9");
+
+            //act
+            proc.TestGetMessageInfo();
+
+            //assert
+            Assert.AreEqual(3, proc.TestMessageList.Count);
+            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
+        }
+        [Test]
+        public void Message_InstalledMajorZeroMinor() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            proc.TestSetCurrentVersion("15.1");
+
+            proc.TestAddToInstalledVersions("15.1.13");
+            proc.TestAddToInstalledVersions("15.2.9");
+
+            proc.TestSetMainMajorLastVersion("15.2.9");
+
+            //act
+            proc.TestGetMessageInfo();
+
+            //assert
+            Assert.AreEqual(3, proc.TestMessageList.Count);
+            Assert.AreEqual(ConverterMessages.LastMinor, proc.TestMessageList[0]);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
+        }
     }
 }
+
+
