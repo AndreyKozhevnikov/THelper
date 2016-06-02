@@ -40,13 +40,13 @@ namespace THelper {
             isExample = archiveFilePath.EndsWith(".dxsample");
             solutionFolderInfo = Directory.CreateDirectory(solutionFolderName);
             var argsFullWinRar = argumentsFilePath + " " + @"""" + solutionFolderName + @"""";
-            //var winrarProc = Process.Start(winRarPath, argsFullWinRar);
-            //winrarProc.WaitForExit();
+            var winrarProc = Process.Start(winRarPath, argsFullWinRar);
+            winrarProc.WaitForExit();
         }
 
         private void GetCurrentVersion() {
 
-            csProjProccessor = new CSProjProcessor(cspath);
+           
             currentProjectVersion = csProjProccessor.GetCurrentVersion();
         }
 
@@ -79,11 +79,13 @@ namespace THelper {
         Version currentInstalled;
         private void GetMessageInfo() {
             MessagesList = new List<ConverterMessages>();
+            csProjProccessor = new CSProjProcessor(cspath);
+            GetInstalledVersions();
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
 #if !DEBUGTEST
-                GetInstalledVersions();
+             
                 GetCurrentVersion();
 #endif
                 currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
@@ -147,44 +149,7 @@ namespace THelper {
             Process.Start(solutionFolderName);
         }
 
-        private string ProcessCsprojFile(string _csPath) {
-            XmlTextReader reader = new XmlTextReader(_csPath);
-            XElement xlroot = XElement.Load(reader);
-            reader.Close();
-
-            var elements = xlroot.Elements();
-
-            var licGroup = elements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
-            if (licGroup != null)
-                licGroup.Remove();
-            var UseVSHostingProcess = elements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
-            if (UseVSHostingProcess != null)
-                UseVSHostingProcess.SetValue("false");
-            var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
-            var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
-
-            string _dxLibraryString = null;
-            if (dxlibraries.Count() > 0)
-                _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
-
-
-            foreach (XElement dxlib in dxlibraries) {
-                var specificVersionNode = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
-                if (specificVersionNode != null)
-                    dxlib.SetElementValue(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName), false);
-                else {
-                    XName xName = XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName);
-                    XElement xatr = new XElement(xName, "False");
-                    dxlib.Add(xatr);
-                }
-            }
-
-            string resultString = xlroot.ToString();
-            StreamWriter sw = new StreamWriter(_csPath, false);
-            sw.Write(resultString);
-            sw.Close();
-            return _dxLibraryString;
-        }
+    
         private void ProcessFolder() {
             string slnPath = string.Empty;
             cspath = string.Empty;
@@ -192,18 +157,30 @@ namespace THelper {
             if (isSoluiton) {
                 GetMessageInfo();
                 var result = PrintMessage();
-                // ProcessProject(result);
+                ProcessProject(result);
             }
             else
                 OpenFolder();
         }
 
-        private void ProcessProject(ConsoleKeyInfo result) {
-            //switch (result) {
-            //    case 
-            //}
+        private void ProcessProject(ConverterMessages message) {
+            if (message == ConverterMessages.OpenFolder) {
+                OpenFolder();
+                return;
+            }
+            csProjProccessor.DisableUseVSHostingProcess();
+            if (isExample) {
+                UpgradeToMainMajorLastVersion();
+            }
+
         }
 
+        private void UpgradeToMainMajorLastVersion() {
+           // string toolPath = installedSupportedMajorsAndPCPaths[_major];
+           string _projPath = "\"" + solutionFolderName + "\"";
+            Process updgrade = Process.Start(mmlvConverterPath, _projPath);
+            updgrade.WaitForExit();
+        }
 
         private ConverterMessages PrintMessage() {
             if (isExample) {
@@ -224,7 +201,7 @@ namespace THelper {
             int index = GetValueFromConsoleKey(v);
             if (index == 9)
                 return ConverterMessages.OpenFolder;
-            return MessagesList[index];
+            return MessagesList[index-1];
         }
 
         int GetValueFromConsoleKey(ConsoleKey key) {
@@ -275,15 +252,7 @@ namespace THelper {
         }
 
 
-        void ConsoleWrite(object _message, ConsoleColor color) {
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(_message);
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
-        void ConsoleWrite(object _message) {
-            Console.Write(_message);
-        }
+      
 
         private bool UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
             ProjectUpgrader upgrader = new ProjectUpgrader(_projFolderPath, _dxLibraryString, _isDxSample);
@@ -294,23 +263,16 @@ namespace THelper {
         internal void ProcessArchive() {
             ExtractFiles();
             ProcessFolder();
-
-
-            //bool isNeedToOpenSolution = false;
-            //if (isSoluiton) {
-
-            //    string dxLibraryString = ProcessCsprojFile(cspath);
-            //    if (dxLibraryString != null)
-            //        isNeedToOpenSolution = UpdgradeProject(solutionFolderName, dxLibraryString, isExample);
-
-            //}
-            //if (isNeedToOpenSolution)
-            //    Process.Start(slnPath);
-            //else
-            //    Process.Start(solutionFolderName);
-
         }
+        void ConsoleWrite(object _message, ConsoleColor color) {
 
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(_message);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+        void ConsoleWrite(object _message) {
+            Console.Write(_message);
+        }
 
 
         public bool GetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) {
@@ -339,6 +301,46 @@ namespace THelper {
             string versValue = versionMatch.Groups[nameof(Version)].Value;
             return new Version(versValue);
         }
+        #region old
+        private string ProcessCsprojFile(string _csPath) {
+            XmlTextReader reader = new XmlTextReader(_csPath);
+            XElement xlroot = XElement.Load(reader);
+            reader.Close();
+
+            var elements = xlroot.Elements();
+
+            var licGroup = elements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
+            if (licGroup != null)
+                licGroup.Remove();
+            var UseVSHostingProcess = elements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
+            if (UseVSHostingProcess != null)
+                UseVSHostingProcess.SetValue("false");
+            var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
+            var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
+
+            string _dxLibraryString = null;
+            if (dxlibraries.Count() > 0)
+                _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
+
+
+            foreach (XElement dxlib in dxlibraries) {
+                var specificVersionNode = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
+                if (specificVersionNode != null)
+                    dxlib.SetElementValue(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName), false);
+                else {
+                    XName xName = XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName);
+                    XElement xatr = new XElement(xName, "False");
+                    dxlib.Add(xatr);
+                }
+            }
+
+            string resultString = xlroot.ToString();
+            StreamWriter sw = new StreamWriter(_csPath, false);
+            sw.Write(resultString);
+            sw.Close();
+            return _dxLibraryString;
+        }
+        #endregion
 
 #if DEBUGTEST
         public void TestSetCurrentVersion(string st) {
