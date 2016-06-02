@@ -8,10 +8,11 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Win32;
+using System.Windows.Forms;
 
 namespace THelper {
     public enum ConverterMessages { OpenSolution, MainMajorLastVersion, LastMinor, ExactConversion, OpenFolder }
- 
+
 
 
     public class ProjectProcessor {
@@ -190,12 +191,21 @@ namespace THelper {
             bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             if (isSoluiton) {
                 GetMessageInfo();
-                PrintMessage();
+                var result = PrintMessage();
+                // ProcessProject(result);
             }
             else
                 OpenFolder();
         }
-        private void PrintMessage() {
+
+        private void ProcessProject(ConsoleKeyInfo result) {
+            //switch (result) {
+            //    case 
+            //}
+        }
+
+
+        private ConverterMessages PrintMessage() {
             if (isExample) {
                 ConsoleWrite("The current project version is an ");
                 ConsoleWrite("example", ConsoleColor.Red);
@@ -209,10 +219,25 @@ namespace THelper {
             foreach (ConverterMessages msg in MessagesList) {
                 PrintConverterMessage(msg, k++.ToString());
             }
-          var v=  Console.ReadKey(false);
+            ConsoleKeyInfo enterKey = Console.ReadKey(false);
+            var v = enterKey.Key;
+            int index = GetValueFromConsoleKey(v);
+            if (index == 9)
+                return ConverterMessages.OpenFolder;
+            return MessagesList[index];
         }
 
-        private void PrintConverterMessage(ConverterMessages msg,string key) {
+        int GetValueFromConsoleKey(ConsoleKey key) {
+            int value = -1;
+            if (key >= (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
+                value = (int)key - ((int)ConsoleKey.NumPad0);
+            }
+            else if ((int)key >= ((int)ConsoleKey.D0) && (int)key <= ((int)ConsoleKey.D9)) { // regular numbers
+                value = (int)key - ((int)ConsoleKey.D0);
+            }
+            return value;
+        }
+        private void PrintConverterMessage(ConverterMessages msg, string key) {
             if (msg == ConverterMessages.OpenSolution) {
                 ConsoleWrite("To open solution press: ");
                 ConsoleWrite(key, ConsoleColor.Red);
@@ -233,18 +258,20 @@ namespace THelper {
             Console.WriteLine();
         }
 
-        string  GetMessageVersion(ConverterMessages msg) {
+        string GetMessageVersion(ConverterMessages msg) {
             switch (msg) {
                 case ConverterMessages.ExactConversion:
                     return currentProjectVersion.ToString();
                 case ConverterMessages.LastMinor:
+                    if (currentInstalled == null)
+                        return "0.0.0";
                     return currentInstalled.ToString();
                 case ConverterMessages.MainMajorLastVersion:
                     return mainMajorLastVersion.ToString();
                 default:
                     return null;
             }
-            
+
         }
 
 
@@ -264,7 +291,7 @@ namespace THelper {
 
         }
 
-        internal void ProcessProject() {
+        internal void ProcessArchive() {
             ExtractFiles();
             ProcessFolder();
 
