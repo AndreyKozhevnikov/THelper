@@ -28,6 +28,7 @@ namespace THelper {
         string mmlvConverterPath;
         DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
+        string slnPath;
 
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
@@ -149,9 +150,9 @@ namespace THelper {
             Process.Start(solutionFolderName);
         }
 
-    
+      
         private void ProcessFolder() {
-            string slnPath = string.Empty;
+             slnPath = string.Empty;
             cspath = string.Empty;
             bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             if (isSoluiton) {
@@ -173,6 +174,12 @@ namespace THelper {
                 UpgradeToMainMajorLastVersion();
             }
 
+            OpenSolution();
+
+        }
+
+        private void OpenSolution() {
+            Process.Start(slnPath);
         }
 
         private void UpgradeToMainMajorLastVersion() {
