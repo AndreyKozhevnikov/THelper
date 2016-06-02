@@ -78,6 +78,7 @@ namespace THelper {
             }
         }
         Version currentInstalled;
+        bool isMainMajor;
         private void GetMessageInfo() {
             MessagesList = new List<ConverterMessages>();
             csProjProccessor = new CSProjProcessor(cspath);
@@ -92,7 +93,8 @@ namespace THelper {
                 currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                 isCurrentVersionMajorInstalled = currentInstalled != null;
                 if (isCurrentVersionMajorInstalled) {
-                    if (currentProjectVersion.Major == mainMajorLastVersion.Major) {
+                    isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
+                    if (isMainMajor) {
                         if (currentProjectVersion.CompareTo(mainMajorLastVersion) == 0) {
                             MessagesList.Add(ConverterMessages.OpenSolution);
                         }
@@ -175,12 +177,48 @@ namespace THelper {
             }
             else {
                 csProjProccessor.RemoveLicense();
-            }
+                switch (message) {
+                    case ConverterMessages.MainMajorLastVersion:
+                        if (isMainMajor) {
+                            csProjProccessor.SetSpecificVersionFalse();
+                        }
+                        else {
+                            UpgradeToMainMajorLastVersion();
+                        }
+                        break;
+                    case ConverterMessages.LastMinor:
+                        if (isCurrentVersionMajorInstalled) {
+                            csProjProccessor.SetSpecificVersionFalse();
+                        }
+                        else {
+                            FindIfLibrariesPersist();
+                            if (isLibrariesPersist) {
+                                break;
+                            }
+                            else {
+                                FindLastVersionOfMajor();
+                            }
+                        }
+                        break;
 
+                }
+            }
+            csProjProccessor.SaveNewCsProj();
             OpenSolution();
 
         }
 
+        private void FindLastVersionOfMajor() {
+            throw new NotImplementedException();
+        }
+
+        private void FindIfLibrariesPersist() {
+            DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
+            var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
+            isLibrariesPersist= v.Count > 0;
+        }
+
+        bool isLibrariesPersist;
         private void OpenSolution() {
             Process.Start(slnPath);
         }
