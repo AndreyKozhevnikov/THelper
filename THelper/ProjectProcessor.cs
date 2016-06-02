@@ -9,6 +9,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Win32;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace THelper {
     public enum ConverterMessages { OpenSolution, MainMajorLastVersion, LastMinor, ExactConversion, OpenFolder }
@@ -90,6 +91,7 @@ namespace THelper {
              
                 GetCurrentVersion();
 #endif
+                FindLastVersionOfMajor();
                 currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                 isCurrentVersionMajorInstalled = currentInstalled != null;
                 if (isCurrentVersionMajorInstalled) {
@@ -209,7 +211,12 @@ namespace THelper {
         }
 
         private void FindLastVersionOfMajor() {
-            throw new NotImplementedException();
+            var maj = currentProjectVersion.Major;
+            List<string> directories = new List<string>();
+            foreach (string directory in Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\"))
+                directories.Add(Path.GetFileName(directory));
+            directories.Sort(new VersionComparer());
+            var res = directories.Where(x => x.Split('.')[0]+ x.Split('.')[1] == maj.ToString()).First();
         }
 
         private void FindIfLibrariesPersist() {
@@ -408,5 +415,19 @@ namespace THelper {
             mainMajorLastVersion = new Version(st);
         }
 #endif
+    }
+
+    public class VersionComparer : IComparer<string> {
+
+        public int Compare(string x, string y) {
+            int counter = 0, res = 0;
+            while (counter < 3 && res == 0) {
+                int versionX = Convert.ToInt32(x.Split('.')[counter].Replace("_new", ""));
+                int versionY = Convert.ToInt32(y.Split('.')[counter]);
+                res = Comparer.Default.Compare(versionX, versionY);
+                counter++;
+            }
+            return -res;
+        }
     }
 }
