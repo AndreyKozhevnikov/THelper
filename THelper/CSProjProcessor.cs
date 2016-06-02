@@ -40,5 +40,11 @@ namespace THelper {
             if (UseVSHostingProcess != null)
                 UseVSHostingProcess.SetValue("false");
         }
+
+        internal void RemoveLicense() {
+            var licGroup = RootElements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
+            if (licGroup != null)
+                licGroup.Remove();
+        }
     }
 }

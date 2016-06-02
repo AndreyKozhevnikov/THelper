@@ -173,6 +173,9 @@ namespace THelper {
             if (isExample) {
                 UpgradeToMainMajorLastVersion();
             }
+            else {
+                csProjProccessor.RemoveLicense();
+            }
 
             OpenSolution();
 
