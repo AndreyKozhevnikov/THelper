@@ -48,7 +48,7 @@ namespace THelper {
 
         private void GetCurrentVersion() {
 
-           
+
             currentProjectVersion = csProjProccessor.GetCurrentVersion();
         }
 
@@ -88,10 +88,9 @@ namespace THelper {
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
 #if !DEBUGTEST
-             
+
                 GetCurrentVersion();
 #endif
-                FindLastVersionOfMajor();
                 currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                 isCurrentVersionMajorInstalled = currentInstalled != null;
                 if (isCurrentVersionMajorInstalled) {
@@ -154,9 +153,9 @@ namespace THelper {
             Process.Start(solutionFolderName);
         }
 
-      
+
         private void ProcessFolder() {
-             slnPath = string.Empty;
+            slnPath = string.Empty;
             cspath = string.Empty;
             bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             if (isSoluiton) {
@@ -198,7 +197,8 @@ namespace THelper {
                                 break;
                             }
                             else {
-                                FindLastVersionOfMajor();
+                                Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
+                                ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
                             }
                         }
                         break;
@@ -210,19 +210,30 @@ namespace THelper {
 
         }
 
-        private void FindLastVersionOfMajor() {
+        private void ConvertProjectWithSvetaConverter(Version v) {
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
+            string versionConverterFormat = v.ToString(true);
+            psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
+            var proc = System.Diagnostics.Process.Start(psi);
+            proc.WaitForExit();
+        }
+
+
+        private Version FindLastVersionOfMajor() {
             var maj = currentProjectVersion.Major;
             List<string> directories = new List<string>();
             foreach (string directory in Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\"))
                 directories.Add(Path.GetFileName(directory));
             directories.Sort(new VersionComparer());
-            var res = directories.Where(x => x.Split('.')[0]+ x.Split('.')[1] == maj.ToString()).First();
+            var res = directories.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
+            return  new Version(res);
         }
 
         private void FindIfLibrariesPersist() {
             DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
             var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
-            isLibrariesPersist= v.Count > 0;
+            isLibrariesPersist = v.Count > 0;
         }
 
         bool isLibrariesPersist;
@@ -231,8 +242,8 @@ namespace THelper {
         }
 
         private void UpgradeToMainMajorLastVersion() {
-           // string toolPath = installedSupportedMajorsAndPCPaths[_major];
-           string _projPath = "\"" + solutionFolderName + "\"";
+            // string toolPath = installedSupportedMajorsAndPCPaths[_major];
+            string _projPath = "\"" + solutionFolderName + "\"";
             Process updgrade = Process.Start(mmlvConverterPath, _projPath);
             updgrade.WaitForExit();
         }
@@ -256,7 +267,7 @@ namespace THelper {
             int index = GetValueFromConsoleKey(v);
             if (index == 9)
                 return ConverterMessages.OpenFolder;
-            return MessagesList[index-1];
+            return MessagesList[index - 1];
         }
 
         int GetValueFromConsoleKey(ConsoleKey key) {
@@ -307,7 +318,7 @@ namespace THelper {
         }
 
 
-      
+
 
         private bool UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
             ProjectUpgrader upgrader = new ProjectUpgrader(_projFolderPath, _dxLibraryString, _isDxSample);
