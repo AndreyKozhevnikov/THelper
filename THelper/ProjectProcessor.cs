@@ -196,12 +196,20 @@ namespace THelper {
                             if (isLibrariesPersist) {
                                 break;
                             }
-                            else {
                                 Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
                                 ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
-                            }
                         }
                         break;
+                    case ConverterMessages.ExactConversion:
+                        FindIfLibrariesPersist();
+                        if (isLibrariesPersist) {
+                            break;
+                        }
+                        ConvertProjectWithSvetaConverter(currentProjectVersion);
+                        break;
+                    default:
+                        break;
+
 
                 }
             }
