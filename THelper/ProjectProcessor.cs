@@ -20,21 +20,29 @@ namespace THelper {
         private string archiveFilePath;
         string cspath;
         CSProjProcessor csProjProccessor;
+        Version currentInstalled;
         Version currentProjectVersion;
         List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
         bool isExample;
+        bool isLibrariesPersist;
+        bool isMainMajor;
         Version mainMajorLastVersion;
         List<ConverterMessages> MessagesList;
         string mmlvConverterPath;
+        string slnPath;
         DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
-        string slnPath;
 
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
         }
-        void ExtractFiles() {
+
+        internal void ProcessArchive() { //0
+            ExtractFiles();
+            ProcessFolder();
+        }
+        void ExtractFiles() { //1
             string winRarPath = Properties.Settings.Default.WinRarPath;
             string argumentsFilePath = " x \"" + archiveFilePath + "\"";
             var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
@@ -45,42 +53,28 @@ namespace THelper {
             var winrarProc = Process.Start(winRarPath, argsFullWinRar);
             winrarProc.WaitForExit();
         }
-
-        private void GetCurrentVersion() {
-
-
-            currentProjectVersion = csProjProccessor.GetCurrentVersion();
-        }
-
-        private void GetInstalledVersions() {
-
-
-
-            installedVersions = new List<Version>();
-            mainMajorLastVersion = Version.Zero;
-
-            RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
-            string[] versions = dxpKey.GetSubKeyNames();
-            const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
-            foreach (string strVersion in versions) {
-                RegistryKey dxVersionKey = dxpKey.OpenSubKey(strVersion);
-                string projectUpgradeToolPath = dxVersionKey.GetValue("RootDirectory") as string;
-                if (string.IsNullOrEmpty(projectUpgradeToolPath))
-                    continue;
-                projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
-                Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
-                installedVersions.Add(projectUpgradeVersion);
-                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 161) {
-                    mainMajorLastVersion = projectUpgradeVersion;
-                    mmlvConverterPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
-                }
-                // projectUpgradeToolPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
-                // installedSupportedMajorsAndPCPaths[projectUpgradeVersion.Major] = projectUpgradeToolPath;
+        private void ProcessFolder() { //2
+            slnPath = string.Empty;
+            cspath = string.Empty;
+            bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
+            if (isSoluiton) {
+                GetMessageInfo();
+                var result = PrintMessage();
+                ProcessProject(result);
             }
+            else
+                OpenFolder();
         }
-        Version currentInstalled;
-        bool isMainMajor;
-        private void GetMessageInfo() {
+        public bool GetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3
+            _slnPath = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+            _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
+            if (_csprojPath == null)
+                _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
+            if (string.IsNullOrEmpty(_slnPath))
+                _slnPath = _csprojPath;
+            return !string.IsNullOrEmpty(_slnPath);
+        }
+        private void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
             csProjProccessor = new CSProjProcessor(cspath);
             GetInstalledVersions();
@@ -135,8 +129,28 @@ namespace THelper {
             MessagesList.Add(ConverterMessages.OpenFolder);
 
         }
+        private void GetInstalledVersions() {//5
+            installedVersions = new List<Version>();
+            mainMajorLastVersion = Version.Zero;
 
-        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {
+            RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
+            string[] versions = dxpKey.GetSubKeyNames();
+            const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
+            foreach (string strVersion in versions) {
+                RegistryKey dxVersionKey = dxpKey.OpenSubKey(strVersion);
+                string projectUpgradeToolPath = dxVersionKey.GetValue("RootDirectory") as string;
+                if (string.IsNullOrEmpty(projectUpgradeToolPath))
+                    continue;
+                projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
+                Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
+                installedVersions.Add(projectUpgradeVersion);
+                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 161) {
+                    mainMajorLastVersion = projectUpgradeVersion;
+                    mmlvConverterPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
+                }
+            }
+        }
+        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1
             Assembly assembly;
             try {
                 assembly = Assembly.LoadFile(projectUpgradeToolPath);
@@ -144,30 +158,92 @@ namespace THelper {
             catch {
                 return Version.Zero;
             }
-            Version result = GetVersionFromContainingString(assembly.FullName);
+            Version result = new Version(assembly.FullName, true);
 
             return result;
         }
 
-        private void OpenFolder() {
-            Process.Start(solutionFolderName);
+        private void GetCurrentVersion() {//6
+            currentProjectVersion = csProjProccessor.GetCurrentVersion();
         }
-
-
-        private void ProcessFolder() {
-            slnPath = string.Empty;
-            cspath = string.Empty;
-            bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
-            if (isSoluiton) {
-                GetMessageInfo();
-                var result = PrintMessage();
-                ProcessProject(result);
+        private ConverterMessages PrintMessage() { //7
+            if (isExample) {
+                ConsoleWrite("The current project version is an ");
+                ConsoleWrite("example", ConsoleColor.Red);
             }
-            else
-                OpenFolder();
+            else {
+                ConsoleWrite("The current project version is ");
+                ConsoleWrite(currentProjectVersion, ConsoleColor.Red);
+            }
+            Console.WriteLine();
+            int k = 1;
+            foreach (ConverterMessages msg in MessagesList) {
+                PrintConverterMessage(msg, k++.ToString());
+            }
+            ConsoleKeyInfo enterKey = Console.ReadKey(false);
+            var v = enterKey.Key;
+            int index = GetValueFromConsoleKey(v);
+            if (index == 9)
+                return ConverterMessages.OpenFolder;
+            return MessagesList[index - 1];
+        }
+    
+        private void PrintConverterMessage(ConverterMessages msg, string key) {//8
+            if (msg == ConverterMessages.OpenSolution) {
+                ConsoleWrite("To open solution press: ");
+                ConsoleWrite(key, ConsoleColor.Red);
+                Console.WriteLine();
+                return;
+            }
+            if (msg == ConverterMessages.OpenFolder) {
+                ConsoleWrite("To open folder press: ");
+                ConsoleWrite("9", ConsoleColor.Red);
+                Console.WriteLine();
+                return;
+            }
+            string vers = GetMessageVersion(msg);
+            ConsoleWrite("To convert to : ");
+            ConsoleWrite(vers, ConsoleColor.Red);
+            ConsoleWrite(" press ");
+            ConsoleWrite(key, ConsoleColor.Red);
+            Console.WriteLine();
+        }
+        string GetMessageVersion(ConverterMessages msg) { //8.1
+            switch (msg) {
+                case ConverterMessages.ExactConversion:
+                    return currentProjectVersion.ToString();
+                case ConverterMessages.LastMinor:
+                    if (currentInstalled == null)
+                        return "0.0.0";
+                    return currentInstalled.ToString();
+                case ConverterMessages.MainMajorLastVersion:
+                    return mainMajorLastVersion.ToString();
+                default:
+                    return null;
+            }
+
         }
 
-        private void ProcessProject(ConverterMessages message) {
+        int GetValueFromConsoleKey(ConsoleKey key) {//9
+            int value = -1;
+            if (key >= (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
+                value = (int)key - ((int)ConsoleKey.NumPad0);
+            }
+            else if ((int)key >= ((int)ConsoleKey.D0) && (int)key <= ((int)ConsoleKey.D9)) { // regular numbers
+                value = (int)key - ((int)ConsoleKey.D0);
+            }
+            return value;
+        }
+        void ConsoleWrite(object _message) { //10
+            Console.Write(_message);
+        }
+        void ConsoleWrite(object _message, ConsoleColor color) {//11
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(_message);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+        private void ProcessProject(ConverterMessages message) {//12
             if (message == ConverterMessages.OpenFolder) {
                 OpenFolder();
                 return;
@@ -196,8 +272,8 @@ namespace THelper {
                             if (isLibrariesPersist) {
                                 break;
                             }
-                                Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
-                                ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
+                            Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
+                            ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
                         }
                         break;
                     case ConverterMessages.ExactConversion:
@@ -218,7 +294,26 @@ namespace THelper {
 
         }
 
-        private void ConvertProjectWithSvetaConverter(Version v) {
+        private void UpgradeToMainMajorLastVersion() {//13
+            string _projPath = "\"" + solutionFolderName + "\"";
+            Process updgrade = Process.Start(mmlvConverterPath, _projPath);
+            updgrade.WaitForExit();
+        }
+        private void FindIfLibrariesPersist() {//14
+            DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
+            var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
+            isLibrariesPersist = v.Count > 0;
+        }
+        private Version FindLastVersionOfMajor() {//15
+            var maj = currentProjectVersion.Major;
+            List<string> directories = new List<string>();
+            foreach (string directory in Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\"))
+                directories.Add(Path.GetFileName(directory));
+            directories.Sort(new VersionComparer());
+            var res = directories.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
+            return new Version(res);
+        }
+        private void ConvertProjectWithSvetaConverter(Version v) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
             string versionConverterFormat = v.ToString(true);
@@ -226,195 +321,38 @@ namespace THelper {
             var proc = System.Diagnostics.Process.Start(psi);
             proc.WaitForExit();
         }
+   
+
+    
 
 
-        private Version FindLastVersionOfMajor() {
-            var maj = currentProjectVersion.Major;
-            List<string> directories = new List<string>();
-            foreach (string directory in Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\"))
-                directories.Add(Path.GetFileName(directory));
-            directories.Sort(new VersionComparer());
-            var res = directories.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
-            return  new Version(res);
+
+     
+
+    
+  
+
+     
+ 
+
+        private void OpenFolder() {
+            Process.Start(solutionFolderName);
         }
-
-        private void FindIfLibrariesPersist() {
-            DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
-            var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
-            isLibrariesPersist = v.Count > 0;
-        }
-
-        bool isLibrariesPersist;
         private void OpenSolution() {
             Process.Start(slnPath);
         }
+  
+   
 
-        private void UpgradeToMainMajorLastVersion() {
-            // string toolPath = installedSupportedMajorsAndPCPaths[_major];
-            string _projPath = "\"" + solutionFolderName + "\"";
-            Process updgrade = Process.Start(mmlvConverterPath, _projPath);
-            updgrade.WaitForExit();
-        }
-
-        private ConverterMessages PrintMessage() {
-            if (isExample) {
-                ConsoleWrite("The current project version is an ");
-                ConsoleWrite("example", ConsoleColor.Red);
-            }
-            else {
-                ConsoleWrite("The current project version is ");
-                ConsoleWrite(currentProjectVersion, ConsoleColor.Red);
-            }
-            Console.WriteLine();
-            int k = 1;
-            foreach (ConverterMessages msg in MessagesList) {
-                PrintConverterMessage(msg, k++.ToString());
-            }
-            ConsoleKeyInfo enterKey = Console.ReadKey(false);
-            var v = enterKey.Key;
-            int index = GetValueFromConsoleKey(v);
-            if (index == 9)
-                return ConverterMessages.OpenFolder;
-            return MessagesList[index - 1];
-        }
-
-        int GetValueFromConsoleKey(ConsoleKey key) {
-            int value = -1;
-            if (key >= (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
-                value = (int)key - ((int)ConsoleKey.NumPad0);
-            }
-            else if ((int)key >= ((int)ConsoleKey.D0) && (int)key <= ((int)ConsoleKey.D9)) { // regular numbers
-                value = (int)key - ((int)ConsoleKey.D0);
-            }
-            return value;
-        }
-        private void PrintConverterMessage(ConverterMessages msg, string key) {
-            if (msg == ConverterMessages.OpenSolution) {
-                ConsoleWrite("To open solution press: ");
-                ConsoleWrite(key, ConsoleColor.Red);
-                Console.WriteLine();
-                return;
-            }
-            if (msg == ConverterMessages.OpenFolder) {
-                ConsoleWrite("To open folder press: ");
-                ConsoleWrite("9", ConsoleColor.Red);
-                Console.WriteLine();
-                return;
-            }
-            string vers = GetMessageVersion(msg);
-            ConsoleWrite("To convert to : ");
-            ConsoleWrite(vers, ConsoleColor.Red);
-            ConsoleWrite(" press ");
-            ConsoleWrite(key, ConsoleColor.Red);
-            Console.WriteLine();
-        }
-
-        string GetMessageVersion(ConverterMessages msg) {
-            switch (msg) {
-                case ConverterMessages.ExactConversion:
-                    return currentProjectVersion.ToString();
-                case ConverterMessages.LastMinor:
-                    if (currentInstalled == null)
-                        return "0.0.0";
-                    return currentInstalled.ToString();
-                case ConverterMessages.MainMajorLastVersion:
-                    return mainMajorLastVersion.ToString();
-                default:
-                    return null;
-            }
-
-        }
+ 
 
 
 
 
-        private bool UpdgradeProject(string _projFolderPath, string _dxLibraryString, bool _isDxSample) {
-            ProjectUpgrader upgrader = new ProjectUpgrader(_projFolderPath, _dxLibraryString, _isDxSample);
-            return upgrader.Start();
-
-        }
-
-        internal void ProcessArchive() {
-            ExtractFiles();
-            ProcessFolder();
-        }
-        void ConsoleWrite(object _message, ConsoleColor color) {
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(_message);
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
-        void ConsoleWrite(object _message) {
-            Console.Write(_message);
-        }
 
 
-        public bool GetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) {
-            _slnPath = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
-            _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
-            if (_csprojPath == null)
-                _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
-            if (string.IsNullOrEmpty(_slnPath))
-                _slnPath = _csprojPath;
-            return !string.IsNullOrEmpty(_slnPath);
-        }
-        public Version GetVersionFromContainingString(string stringWithVersion) {
-            string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
-            Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-            Match versionMatch = regexVersion.Match(stringWithVersion);
-            if (versionMatch == null || !versionMatch.Success) {
-                string versionAssemblypatternShort = @".*DevExpress.*(?<Version>\d{2}\.\d)";
-                Regex regexVersionShort = new Regex(versionAssemblypatternShort, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-                Match versionMatchShort = regexVersionShort.Match(stringWithVersion);
-                if (versionMatchShort != null && versionMatchShort.Success) {
-                    string versValueShort = versionMatchShort.Groups[nameof(Version)].Value;
-                    return new Version(versValueShort);
-                }
-                return Version.Zero;
-            }
-            string versValue = versionMatch.Groups[nameof(Version)].Value;
-            return new Version(versValue);
-        }
-        #region old
-        private string ProcessCsprojFile(string _csPath) {
-            XmlTextReader reader = new XmlTextReader(_csPath);
-            XElement xlroot = XElement.Load(reader);
-            reader.Close();
+ 
 
-            var elements = xlroot.Elements();
-
-            var licGroup = elements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
-            if (licGroup != null)
-                licGroup.Remove();
-            var UseVSHostingProcess = elements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
-            if (UseVSHostingProcess != null)
-                UseVSHostingProcess.SetValue("false");
-            var references = elements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
-            var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
-
-            string _dxLibraryString = null;
-            if (dxlibraries.Count() > 0)
-                _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
-
-
-            foreach (XElement dxlib in dxlibraries) {
-                var specificVersionNode = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
-                if (specificVersionNode != null)
-                    dxlib.SetElementValue(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName), false);
-                else {
-                    XName xName = XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName);
-                    XElement xatr = new XElement(xName, "False");
-                    dxlib.Add(xatr);
-                }
-            }
-
-            string resultString = xlroot.ToString();
-            StreamWriter sw = new StreamWriter(_csPath, false);
-            sw.Write(resultString);
-            sw.Close();
-            return _dxLibraryString;
-        }
-        #endregion
 
 #if DEBUGTEST
         public void TestSetCurrentVersion(string st) {
