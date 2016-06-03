@@ -147,6 +147,39 @@ namespace THelper {
             Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
             Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
         }
+        [Test]
+        public void SetIsExample_False() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.rar");
+
+            //act
+            proc.Test_SetIsExample();
+
+            //assert
+            Assert.AreEqual(false, proc.Test_IsExample);
+        }
+        [Test]
+        public void SetIsExample_True() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.dxsample");
+
+            //act
+            proc.Test_SetIsExample();
+
+            //assert
+            Assert.AreEqual(true, proc.Test_IsExample);
+        }
+        [Test]
+        public void GetArgsForWinRar() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\test.dxsample");
+
+            //act
+          var res=  proc.Test_GetArgsForWinRar();
+
+            //assert
+            Assert.AreEqual(" x \"c:\\test\\test.dxsample\" \"c:\\test\\test\"", res);
+        }
     }
 #endif
 }

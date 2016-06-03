@@ -39,20 +39,30 @@ namespace THelper {
         }
 
         internal void ProcessArchive() { //0
+            SetIsExample();
             ExtractFiles();
             ProcessFolder();
         }
         void ExtractFiles() { //1
             string winRarPath = Properties.Settings.Default.WinRarPath;
-            string argumentsFilePath = " x \"" + archiveFilePath + "\"";
-            var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
-            solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
-            isExample = archiveFilePath.EndsWith(".dxsample");
-            solutionFolderInfo = Directory.CreateDirectory(solutionFolderName);
-            var argsFullWinRar = argumentsFilePath + " " + @"""" + solutionFolderName + @"""";
+            string argsFullWinRar = GetArgsForWinRar();
             var winrarProc = Process.Start(winRarPath, argsFullWinRar);
             winrarProc.WaitForExit();
         }
+
+        private string GetArgsForWinRar() {
+            string argumentsFilePath = " x \"" + archiveFilePath + "\"";
+            var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
+            solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
+            solutionFolderInfo = Directory.CreateDirectory(solutionFolderName);
+            var argsFullWinRar = argumentsFilePath + " " + @"""" + solutionFolderName + @"""";
+            return argsFullWinRar;
+        }
+
+        private void SetIsExample() {//1
+            isExample = archiveFilePath.EndsWith(".dxsample");
+        }
+
         private void ProcessFolder() { //2
             slnPath = string.Empty;
             cspath = string.Empty;
@@ -76,8 +86,10 @@ namespace THelper {
         }
         private void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
+#if !DEBUGTEST
             csProjProccessor = new CSProjProcessor(cspath);
             GetInstalledVersions();
+#endif
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
@@ -187,7 +199,7 @@ namespace THelper {
                 return ConverterMessages.OpenFolder;
             return MessagesList[index - 1];
         }
-    
+
         private void PrintConverterMessage(ConverterMessages msg, string key) {//8
             if (msg == ConverterMessages.OpenSolution) {
                 ConsoleWrite("To open solution press: ");
@@ -321,19 +333,19 @@ namespace THelper {
             var proc = System.Diagnostics.Process.Start(psi);
             proc.WaitForExit();
         }
-   
-
-    
 
 
 
-     
 
-    
-  
 
-     
- 
+
+
+
+
+
+
+
+
 
         private void OpenFolder() {
             Process.Start(solutionFolderName);
@@ -341,17 +353,17 @@ namespace THelper {
         private void OpenSolution() {
             Process.Start(slnPath);
         }
-  
-   
-
- 
 
 
 
 
 
 
- 
+
+
+
+
+
 
 
 #if DEBUGTEST
@@ -370,6 +382,15 @@ namespace THelper {
         public List<ConverterMessages> TestMessageList { get { return MessagesList; } }
         public void TestSetMainMajorLastVersion(string st) {
             mainMajorLastVersion = new Version(st);
+        }
+        public void Test_SetIsExample() {
+            this.SetIsExample();
+        }
+        public bool Test_IsExample {
+            get { return isExample; }
+        }
+        public string Test_GetArgsForWinRar() {
+            return GetArgsForWinRar();
         }
 #endif
     }
