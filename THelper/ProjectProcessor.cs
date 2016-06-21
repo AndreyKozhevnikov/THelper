@@ -43,14 +43,14 @@ namespace THelper {
             ExtractFiles();
             ProcessFolder();
         }
-        void ExtractFiles() { //1
+        void ExtractFiles() { //1.2
             string winRarPath = Properties.Settings.Default.WinRarPath;
             string argsFullWinRar = GetArgsForWinRar();
             var winrarProc = Process.Start(winRarPath, argsFullWinRar);
             winrarProc.WaitForExit();
         }
 
-        private string GetArgsForWinRar() {
+        private string GetArgsForWinRar() {//1.2.1
             string argumentsFilePath = " x \"" + archiveFilePath + "\"";
             var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
             solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
@@ -59,14 +59,14 @@ namespace THelper {
             return argsFullWinRar;
         }
 
-        private void SetIsExample() {//1
+        private void SetIsExample() {//1.1
             isExample = archiveFilePath.EndsWith(".dxsample");
         }
 
         private void ProcessFolder() { //2
             slnPath = string.Empty;
             cspath = string.Empty;
-            bool isSoluiton = GetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
+            bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             if (isSoluiton) {
                 GetMessageInfo();
                 var result = PrintMessage();
@@ -75,7 +75,7 @@ namespace THelper {
             else
                 OpenFolder();
         }
-        public bool GetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3
+        public bool TryGetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3
             _slnPath = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
             _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
             if (_csprojPath == null)
@@ -264,20 +264,23 @@ namespace THelper {
             if (isExample) {
                 UpgradeToMainMajorLastVersion();
             }
-            else {
+            else            { //check how to avoid csProjProccessor.SaveNewCsProj();
                 csProjProccessor.RemoveLicense();
                 switch (message) {
                     case ConverterMessages.MainMajorLastVersion:
                         if (isMainMajor) {
                             csProjProccessor.SetSpecificVersionFalse();
+                            csProjProccessor.SaveNewCsProj();
                         }
                         else {
+                            csProjProccessor.SaveNewCsProj();
                             UpgradeToMainMajorLastVersion();
                         }
                         break;
                     case ConverterMessages.LastMinor:
                         if (isCurrentVersionMajorInstalled) {
                             csProjProccessor.SetSpecificVersionFalse();
+                            csProjProccessor.SaveNewCsProj();
                         }
                         else {
                             FindIfLibrariesPersist();
@@ -285,6 +288,7 @@ namespace THelper {
                                 break;
                             }
                             Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
+                            csProjProccessor.SaveNewCsProj();
                             ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
                         }
                         break;
@@ -293,6 +297,7 @@ namespace THelper {
                         if (isLibrariesPersist) {
                             break;
                         }
+                        csProjProccessor.SaveNewCsProj();
                         ConvertProjectWithSvetaConverter(currentProjectVersion);
                         break;
                     default:
@@ -301,7 +306,7 @@ namespace THelper {
 
                 }
             }
-            csProjProccessor.SaveNewCsProj();
+            //csProjProccessor.SaveNewCsProj();
             OpenSolution();
 
         }

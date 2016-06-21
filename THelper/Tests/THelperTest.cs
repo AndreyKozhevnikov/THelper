@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Windows.Forms;
+using Moq;
+using System.IO;
 
 namespace THelper {
 #if DEBUGTEST
@@ -23,7 +25,7 @@ namespace THelper {
 
             string st2 = @"Include=""DevExpress.Data.v15.1""";
             Version v2 = new Version(st2, true);
-            Assert.AreEqual( 151, v2.Major, "major2");
+            Assert.AreEqual(151, v2.Major, "major2");
             Assert.AreEqual(0, v2.Minor, "minor2");
         }
 
@@ -43,10 +45,10 @@ namespace THelper {
             proc.TestGetMessageInfo();
 
             //assert
-            Assert.AreEqual(3,proc.TestMessageList.Count);
+            Assert.AreEqual(3, proc.TestMessageList.Count);
             Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[0]);
-            Assert.AreEqual( ConverterMessages.ExactConversion,proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder,proc.TestMessageList[2] );
+            Assert.AreEqual(ConverterMessages.ExactConversion, proc.TestMessageList[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
         }
         [Test]
         public void Message_MainMajorLastMinor() {
@@ -63,12 +65,12 @@ namespace THelper {
             proc.TestGetMessageInfo();
 
             //assert
-            Assert.AreEqual(2,proc.TestMessageList.Count);
-            Assert.AreEqual( ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual( ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+            Assert.AreEqual(2, proc.TestMessageList.Count);
+            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
         }
         [Test]
-        public void Message_MainMajorZeroMinor() { 
+        public void Message_MainMajorZeroMinor() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(null);
             proc.TestSetCurrentVersion("15.2");
@@ -175,10 +177,31 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\test.dxsample");
 
             //act
-          var res=  proc.Test_GetArgsForWinRar();
+            var res = proc.Test_GetArgsForWinRar();
 
             //assert
             Assert.AreEqual(" x \"c:\\test\\test.dxsample\" \"c:\\test\\test\"", res);
+        }
+
+        [Test]
+        public void Test_TryGetSolutionFiles() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            string slnPath = null;
+            string csProjPath = null;
+            //act
+            DirectoryInfo[] list = new DirectoryInfo[3];
+            list[0] = new DirectoryInfo(@"c:\test\testsln.sln");
+            list[1] = new DirectoryInfo(@"c:\test\testcsproj.csproj");
+            list[2] = new DirectoryInfo(@"c:\test\testtxt.txt");
+
+            DirectoryInfo di = Mock.Of<DirectoryInfo>(x => x.GetDirectories() == list);
+           
+            var b = proc.TryGetSolutionFiles(di,out slnPath,out csProjPath);
+            //assert
+            Assert.AreEqual(true, b);
+            Assert.AreEqual(@"c:\test\testsln.sln", b);
+            Assert.AreEqual(@"c:\test\testcsproj.csproj", b);
         }
     }
 #endif
