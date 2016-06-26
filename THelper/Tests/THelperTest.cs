@@ -91,7 +91,15 @@ namespace THelper {
         [Test]
         public void Message_InstalledMajor() {
             //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
+       //     ProjectProcessor proc = new ProjectProcessor(null);
+            string st="<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+st=st+"  <ItemGroup>";
+st=st+"     <Reference Include=\"DevExpress.Mvvm.v15.2\" />";
+st=st+"  </ItemGroup>";
+st=st+" </Project>";
+ProjectProcessor proc = new ProjectProcessor(st);
+           // proc.Test_Csprojprocessor.Test_SetRootElements(st);
             proc.TestSetCurrentVersion("15.1.5");
 
             proc.TestAddToInstalledVersions("15.1.13");
@@ -150,6 +158,25 @@ namespace THelper {
             Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
         }
         [Test]
+        public void Message_IsNotDxSolution() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            proc.TestSetCurrentVersion("0.0.0");
+
+            proc.TestAddToInstalledVersions("15.1.13");
+            proc.TestAddToInstalledVersions("15.2.9");
+
+            proc.TestSetMainMajorLastVersion("15.2.9");
+
+            //act
+            proc.TestGetMessageInfo();
+
+            //assert
+            Assert.AreEqual(2, proc.TestMessageList.Count);
+            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+        }
+        [Test]
         public void SetIsExample_False() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor("test.rar");
@@ -183,7 +210,7 @@ namespace THelper {
             Assert.AreEqual(" x \"c:\\test\\test.dxsample\" \"c:\\test\\test\"", res);
         }
 
-        [Test]
+//        [Test]
         public void Test_TryGetSolutionFiles() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(null);

@@ -18,6 +18,11 @@ namespace THelper {
 
         XElement xlroot;
         void OpenFile() {
+#if DEBUGTEST
+            //xlroot = XElement.Parse(csProjFileName);
+            //RootElements = xlroot.Elements();
+            return;
+#endif
             XmlTextReader reader = new XmlTextReader(csProjFileName);
             xlroot = XElement.Load(reader);
             reader.Close();
@@ -25,16 +30,19 @@ namespace THelper {
         }
         IEnumerable<XElement> RootElements;
         public Version GetCurrentVersion() {
-            
-           
+
+
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
             string _dxLibraryString = null;
-            if (dxlibraries.Count() > 0)
+            if (dxlibraries.Count() > 0) {
                 _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
-            Version v = new Version(_dxLibraryString,true);
-            return v;
-            //return Version.Zero;
+                Version v = new Version(_dxLibraryString, true);
+                return v;
+            }
+            else {
+                return Version.Zero;
+            }
         }
         public void DisableUseVSHostingProcess() {
             var UseVSHostingProcess = RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
@@ -69,11 +77,19 @@ namespace THelper {
             }
         }
 
-    public    void SaveNewCsProj() {
+        public void SaveNewCsProj() {
             string resultString = xlroot.ToString();
             StreamWriter sw = new StreamWriter(csProjFileName, false);
             sw.Write(resultString);
             sw.Close();
         }
+
+//#if DEBUGTEST
+//        public void Test_SetRootElements(string _rootElements) {
+//            xlroot = XElement.Parse(_rootElements);
+//            RootElements = xlroot.Elements();
+//        }
+//#endif
+
     }
 }

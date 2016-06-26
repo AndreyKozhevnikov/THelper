@@ -67,6 +67,7 @@ namespace THelper {
             slnPath = string.Empty;
             cspath = string.Empty;
             bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
+
             if (isSoluiton) {
                 GetMessageInfo();
                 var result = PrintMessage();
@@ -86,56 +87,63 @@ namespace THelper {
         }
         private void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
-#if !DEBUGTEST
+         
             csProjProccessor = new CSProjProcessor(cspath);
+            #if !DEBUGTEST
             GetInstalledVersions();
-#endif
+            #endif
+
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
-#if !DEBUGTEST
-
+                #if !DEBUGTEST
                 GetCurrentVersion();
-#endif
-                currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
-                isCurrentVersionMajorInstalled = currentInstalled != null;
-                if (isCurrentVersionMajorInstalled) {
-                    isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
-                    if (isMainMajor) {
-                        if (currentProjectVersion.CompareTo(mainMajorLastVersion) == 0) {
-                            MessagesList.Add(ConverterMessages.OpenSolution);
+                #endif
+                if (currentProjectVersion.CompareTo(Version.Zero) == 0) {
+                    MessagesList.Add(ConverterMessages.OpenSolution);
+                }
+                else {
+                    //#endif
+                    currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
+                    isCurrentVersionMajorInstalled = currentInstalled != null;
+                    if (isCurrentVersionMajorInstalled) {
+                        isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
+                        if (isMainMajor) {
+                            if (currentProjectVersion.CompareTo(mainMajorLastVersion) == 0) {
+                                MessagesList.Add(ConverterMessages.OpenSolution);
+                            }
+                            else {
+                                if (currentProjectVersion.Minor == 0) {
+                                    MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                                }
+                                else {
+                                    MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                                    MessagesList.Add(ConverterMessages.ExactConversion);
+                                }
+                            }
                         }
                         else {
-                            if (currentProjectVersion.Minor == 0) {
+                            if (currentProjectVersion.CompareTo(currentInstalled) == 0) {
+                                MessagesList.Add(ConverterMessages.OpenSolution);
                                 MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                             }
                             else {
-                                MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                                MessagesList.Add(ConverterMessages.ExactConversion);
+                                if (currentProjectVersion.Minor == 0) {
+                                    MessagesList.Add(ConverterMessages.LastMinor);
+                                    MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                                }
+                                else {
+                                    MessagesList.Add(ConverterMessages.LastMinor);
+                                    MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                                    MessagesList.Add(ConverterMessages.ExactConversion);
+                                }
                             }
                         }
                     }
                     else {
-                        if (currentProjectVersion.CompareTo(currentInstalled) == 0) {
-                            MessagesList.Add(ConverterMessages.OpenSolution);
-                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                        }
-                        else {
-                            if (currentProjectVersion.Minor == 0) {
-                                MessagesList.Add(ConverterMessages.LastMinor);
-                                MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                            }
-                            else {
-                                MessagesList.Add(ConverterMessages.LastMinor);
-                                MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                                MessagesList.Add(ConverterMessages.ExactConversion);
-                            }
-                        }
+                        MessagesList.Add(ConverterMessages.ExactConversion);
+                        MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                     }
-                }
-                else {
-                    MessagesList.Add(ConverterMessages.ExactConversion);
-                    MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                 }
             }
             MessagesList.Add(ConverterMessages.OpenFolder);
@@ -197,6 +205,9 @@ namespace THelper {
             int index = GetValueFromConsoleKey(v);
             if (index == 9)
                 return ConverterMessages.OpenFolder;
+            if ((index - 1) > MessagesList.Count) {
+                return ConverterMessages.OpenSolution;
+            }
             return MessagesList[index - 1];
         }
 
@@ -264,49 +275,52 @@ namespace THelper {
             if (isExample) {
                 UpgradeToMainMajorLastVersion();
             }
-            else            { //check how to avoid csProjProccessor.SaveNewCsProj();
-                csProjProccessor.RemoveLicense();
-                switch (message) {
-                    case ConverterMessages.MainMajorLastVersion:
-                        if (isMainMajor) {
-                            csProjProccessor.SetSpecificVersionFalse();
-                            csProjProccessor.SaveNewCsProj();
-                        }
-                        else {
-                            csProjProccessor.SaveNewCsProj();
-                            UpgradeToMainMajorLastVersion();
-                        }
-                        break;
-                    case ConverterMessages.LastMinor:
-                        if (isCurrentVersionMajorInstalled) {
-                            csProjProccessor.SetSpecificVersionFalse();
-                            csProjProccessor.SaveNewCsProj();
-                        }
-                        else {
+            else { //check how to avoid csProjProccessor.SaveNewCsProj();
+                if (!(currentProjectVersion.CompareTo(Version.Zero) == 0)) {
+                    csProjProccessor.RemoveLicense();
+                    switch (message) {
+                        case ConverterMessages.MainMajorLastVersion:
+                            if (isMainMajor) {
+                                csProjProccessor.SetSpecificVersionFalse();
+                                csProjProccessor.SaveNewCsProj();
+                            }
+                            else {
+                                csProjProccessor.SaveNewCsProj();
+                                UpgradeToMainMajorLastVersion();
+                            }
+                            break;
+                        case ConverterMessages.LastMinor:
+                            if (isCurrentVersionMajorInstalled) {
+                                csProjProccessor.SetSpecificVersionFalse();
+                                csProjProccessor.SaveNewCsProj();
+                            }
+                            else {
+                                FindIfLibrariesPersist();
+                                if (isLibrariesPersist) {
+                                    break;
+                                }
+                                Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
+                                csProjProccessor.SaveNewCsProj();
+                                ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
+                            }
+                            break;
+                        case ConverterMessages.ExactConversion:
                             FindIfLibrariesPersist();
                             if (isLibrariesPersist) {
                                 break;
                             }
-                            Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
                             csProjProccessor.SaveNewCsProj();
-                            ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
-                        }
-                        break;
-                    case ConverterMessages.ExactConversion:
-                        FindIfLibrariesPersist();
-                        if (isLibrariesPersist) {
+                            ConvertProjectWithSvetaConverter(currentProjectVersion);
                             break;
-                        }
-                        csProjProccessor.SaveNewCsProj();
-                        ConvertProjectWithSvetaConverter(currentProjectVersion);
-                        break;
-                    default:
-                        break;
-
-
+                        default:
+                            break;
+                    }
+                }
+                else {
+                    csProjProccessor.SaveNewCsProj();
                 }
             }
-            //csProjProccessor.SaveNewCsProj();
+
             OpenSolution();
 
         }
@@ -397,6 +411,11 @@ namespace THelper {
         public string Test_GetArgsForWinRar() {
             return GetArgsForWinRar();
         }
+        //public CSProjProcessor Test_Csprojprocessor {
+        //    get {
+        //        return csProjProccessor;
+        //    }
+        //}
 #endif
     }
 
