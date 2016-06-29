@@ -46,9 +46,15 @@ namespace THelper {
         }
         public void DisableUseVSHostingProcess() {
             var UseVSHostingProcess = RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
-            if (UseVSHostingProcess != null)
+            if (UseVSHostingProcess != null) {
                 UseVSHostingProcess.SetValue("false");
-            
+            }
+            else {
+              var pGroup=  RootElements.Where(x => x.Name.LocalName == "PropertyGroup" &&x.HasAttributes&& x.FirstAttribute.Value.Contains("Debug|AnyCPU")).First();
+              XName xName = XName.Get("UseVSHostingProcess", pGroup.Name.Namespace.NamespaceName);
+              XElement useVSElement = new XElement(xName, "False");
+              pGroup.Add(useVSElement);
+            }
         }
 
         internal void RemoveLicense() {
