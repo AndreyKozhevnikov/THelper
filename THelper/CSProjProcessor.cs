@@ -29,7 +29,7 @@ namespace THelper {
             RootElements = xlroot.Elements();
         }
         IEnumerable<XElement> RootElements;
-        public Version GetCurrentVersion() {
+        public Version GetCurrentVersion() {//0+
 
 
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
@@ -48,6 +48,7 @@ namespace THelper {
             var UseVSHostingProcess = RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
             if (UseVSHostingProcess != null)
                 UseVSHostingProcess.SetValue("false");
+            
         }
 
         internal void RemoveLicense() {
@@ -84,12 +85,12 @@ namespace THelper {
             sw.Close();
         }
 
-//#if DEBUGTEST
-//        public void Test_SetRootElements(string _rootElements) {
-//            xlroot = XElement.Parse(_rootElements);
-//            RootElements = xlroot.Elements();
-//        }
-//#endif
+#if DEBUGTEST
+        public void Test_SetRootElements(string _rootElements) {
+            xlroot = XElement.Parse(_rootElements);
+            RootElements = xlroot.Elements();
+        }
+#endif
 
     }
 }

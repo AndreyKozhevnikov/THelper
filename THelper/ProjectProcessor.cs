@@ -164,7 +164,7 @@ namespace THelper {
                 projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
                 Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
                 installedVersions.Add(projectUpgradeVersion);
-                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 161) {
+                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 162) {
                     mainMajorLastVersion = projectUpgradeVersion;
                     mmlvConverterPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
                 }

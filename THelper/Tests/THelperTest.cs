@@ -7,8 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Windows.Forms;
-using Moq;
+
 using System.IO;
+
 
 namespace THelper {
 #if DEBUGTEST
@@ -91,15 +92,10 @@ namespace THelper {
         [Test]
         public void Message_InstalledMajor() {
             //arrange
-       //     ProjectProcessor proc = new ProjectProcessor(null);
-            string st="<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
-st=st+"  <ItemGroup>";
-st=st+"     <Reference Include=\"DevExpress.Mvvm.v15.2\" />";
-st=st+"  </ItemGroup>";
-st=st+" </Project>";
-ProjectProcessor proc = new ProjectProcessor(st);
-           // proc.Test_Csprojprocessor.Test_SetRootElements(st);
+            //     ProjectProcessor proc = new ProjectProcessor(null);
+
+            ProjectProcessor proc = new ProjectProcessor(null);
+            // proc.Test_Csprojprocessor.Test_SetRootElements(st);
             proc.TestSetCurrentVersion("15.1.5");
 
             proc.TestAddToInstalledVersions("15.1.13");
@@ -210,27 +206,87 @@ ProjectProcessor proc = new ProjectProcessor(st);
             Assert.AreEqual(" x \"c:\\test\\test.dxsample\" \"c:\\test\\test\"", res);
         }
 
-//        [Test]
-        public void Test_TryGetSolutionFiles() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
-            string slnPath = null;
-            string csProjPath = null;
-            //act
-            DirectoryInfo[] list = new DirectoryInfo[3];
-            list[0] = new DirectoryInfo(@"c:\test\testsln.sln");
-            list[1] = new DirectoryInfo(@"c:\test\testcsproj.csproj");
-            list[2] = new DirectoryInfo(@"c:\test\testtxt.txt");
-
-            DirectoryInfo di = Mock.Of<DirectoryInfo>(x => x.GetDirectories() == list);
-           
-            var b = proc.TryGetSolutionFiles(di,out slnPath,out csProjPath);
+        [Test]
+        public void CSProj_GetCurrentversion_woMinor() {
             //assert
-            Assert.AreEqual(true, b);
-            Assert.AreEqual(@"c:\test\testsln.sln", b);
-            Assert.AreEqual(@"c:\test\testcsproj.csproj", b);
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "     <Reference Include=\"DevExpress.Mvvm.v15.2\" />";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            CSProjProcessor proc = new CSProjProcessor(null);
+            proc.Test_SetRootElements(st);
+            //act
+            Version v = proc.GetCurrentVersion();
+
+            //assert
+            Assert.AreEqual(152, v.Major);
+            Assert.AreEqual(0, v.Minor);
         }
+        [Test]
+        public void CSProj_GetCurrentversion() {
+            //assert
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            CSProjProcessor proc = new CSProjProcessor(null);
+            proc.Test_SetRootElements(st);
+            //act
+            Version v = proc.GetCurrentVersion();
+
+            //assert
+            Assert.AreEqual(152, v.Major);
+            Assert.AreEqual(5, v.Minor);
+        }
+        [Test]
+        public void CSProj_GetCurrentversion_Zero() {
+            //assert
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            //   st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            CSProjProcessor proc = new CSProjProcessor(null);
+            proc.Test_SetRootElements(st);
+            //act
+            Version v = proc.GetCurrentVersion();
+
+            //assert
+            Assert.AreEqual(0, v.Major);
+            Assert.AreEqual(0, v.Minor);
+        }
+        //        [Test]
+        //public void Test_TryGetSolutionFiles() {
+        //    //arrange
+        //    ProjectProcessor proc = new ProjectProcessor(null);
+        //    string slnPath = null;
+        //    string csProjPath = null;
+        //    //act
+        //    DirectoryInfo[] list = new DirectoryInfo[3];
+        //    list[0] = new DirectoryInfo(@"c:\test\testsln.sln");
+        //    list[1] = new DirectoryInfo(@"c:\test\testcsproj.csproj");
+        //    list[2] = new DirectoryInfo(@"c:\test\testtxt.txt");
+
+        //    DirectoryInfo di = Mock.Of<DirectoryInfo>(x => x.GetDirectories() == list);
+
+        //    var b = proc.TryGetSolutionFiles(di, out slnPath, out csProjPath);
+        //    //assert
+        //    Assert.AreEqual(true, b);
+        //    Assert.AreEqual(@"c:\test\testsln.sln", b);
+        //    Assert.AreEqual(@"c:\test\testcsproj.csproj", b);
+        //}
+ 
     }
+
+  
 #endif
 }
 
