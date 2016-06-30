@@ -50,7 +50,10 @@ namespace THelper {
                 UseVSHostingProcess.SetValue("false");
             }
             else {
-              var pGroup=  RootElements.Where(x => x.Name.LocalName == "PropertyGroup" &&x.HasAttributes&& x.FirstAttribute.Value.Contains("Debug|AnyCPU")).First();
+                //var v = RootElements.Where(x => x.Name.LocalName == "PropertyGroup").ToList();
+                //var v1 = v.Where(x => x.HasAttributes).ToList();
+                //var v2 = v1.Select(x => x.FirstAttribute).ToList();
+              var pGroup=  RootElements.Where(x => x.Name.LocalName == "PropertyGroup" &&x.HasAttributes&& x.FirstAttribute.Value.Contains("Debug")).First();
               XName xName = XName.Get("UseVSHostingProcess", pGroup.Name.Namespace.NamespaceName);
               XElement useVSElement = new XElement(xName, "False");
               pGroup.Add(useVSElement);
