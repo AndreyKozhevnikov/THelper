@@ -295,12 +295,13 @@ namespace THelper {
                                 csProjProccessor.SaveNewCsProj();
                             }
                             else {
+                                csProjProccessor.SaveNewCsProj();
                                 FindIfLibrariesPersist();
                                 if (isLibrariesPersist) {
                                     break;
                                 }
                                 Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
-                                csProjProccessor.SaveNewCsProj();
+                             
                                 ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
                             }
                             break;
