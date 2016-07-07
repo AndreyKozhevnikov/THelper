@@ -305,11 +305,11 @@ namespace THelper {
                             }
                             break;
                         case ConverterMessages.ExactConversion:
+                            csProjProccessor.SaveNewCsProj();
                             FindIfLibrariesPersist();
                             if (isLibrariesPersist) {
                                 break;
                             }
-                            csProjProccessor.SaveNewCsProj();
                             ConvertProjectWithSvetaConverter(currentProjectVersion);
                             break;
                         default:
