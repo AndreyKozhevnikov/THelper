@@ -314,6 +314,7 @@ namespace THelper {
                             ConvertProjectWithSvetaConverter(currentProjectVersion);
                             break;
                         default:
+                            csProjProccessor.SaveNewCsProj();
                             break;
                     }
                 }
