@@ -347,10 +347,12 @@ namespace THelper {
             return new Version(res);
         }
         private void ConvertProjectWithSvetaConverter(Version v) {//16
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
+            ProcessStartInfo psi = new ProcessStartInfo(); 
+        //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
+        psi.FileName= @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
             string versionConverterFormat = v.ToString(true);
-            psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
+            //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
+            psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat );
             var proc = System.Diagnostics.Process.Start(psi);
             proc.WaitForExit();
         }
