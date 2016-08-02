@@ -325,7 +325,6 @@ namespace THelper {
             //arrange
             string st = "<Project>";
             st = st + " <PropertyGroup Condition = \"'$(Configuration)|$(Platform)' == 'Debug|x86'\">";
-            //st = st + " <UseVSHostingProcess> True </UseVSHostingProcess>";
             st = st + " </PropertyGroup>";
             st = st + "</Project>";
             var moqFile = new Mock<IWorkWithFile>();
@@ -339,7 +338,24 @@ namespace THelper {
             var val = el.Value;
             Assert.AreEqual("False", val);
         }
-
+        [Test]
+        public void RemoveLicense() {
+            //arrange
+            string st = "<Project>";
+            st = st + " <ItemGroup>";
+            st = st + " <EmbeddedResource Include=\"Properties\\Licenses.licx\" />";
+            st = st + " </ItemGroup>";
+            st = st + "</Project>";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            //act
+            proc.RemoveLicense();
+            //assert
+            var lic= proc.RootElements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
+            Assert.AreEqual(null, lic);
+        }
+        
     }
 
     [TestFixture]
