@@ -21,24 +21,19 @@ namespace THelper {
         public string csProjFileName;
         public IWorkWithFile MyWorkWithFile;
 
-        public CSProjProcessor(string _csProjFileName,IWorkWithFile _workWithFile) {//tested 
+        public CSProjProcessor(string _csProjFileName, IWorkWithFile _workWithFile) {//tested 
             csProjFileName = _csProjFileName;
             MyWorkWithFile = _workWithFile;
-            CreateRootXElements();
-            //   OpenFile();
-        }
-        //public void Initialize() {
-        //    MyWorkWithFile = _workWithFile;
-        //    CreateRootXElements();
-        //}
-
-        public XDocument RootDocument;
-    public    IEnumerable<XElement> RootElements;
-
-        public void CreateRootXElements() {
+            
             RootDocument = MyWorkWithFile.LoadXDocument(csProjFileName);
             RootElements = RootDocument.Elements();
+      
         }
+
+
+        public XDocument RootDocument;
+        public IEnumerable<XElement> RootElements;
+
 
 
 
