@@ -8,27 +8,40 @@ using System.Xml.Linq;
 
 namespace THelper {
 
+    public interface IWorkWithFile {
+        XDocument LoadXDocument(string projectPath);
+    }
+    public class CustomWorkWithFile : IWorkWithFile {
+        public XDocument LoadXDocument(string projectPath) {
+            return XDocument.Load(projectPath);
+        }
+    }
+
     public class CSProjProcessor {
-        private string csProjFileName;
+        public string csProjFileName;
+        public IWorkWithFile MyWorkWithFile;
 
-        public CSProjProcessor(string _csProjFileName) {
+        public CSProjProcessor(string _csProjFileName,IWorkWithFile _workWithFile) {//tested 
             csProjFileName = _csProjFileName;
-            OpenFile();
+            MyWorkWithFile = _workWithFile;
+            CreateRootXElements();
+            //   OpenFile();
+        }
+        //public void Initialize() {
+        //    MyWorkWithFile = _workWithFile;
+        //    CreateRootXElements();
+        //}
+
+        public XDocument RootDocument;
+    public    IEnumerable<XElement> RootElements;
+
+        public void CreateRootXElements() {
+            RootDocument = MyWorkWithFile.LoadXDocument(csProjFileName);
+            RootElements = RootDocument.Elements();
         }
 
-        XElement xlroot;
-        void OpenFile() {
-#if DEBUGTEST
-            //xlroot = XElement.Parse(csProjFileName);
-            //RootElements = xlroot.Elements();
-            return;
-#endif
-            XmlTextReader reader = new XmlTextReader(csProjFileName);
-            xlroot = XElement.Load(reader);
-            reader.Close();
-            RootElements = xlroot.Elements();
-        }
-        IEnumerable<XElement> RootElements;
+
+
         public Version GetCurrentVersion() {//0+
 
 
@@ -53,10 +66,10 @@ namespace THelper {
                 //var v = RootElements.Where(x => x.Name.LocalName == "PropertyGroup").ToList();
                 //var v1 = v.Where(x => x.HasAttributes).ToList();
                 //var v2 = v1.Select(x => x.FirstAttribute).ToList();
-              var pGroup=  RootElements.Where(x => x.Name.LocalName == "PropertyGroup" &&x.HasAttributes&& x.FirstAttribute.Value.Contains("Debug")).First();
-              XName xName = XName.Get("UseVSHostingProcess", pGroup.Name.Namespace.NamespaceName);
-              XElement useVSElement = new XElement(xName, "False");
-              pGroup.Add(useVSElement);
+                var pGroup = RootElements.Where(x => x.Name.LocalName == "PropertyGroup" && x.HasAttributes && x.FirstAttribute.Value.Contains("Debug")).First();
+                XName xName = XName.Get("UseVSHostingProcess", pGroup.Name.Namespace.NamespaceName);
+                XElement useVSElement = new XElement(xName, "False");
+                pGroup.Add(useVSElement);
             }
         }
 
@@ -88,7 +101,7 @@ namespace THelper {
         }
 
         public void SaveNewCsProj() {
-            string resultString = xlroot.ToString();
+            string resultString = RootDocument.ToString();
             StreamWriter sw = new StreamWriter(csProjFileName, false);
             sw.Write(resultString);
             sw.Close();
@@ -96,7 +109,7 @@ namespace THelper {
 
 #if DEBUGTEST
         public void Test_SetRootElements(string _rootElements) {
-            xlroot = XElement.Parse(_rootElements);
+        var    xlroot = XElement.Parse(_rootElements);
             RootElements = xlroot.Elements();
         }
 #endif

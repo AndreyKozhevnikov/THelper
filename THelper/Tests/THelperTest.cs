@@ -9,7 +9,8 @@ using NUnit.Framework;
 using System.Windows.Forms;
 
 using System.IO;
-
+using Moq;
+using System.Xml.Linq;
 
 namespace THelper {
 #if DEBUGTEST
@@ -283,11 +284,50 @@ namespace THelper {
         //    Assert.AreEqual(@"c:\test\testsln.sln", b);
         //    Assert.AreEqual(@"c:\test\testcsproj.csproj", b);
         //}
- 
+
     }
 
-  
+
 #endif
+    [TestFixture]
+    public class CSProjProcessor_Tests {
+        [Test]
+        public void CSProjProcessor() {
+            //arrange
+            string st = @"c:\test\testproject\test.csproj";
+            var moqWorkWithFile = new Mock<IWorkWithFile>();
+            moqWorkWithFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new System.Xml.Linq.XDocument());
+            //
+            // Act
+            var v = new CSProjProcessor(st, moqWorkWithFile.Object);
+            //assert
+            Assert.AreEqual(st, v.csProjFileName);
+        }
+
+        [Test]
+        public void CreateRootXElements() {
+            //arrange
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var proc = new CSProjProcessor(@"c:\test\testproject\test.csproj", moqFile.Object);
+           
+            //act
+            proc.CreateRootXElements();
+            //assert
+            Assert.AreNotEqual(null, proc.RootDocument);
+            Assert.AreEqual(1, proc.RootElements.Count());
+
+        }
+    }
+
 }
 
 

@@ -87,8 +87,8 @@ namespace THelper {
         }
         private void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
-         
-            csProjProccessor = new CSProjProcessor(cspath);
+            CustomWorkWithFile workWithFile = new CustomWorkWithFile();
+               csProjProccessor = new CSProjProcessor(cspath,workWithFile);
             #if !DEBUGTEST
             GetInstalledVersions();
             #endif
