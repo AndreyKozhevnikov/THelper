@@ -13,10 +13,13 @@ namespace THelper {
         int build;
 
         public static Version Zero { get { return new Version(0, 0, 0); } }
-        Version(int major, int minor, int build) {
+        public Version(int major, int minor, int build) {
             this.major = major;
             this.minor = minor;
             this.build = build;
+            var st = major.ToString();
+            var ind = st.Length - 1;
+            stringMajor = st.Substring(0, ind) + "." + st.Substring(ind, 1);
         }
         public Version(string version) {
             ParseString(version, false);
@@ -31,7 +34,13 @@ namespace THelper {
                 return minor;
             }
         }
+        public int Build {
+            get {
+                return build;
+            }
+        }
         public bool IsZero { get { return major == 0 && minor == 0 && build == 0; } }
+
         public int CompareTo(Version other) {
             if (other == null) {
                 return 1;
@@ -63,7 +72,6 @@ namespace THelper {
 
         public Version(string _complexString, bool _isComplex) {
             ParseString(_complexString, _isComplex);
-
         }
 
         void ParseString(string _stringWithVersion, bool _isComplex) {
@@ -93,7 +101,10 @@ namespace THelper {
             else {
                 string[] versionParts = _stringWithVersion.Split('.');
                 if (versionParts.Length < 2) {
-                    throw new Exception();
+                    this.major = 0;
+                    this.minor = 0;
+                    this.build = 0;
+                    return;
                 }
                 major = int.Parse(versionParts[0] + versionParts[1]);
                 stringMajor = string.Format("{0}.{1}", versionParts[0], versionParts[1]);
