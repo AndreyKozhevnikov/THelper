@@ -355,7 +355,26 @@ namespace THelper {
             var lic= proc.RootElements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
             Assert.AreEqual(null, lic);
         }
-        
+        [Test]
+        public void SetSpecificVersionFalse() {
+            //arrange
+            string st = "<Project>";
+            st = st + " <ItemGroup>";
+            st = st + " <Reference Include=\"DevExpress.Data.v16.1, Version = 16.1.4.0, Culture = neutral, PublicKeyToken = b88d1754d700e49a, processorArchitecture = MSIL\"/>";
+            st = st + " </ItemGroup>";
+            st = st + "</Project>";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            //act
+            proc.SetSpecificVersionFalse();
+            //assert
+            var lib = proc.RootElements.SelectMany(x => x.Elements()).Where(x => x.Name == "Reference").FirstOrDefault();
+            Assert.AreEqual(true, lib.HasElements);
+            var spec = lib.Elements().First();
+            Assert.AreEqual("SpecificVersion", spec.Name.LocalName);
+            Assert.AreEqual("False", spec.Value);
+        }
     }
 
     [TestFixture]

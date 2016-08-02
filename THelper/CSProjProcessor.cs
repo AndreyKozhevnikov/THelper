@@ -71,7 +71,7 @@ namespace THelper {
                 licGroup.Remove();
         }
 
-        public void SetSpecificVersionFalse() {
+        public void SetSpecificVersionFalse() { //tested
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
 
