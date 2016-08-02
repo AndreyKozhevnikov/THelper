@@ -361,6 +361,9 @@ namespace THelper {
             string st = "<Project>";
             st = st + " <ItemGroup>";
             st = st + " <Reference Include=\"DevExpress.Data.v16.1, Version = 16.1.4.0, Culture = neutral, PublicKeyToken = b88d1754d700e49a, processorArchitecture = MSIL\"/>";
+            st = st + "  <Reference Include=\"DevExpress.Xpf.Core.v16.1, Version = 16.1.4.0, Culture = neutral, PublicKeyToken = b88d1754d700e49a, processorArchitecture = MSIL\">";
+            st = st + "      <SpecificVersion>True</SpecificVersion>";
+            st = st + "    </Reference>";
             st = st + " </ItemGroup>";
             st = st + "</Project>";
             var moqFile = new Mock<IWorkWithFile>();
@@ -369,11 +372,29 @@ namespace THelper {
             //act
             proc.SetSpecificVersionFalse();
             //assert
-            var lib = proc.RootElements.SelectMany(x => x.Elements()).Where(x => x.Name == "Reference").FirstOrDefault();
-            Assert.AreEqual(true, lib.HasElements);
-            var spec = lib.Elements().First();
+            var libs = proc.RootElements.SelectMany(x => x.Elements()).Where(x => x.Name == "Reference").ToList();
+            Assert.AreEqual(true, libs[0].HasElements);
+            var spec = libs[0].Elements().First();
             Assert.AreEqual("SpecificVersion", spec.Name.LocalName);
             Assert.AreEqual("False", spec.Value);
+
+            Assert.AreEqual(true, libs[1].HasElements);
+            var spec1 = libs[1].Elements().First();
+            Assert.AreEqual("SpecificVersion", spec1.Name.LocalName);
+            Assert.AreEqual("false", spec1.Value);
+        }
+
+        [Test]
+        public void SaveNewCsProj() {
+            //arrange
+            string st = @"c:\test\testproject\test.csproj";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(st)).Returns(new XDocument());
+            CSProjProcessor proc = new CSProjProcessor(st, moqFile.Object);
+            //act
+            proc.SaveNewCsProj();
+            //assert
+            moqFile.Verify(x => x.SaveXDocument(It.IsAny<XDocument>(), st), Times.AtLeastOnce);
         }
     }
 

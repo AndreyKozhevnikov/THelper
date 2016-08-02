@@ -10,10 +10,14 @@ namespace THelper {
 
     public interface IWorkWithFile {
         XDocument LoadXDocument(string projectPath);
+        void SaveXDocument(XDocument projDocument, string projectPath);
     }
     public class CustomWorkWithFile : IWorkWithFile {
         public XDocument LoadXDocument(string projectPath) {
             return XDocument.Load(projectPath);
+        }
+        public void SaveXDocument(XDocument projDocument, string projectPath) {
+            projDocument.Save(projectPath);
         }
     }
 
@@ -37,9 +41,7 @@ namespace THelper {
 
 
 
-        public Version GetCurrentVersion() {//0+ tested
-
-
+        public Version GetCurrentVersion() {
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
             string _dxLibraryString = null;
@@ -52,7 +54,7 @@ namespace THelper {
                 return Version.Zero;
             }
         }
-        public void DisableUseVSHostingProcess() { //tested
+        public void DisableUseVSHostingProcess() { 
             var UseVSHostingProcess = RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
             if (UseVSHostingProcess != null) {
                 UseVSHostingProcess.SetValue("False");
@@ -65,20 +67,15 @@ namespace THelper {
             }
         }
 
-        public void RemoveLicense() { //tested
+        public void RemoveLicense() { 
             var licGroup = RootElements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
             if (licGroup != null)
                 licGroup.Remove();
         }
 
-        public void SetSpecificVersionFalse() { //tested
+        public void SetSpecificVersionFalse() { 
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
-
-            string _dxLibraryString = null;
-            if (dxlibraries.Count() > 0)
-                _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
-
 
             foreach (XElement dxlib in dxlibraries) {
                 var specificVersionNode = dxlib.Element(XName.Get("SpecificVersion", dxlib.Name.Namespace.NamespaceName));
@@ -93,18 +90,9 @@ namespace THelper {
         }
 
         public void SaveNewCsProj() {
-            string resultString = RootDocument.ToString();
-            StreamWriter sw = new StreamWriter(csProjFileName, false);
-            sw.Write(resultString);
-            sw.Close();
+            MyWorkWithFile.SaveXDocument(RootDocument,csProjFileName);
         }
 
-#if DEBUGTEST
-        public void Test_SetRootElements(string _rootElements) {
-        var    xlroot = XElement.Parse(_rootElements);
-            RootElements = xlroot.Elements();
-        }
-#endif
 
     }
 }
