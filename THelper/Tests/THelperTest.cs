@@ -16,20 +16,6 @@ namespace THelper {
 #if DEBUGTEST
     [TestFixture]
     public class THelperTest {
-        [Test]
-        public void GetVersionFromContainingStringTest() {
-
-            string st = @"Include=""DevExpress.Data.v15.1сргу, Version=15.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL""";
-            Version v = new Version(st, true);
-            Assert.AreEqual(v.Major, 151, "major");
-            Assert.AreEqual(v.Minor, 5, "minor");
-
-
-            string st2 = @"Include=""DevExpress.Data.v15.1""";
-            Version v2 = new Version(st2, true);
-            Assert.AreEqual(151, v2.Major, "major2");
-            Assert.AreEqual(0, v2.Minor, "minor2");
-        }
 
 
         [Test]
@@ -266,7 +252,7 @@ namespace THelper {
             st = st + " </Project>";
             var moqFile = new Mock<IWorkWithFile>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null,moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
             //proc.Test_SetRootElements(st);
             //act
             Version v = proc.GetCurrentVersion();
@@ -275,45 +261,103 @@ namespace THelper {
             Assert.AreEqual(152, v.Major);
             Assert.AreEqual(0, v.Minor);
         }
-        //[Test]
-        //public void GetCurrentversion() {
-        //    //assert
-        //    string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-        //    st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
-        //    st = st + "  <ItemGroup>";
-        //    st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
-        //    st = st + "  </ItemGroup>";
-        //    st = st + " </Project>";
+        [Test]
+        public void GetCurrentversion() {
+            //assert
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
 
-        //    CSProjProcessor proc = new CSProjProcessor(null);
-        //    proc.Test_SetRootElements(st);
-        //    //act
-        //    Version v = proc.GetCurrentVersion();
+            //act
+            Version v = proc.GetCurrentVersion();
 
-        //    //assert
-        //    Assert.AreEqual(152, v.Major);
-        //    Assert.AreEqual(5, v.Minor);
-        //}
-        //[Test]
-        //public void GetCurrentversion_Zero() {
-        //    //assert
-        //    string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-        //    st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
-        //    st = st + "  <ItemGroup>";
-        //    //   st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
-        //    st = st + "  </ItemGroup>";
-        //    st = st + " </Project>";
+            //assert
+            Assert.AreEqual(152, v.Major);
+            Assert.AreEqual(5, v.Minor);
+        }
+        [Test]
+        public void GetCurrentversion_Zero() {
+            //assert
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
 
-        //    CSProjProcessor proc = new CSProjProcessor(null);
-        //    proc.Test_SetRootElements(st);
-        //    //act
-        //    Version v = proc.GetCurrentVersion();
+            //act
+            Version v = proc.GetCurrentVersion();
 
-        //    //assert
-        //    Assert.AreEqual(0, v.Major);
-        //    Assert.AreEqual(0, v.Minor);
-        //}
+            //assert
+            Assert.AreEqual(0, v.Major);
+            Assert.AreEqual(0, v.Minor);
+        }
 
+        [Test]
+        public void DisableUseVSHostingProcess_Exist() {
+            //arrange
+            string st = "<Project>";
+            st = st + " <PropertyGroup Condition = \"'$(Configuration)|$(Platform)' == 'Debug|x86'\">";
+            st = st + " <UseVSHostingProcess> True </UseVSHostingProcess>";
+            st = st + " </PropertyGroup>";
+            st = st + "</Project>";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            //act
+            proc.DisableUseVSHostingProcess();
+            //assert
+            var el = proc.RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
+            var val = el.Value;
+            Assert.AreEqual("False", val);
+        }
+
+        [Test]
+        public void DisableUseVSHostingProcess_NotExist() {
+            //arrange
+            string st = "<Project>";
+            st = st + " <PropertyGroup Condition = \"'$(Configuration)|$(Platform)' == 'Debug|x86'\">";
+            //st = st + " <UseVSHostingProcess> True </UseVSHostingProcess>";
+            st = st + " </PropertyGroup>";
+            st = st + "</Project>";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            //act
+            proc.DisableUseVSHostingProcess();
+            //assert
+            var el = proc.RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
+            Assert.AreNotEqual(null, el);
+            var val = el.Value;
+            Assert.AreEqual("False", val);
+        }
+
+    }
+
+    [TestFixture]
+    public class Versions_Test {
+        [Test]
+        public void GetVersionFromContainingStringTest() {
+
+            string st = @"Include=""DevExpress.Data.v15.1сргу, Version=15.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL""";
+            Version v = new Version(st, true);
+            Assert.AreEqual(v.Major, 151, "major");
+            Assert.AreEqual(v.Minor, 5, "minor");
+
+
+            string st2 = @"Include=""DevExpress.Data.v15.1""";
+            Version v2 = new Version(st2, true);
+            Assert.AreEqual(151, v2.Major, "major2");
+            Assert.AreEqual(0, v2.Minor, "minor2");
+        }
     }
 
 }

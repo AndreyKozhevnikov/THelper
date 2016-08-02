@@ -24,10 +24,10 @@ namespace THelper {
         public CSProjProcessor(string _csProjFileName, IWorkWithFile _workWithFile) {//tested 
             csProjFileName = _csProjFileName;
             MyWorkWithFile = _workWithFile;
-            
+
             RootDocument = MyWorkWithFile.LoadXDocument(csProjFileName);
-            RootElements = RootDocument.Elements();
-      
+            RootElements = RootDocument.Elements().Elements();
+
         }
 
 
@@ -37,7 +37,7 @@ namespace THelper {
 
 
 
-        public Version GetCurrentVersion() {//0+
+        public Version GetCurrentVersion() {//0+ tested
 
 
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
@@ -55,12 +55,9 @@ namespace THelper {
         public void DisableUseVSHostingProcess() {
             var UseVSHostingProcess = RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
             if (UseVSHostingProcess != null) {
-                UseVSHostingProcess.SetValue("false");
+                UseVSHostingProcess.SetValue("False");
             }
             else {
-                //var v = RootElements.Where(x => x.Name.LocalName == "PropertyGroup").ToList();
-                //var v1 = v.Where(x => x.HasAttributes).ToList();
-                //var v2 = v1.Select(x => x.FirstAttribute).ToList();
                 var pGroup = RootElements.Where(x => x.Name.LocalName == "PropertyGroup" && x.HasAttributes && x.FirstAttribute.Value.Contains("Debug")).First();
                 XName xName = XName.Get("UseVSHostingProcess", pGroup.Name.Namespace.NamespaceName);
                 XElement useVSElement = new XElement(xName, "False");
