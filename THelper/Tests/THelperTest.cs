@@ -13,212 +13,7 @@ using Moq;
 using System.Xml.Linq;
 
 namespace THelper {
-#if DEBUGTEST
-    [TestFixture]
-    public class THelperTest {
 
-
-        [Test]
-        public void Message_MainMajor() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
-            proc.TestSetCurrentVersion("15.2.2");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
-            //act
-            proc.TestGetMessageInfo();
-
-            //assert
-            Assert.AreEqual(3, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.ExactConversion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
-        }
-        [Test]
-        public void Message_MainMajorLastMinor() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
-            proc.TestSetCurrentVersion("15.2.9");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
-            //act
-            proc.TestGetMessageInfo();
-
-            //assert
-            Assert.AreEqual(2, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
-        }
-        [Test]
-        public void Message_MainMajorZeroMinor() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
-            proc.TestSetCurrentVersion("15.2");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
-            //act
-            proc.TestGetMessageInfo();
-
-            //assert
-            Assert.AreEqual(2, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
-        }
-        [Test]
-        public void Message_InstalledMajor() {
-            //arrange
-            //     ProjectProcessor proc = new ProjectProcessor(null);
-
-            ProjectProcessor proc = new ProjectProcessor(null);
-            // proc.Test_Csprojprocessor.Test_SetRootElements(st);
-            proc.TestSetCurrentVersion("15.1.5");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
-            //act
-            proc.TestGetMessageInfo();
-
-            //assert
-            Assert.AreEqual(4, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.LastMinor, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.ExactConversion, proc.TestMessageList[2]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[3]);
-        }
-        [Test]
-        public void Message_InstalledMajorLastMinor() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
-            proc.TestSetCurrentVersion("15.1.13");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
-            //act
-            proc.TestGetMessageInfo();
-
-            //assert
-            Assert.AreEqual(3, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
-        }
-        [Test]
-        public void Message_InstalledMajorZeroMinor() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
-            proc.TestSetCurrentVersion("15.1");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
-            //act
-            proc.TestGetMessageInfo();
-
-            //assert
-            Assert.AreEqual(3, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.LastMinor, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
-        }
-        [Test]
-        public void Message_IsNotDxSolution() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(null);
-            proc.TestSetCurrentVersion("0.0.0");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
-            //act
-            proc.TestGetMessageInfo();
-
-            //assert
-            Assert.AreEqual(2, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
-        }
-        [Test]
-        public void SetIsExample_False() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor("test.rar");
-
-            //act
-            proc.Test_SetIsExample();
-
-            //assert
-            Assert.AreEqual(false, proc.Test_IsExample);
-        }
-        [Test]
-        public void SetIsExample_True() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor("test.dxsample");
-
-            //act
-            proc.Test_SetIsExample();
-
-            //assert
-            Assert.AreEqual(true, proc.Test_IsExample);
-        }
-        [Test]
-        public void GetArgsForWinRar() {
-            //arrange
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\test.dxsample");
-
-            //act
-            var res = proc.Test_GetArgsForWinRar();
-
-            //assert
-            Assert.AreEqual(" x \"c:\\test\\test.dxsample\" \"c:\\test\\test\"", res);
-        }
-
-
-        //        [Test]
-        //public void Test_TryGetSolutionFiles() {
-        //    //arrange
-        //    ProjectProcessor proc = new ProjectProcessor(null);
-        //    string slnPath = null;
-        //    string csProjPath = null;
-        //    //act
-        //    DirectoryInfo[] list = new DirectoryInfo[3];
-        //    list[0] = new DirectoryInfo(@"c:\test\testsln.sln");
-        //    list[1] = new DirectoryInfo(@"c:\test\testcsproj.csproj");
-        //    list[2] = new DirectoryInfo(@"c:\test\testtxt.txt");
-
-        //    DirectoryInfo di = Mock.Of<DirectoryInfo>(x => x.GetDirectories() == list);
-
-        //    var b = proc.TryGetSolutionFiles(di, out slnPath, out csProjPath);
-        //    //assert
-        //    Assert.AreEqual(true, b);
-        //    Assert.AreEqual(@"c:\test\testsln.sln", b);
-        //    Assert.AreEqual(@"c:\test\testcsproj.csproj", b);
-        //}
-
-    }
-
-
-#endif
     [TestFixture]
     public class CSProjProcessor_Tests {
         [Test]
@@ -634,13 +429,14 @@ namespace THelper {
             string st = @"c:\test\test.dxsample";
             ProjectProcessor proc = new ProjectProcessor(st);
             var wrkFile = new Mock<IWorkWithFile>();
+            wrkFile.Setup(x => x.CreateDirectory(@"c:\test\test")).Returns(new DirectoryInfo(@"c:\test\test"));
             proc.MyWorkWithFile = wrkFile.Object;
             //act
             var res = proc.GetArgsForWinRar();
             //assert
             wrkFile.Verify(x => x.CreateDirectory(@"c:\test\test"), Times.Once);
             Assert.AreEqual(@" x ""c:\test\test.dxsample"" ""c:\test\test""", res);
-
+            Assert.AreEqual(proc.solutionFolderInfo.FullName, @"c:\test\test");
         }
         [Test]
         public void TryGetSolutionFiles_SLN() {
@@ -951,6 +747,33 @@ namespace THelper {
         }
 
 #endif
+        [Test]
+        public void GetProjectUpgradeVersion() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            string stPath = @"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe";
+            var moqWrk = new Mock<IWorkWithFile>();
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(stPath)).Returns("ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+        
+            //act
+            var vers = proc.GetProjectUpgradeVersion(stPath);
+            //assert
+            Assert.AreEqual(142, vers.Major);
+        }
+        [Test]
+        public void GetProjectUpgradeVersion_zero() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            string stPath = @"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe";
+            var moqWrk = new Mock<IWorkWithFile>();
+            proc.MyWorkWithFile = moqWrk.Object;
+
+            //act
+            var vers = proc.GetProjectUpgradeVersion(stPath);
+            //assert
+            Assert.AreEqual(true, vers.IsZero);
+        }
     }
 }
 

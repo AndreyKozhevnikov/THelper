@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -13,11 +14,21 @@ namespace THelper {
         void SaveXDocument(XDocument projDocument, string projectPath);
         DirectoryInfo CreateDirectory(string _path);
         IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOption);
-
+        string AssemblyLoadFileFullName(string path);
         List<string> GetRegistryVersions(string path);
     }
 
     public class CustomWorkWithFile : IWorkWithFile {
+        public string AssemblyLoadFileFullName(string path) {
+            try {
+                var assembly = Assembly.LoadFile(path);
+                return assembly.FullName;
+            }
+            catch {
+                return null;
+            }
+        }
+
         public DirectoryInfo CreateDirectory(string _path) {
             return Directory.CreateDirectory(_path);
         }

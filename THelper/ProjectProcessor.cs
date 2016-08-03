@@ -31,7 +31,7 @@ namespace THelper {
         public List<ConverterMessages> MessagesList;
         string mmlvConverterPath;
         string slnPath;
-        DirectoryInfo solutionFolderInfo;
+        public DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
 
         public IWorkWithFile MyWorkWithFile;
@@ -60,7 +60,7 @@ namespace THelper {
             string argumentsFilePath = " x \"" + archiveFilePath + "\"";
             var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
             solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
-            MyWorkWithFile.CreateDirectory(solutionFolderName);
+            solutionFolderInfo = MyWorkWithFile.CreateDirectory(solutionFolderName);
             var argsFullWinRar = argumentsFilePath + " " + @"""" + solutionFolderName + @"""";
             return argsFullWinRar;
         }
@@ -92,9 +92,7 @@ namespace THelper {
         public void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
             csProjProccessor = new CSProjProcessor(cspath, MyWorkWithFile);
-#if !DEBUGTEST
             GetInstalledVersions();
-#endif
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
@@ -154,12 +152,9 @@ namespace THelper {
         private void GetInstalledVersions() {//5
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
-
-            // RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
-            //  string[] versions = MyWorkWithFile.GetSubKeyNames("SOFTWARE\\DevExpress\\Components\\");
-            List<string> versions2 = MyWorkWithFile.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
+            List<string> versions = MyWorkWithFile.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
-            foreach (string rootPath in versions2) {
+            foreach (string rootPath in versions) {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
                 Version projectUpgradeVersion = GetProjectUpgradeVersion(rootPath2);
                 installedVersions.Add(projectUpgradeVersion);
@@ -169,17 +164,12 @@ namespace THelper {
                 }
             }
         }
-        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1
-            Assembly assembly;
-            try {
-                assembly = Assembly.LoadFile(projectUpgradeToolPath);
-            }
-            catch {
+        public Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1
+            string assemblyFullName = MyWorkWithFile.AssemblyLoadFileFullName(projectUpgradeToolPath);
+            if (assemblyFullName != null)
+                return new Version(assemblyFullName, true);
+            else
                 return Version.Zero;
-            }
-            Version result = new Version(assembly.FullName, true);
-
-            return result;
         }
 
         private void GetCurrentVersion() {//6
