@@ -22,12 +22,12 @@ namespace THelper {
         CSProjProcessor csProjProccessor;
         Version currentInstalled;
         Version currentProjectVersion;
-        List<Version> installedVersions;
+   public     List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
         public bool isExample;
         bool isLibrariesPersist;
         bool isMainMajor;
-        Version mainMajorLastVersion;
+    public    Version mainMajorLastVersion;
         public List<ConverterMessages> MessagesList;
         string mmlvConverterPath;
         string slnPath;
@@ -149,7 +149,7 @@ namespace THelper {
             MessagesList.Add(ConverterMessages.OpenFolder);
 
         }
-        private void GetInstalledVersions() {//5
+        public void GetInstalledVersions() {//5
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
             List<string> versions = MyWorkWithFile.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");

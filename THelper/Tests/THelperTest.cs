@@ -774,6 +774,26 @@ namespace THelper {
             //assert
             Assert.AreEqual(true, vers.IsZero);
         }
+
+        [Test]
+        public void GetInstalledVersions() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(null);
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            //act
+            proc.GetInstalledVersions();
+            //assert
+            Assert.AreEqual(2, proc.installedVersions.Count);
+            Assert.AreEqual(151, proc.mainMajorLastVersion.Major);
+
+        }
     }
 }
 
