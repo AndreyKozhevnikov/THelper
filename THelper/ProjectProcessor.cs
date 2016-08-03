@@ -28,7 +28,7 @@ namespace THelper {
         bool isLibrariesPersist;
         bool isMainMajor;
         Version mainMajorLastVersion;
-        List<ConverterMessages> MessagesList;
+        public List<ConverterMessages> MessagesList;
         string mmlvConverterPath;
         string slnPath;
         DirectoryInfo solutionFolderInfo;
@@ -65,7 +65,7 @@ namespace THelper {
             return argsFullWinRar;
         }
 
-      
+
 
         private void ProcessFolder() { //2
             slnPath = string.Empty;
@@ -80,7 +80,7 @@ namespace THelper {
             else
                 OpenFolder();
         }
-        public bool TryGetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3
+        public bool TryGetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3 td
             _slnPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
             _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
             if (_csprojPath == null)
@@ -89,14 +89,12 @@ namespace THelper {
                 _slnPath = _csprojPath;
             return !string.IsNullOrEmpty(_slnPath);
         }
-        private void GetMessageInfo() {//4
+        public void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
-            CustomWorkWithFile workWithFile = new CustomWorkWithFile();
-            csProjProccessor = new CSProjProcessor(cspath, workWithFile);
+            csProjProccessor = new CSProjProcessor(cspath, MyWorkWithFile);
 #if !DEBUGTEST
             GetInstalledVersions();
 #endif
-
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
@@ -157,20 +155,17 @@ namespace THelper {
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
 
-            RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
-            string[] versions = dxpKey.GetSubKeyNames();
+            // RegistryKey dxpKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\DevExpress\\Components\\");
+            //  string[] versions = MyWorkWithFile.GetSubKeyNames("SOFTWARE\\DevExpress\\Components\\");
+            List<string> versions2 = MyWorkWithFile.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
-            foreach (string strVersion in versions) {
-                RegistryKey dxVersionKey = dxpKey.OpenSubKey(strVersion);
-                string projectUpgradeToolPath = dxVersionKey.GetValue("RootDirectory") as string;
-                if (string.IsNullOrEmpty(projectUpgradeToolPath))
-                    continue;
-                projectUpgradeToolPath = Path.Combine(projectUpgradeToolPath, projectUpgradeToolRelativePath);
-                Version projectUpgradeVersion = GetProjectUpgradeVersion(projectUpgradeToolPath);
+            foreach (string rootPath in versions2) {
+                var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
+                Version projectUpgradeVersion = GetProjectUpgradeVersion(rootPath2);
                 installedVersions.Add(projectUpgradeVersion);
                 if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 162) {
                     mainMajorLastVersion = projectUpgradeVersion;
-                    mmlvConverterPath = projectUpgradeToolPath.Replace("ProjectConverter", "ProjectConverter-console");
+                    mmlvConverterPath = rootPath2.Replace("ProjectConverter", "ProjectConverter-console");
                 }
             }
         }
@@ -440,4 +435,9 @@ namespace THelper {
             return -res;
         }
     }
+
+    //public class RegistryVersion {
+    //    public string Version;
+    //    public string RootDirectory;
+    //}
 }
