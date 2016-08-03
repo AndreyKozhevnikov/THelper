@@ -22,12 +22,12 @@ namespace THelper {
         CSProjProcessor csProjProccessor;
         Version currentInstalled;
         Version currentProjectVersion;
-   public     List<Version> installedVersions;
+        public List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
         public bool isExample;
         bool isLibrariesPersist;
         bool isMainMajor;
-    public    Version mainMajorLastVersion;
+        public Version mainMajorLastVersion;
         public List<ConverterMessages> MessagesList;
         string mmlvConverterPath;
         string slnPath;
@@ -96,9 +96,9 @@ namespace THelper {
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
-#if !DEBUGTEST
+
                 GetCurrentVersion();
-#endif
+
                 if (currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
                 }

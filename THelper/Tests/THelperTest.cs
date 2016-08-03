@@ -512,7 +512,7 @@ namespace THelper {
             //assert
             Assert.AreEqual(false, b);
         }
-#if DEBUGTEST
+
         [Test]
         public void Message_IsExample() {
             //arrange
@@ -521,12 +521,20 @@ namespace THelper {
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
             proc.SetIsExample();
-            proc.TestSetCurrentVersion("15.2.2");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
             proc.TestGetMessageInfo();
@@ -540,18 +548,25 @@ namespace THelper {
         [Test]
         public void Message_isCurrentVersionMajorInstalled_false() {
             //arrange
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testsolution.csproj");
+            ProjectProcessor proc = new ProjectProcessor("test");
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             
-            proc.TestSetCurrentVersion("14.2.2");
-
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
             //act
             proc.TestGetMessageInfo();
 
@@ -568,13 +583,21 @@ namespace THelper {
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            proc.TestSetCurrentVersion("15.2.2");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            
             //act
             proc.TestGetMessageInfo();
 
@@ -591,12 +614,21 @@ namespace THelper {
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            proc.TestSetCurrentVersion("15.2.9");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.9.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            
 
             //act
             proc.TestGetMessageInfo();
@@ -613,12 +645,20 @@ namespace THelper {
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            proc.TestSetCurrentVersion("15.2");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2,  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
             proc.TestGetMessageInfo();
@@ -631,20 +671,25 @@ namespace THelper {
         [Test]
         public void Message_InstalledMajor() {
             //arrange
-            //     ProjectProcessor proc = new ProjectProcessor(null);
-
             ProjectProcessor proc = new ProjectProcessor("test");
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            // proc.Test_Csprojprocessor.Test_SetRootElements(st);
-            proc.TestSetCurrentVersion("15.1.5");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.1, Version=15.1.5.0,  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            
             //act
             proc.TestGetMessageInfo();
 
@@ -657,17 +702,26 @@ namespace THelper {
         }
         [Test]
         public void Message_InstalledMajorLastMinor() {
+
             //arrange
             ProjectProcessor proc = new ProjectProcessor("test");
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            proc.TestSetCurrentVersion("15.1.13");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.1, Version=15.1.13.0,  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
             proc.TestGetMessageInfo();
@@ -685,12 +739,20 @@ namespace THelper {
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            proc.TestSetCurrentVersion("15.1");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.1,  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
             proc.TestGetMessageInfo();
@@ -708,13 +770,19 @@ namespace THelper {
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            proc.TestSetCurrentVersion("0.0.0");
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
 
-            proc.TestAddToInstalledVersions("15.1.13");
-            proc.TestAddToInstalledVersions("15.2.9");
-
-            proc.TestSetMainMajorLastVersion("15.2.9");
-
+            mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             //act
             proc.TestGetMessageInfo();
 
@@ -746,7 +814,7 @@ namespace THelper {
             Assert.AreEqual(true, proc.Test_IsExample);
         }
 
-#endif
+
         [Test]
         public void GetProjectUpgradeVersion() {
             //arrange
@@ -781,8 +849,8 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(null);
             var moqWrk = new Mock<IWorkWithFile>();
             var lst = new List<string>();
-            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe");
-            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
             moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
             moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
@@ -794,6 +862,7 @@ namespace THelper {
             Assert.AreEqual(151, proc.mainMajorLastVersion.Major);
 
         }
+    
     }
 }
 
