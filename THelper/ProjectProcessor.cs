@@ -87,18 +87,18 @@ namespace THelper {
         }
         private void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
-         
+
             csProjProccessor = new CSProjProcessor(cspath);
-            #if !DEBUGTEST
+#if !DEBUGTEST
             GetInstalledVersions();
-            #endif
+#endif
 
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
-                #if !DEBUGTEST
+#if !DEBUGTEST
                 GetCurrentVersion();
-                #endif
+#endif
                 if (currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
                 }
@@ -301,7 +301,7 @@ namespace THelper {
                                     break;
                                 }
                                 Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
-                             
+
                                 ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
                             }
                             break;
@@ -347,13 +347,16 @@ namespace THelper {
             return new Version(res);
         }
         private void ConvertProjectWithSvetaConverter(Version v) {//16
-            ProcessStartInfo psi = new ProcessStartInfo(); 
-        //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
-        psi.FileName= @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
+            ProcessStartInfo psi = new ProcessStartInfo();
+            //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
+            psi.FileName = @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
             string versionConverterFormat = v.ToString(true);
             //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
-            psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat );
+            psi.Arguments = string.Format("\"{0}\" \"{1}\"", solutionFolderName, versionConverterFormat);
+            //   psi.UseShellExecute = false;
+            psi.Verb = "runas";
             var proc = System.Diagnostics.Process.Start(psi);
+
             proc.WaitForExit();
         }
 
