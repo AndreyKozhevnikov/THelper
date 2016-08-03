@@ -502,11 +502,11 @@ namespace THelper {
         public void ToStringTest() {
             //arrange
             string stver = @"Include=""DevExpress.Data.v15.1, Version=15.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL""";
-            var v = new Version(stver,true); 
+            var v = new Version(stver, true);
             //act
             string st = v.ToString(false);
             string st2 = v.ToString(true);
-            
+
             //assert
             Assert.AreEqual("151.5.0", st);
             Assert.AreEqual("15.1.5", st2);
@@ -560,7 +560,7 @@ namespace THelper {
         [Test]
         public void ParseComplexString_Build() {
             //arrange
-            string stver ="15.1.15.296";
+            string stver = "15.1.15.296";
             //act
             var v = new Version(stver, false);
             //assert
@@ -607,7 +607,119 @@ namespace THelper {
             Assert.AreEqual(1, buildMaxRes);
         }
     }
+    [TestFixture]
+    public class ProjectProcessor_Tests {
+        [Test]
+        public void ProjectProcessor() {
+            //arrange
+            string st = @"c:\test\test.zip";
+            //act
+            ProjectProcessor proc = new ProjectProcessor(st);
+            //assert
+            Assert.AreEqual(st, proc.archiveFilePath);
+        }
+        [Test]
+        public void SetIsExample() {
+            //arrange
+            string st = @"c:\test\test.dxsample";
+            //act
+            ProjectProcessor proc = new ProjectProcessor(st);
+            proc.SetIsExample();
+            //assert
+            Assert.AreEqual(true, proc.isExample);
+        }
+        [Test]
+        public void GetArgsForWinRar() {
+            //arrange
+            string st = @"c:\test\test.dxsample";
+            ProjectProcessor proc = new ProjectProcessor(st);
+            var wrkFile = new Mock<IWorkWithFile>();
+            proc.MyWorkWithFile = wrkFile.Object;
+            //act
+            var res = proc.GetArgsForWinRar();
+            //assert
+            wrkFile.Verify(x => x.CreateDirectory(@"c:\test\test"), Times.Once);
+            Assert.AreEqual(@" x ""c:\test\test.dxsample"" ""c:\test\test""", res);
 
+        }
+        [Test]
+        public void TryGetSolutionFiles_SLN() {
+            //arrange
+            string solutionPath = @"c:\test\testsolution";
+            var wrkFile = new Mock<IWorkWithFile>();
+            wrkFile.Setup(x => x.EnumerateFiles(solutionPath, "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testsolution\testsolution.sln" });
+            wrkFile.Setup(x => x.EnumerateFiles(solutionPath, "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testsolution\testsolution\testsolution.csproj" });
+            ProjectProcessor proc = new ProjectProcessor(solutionPath);
+            proc.MyWorkWithFile = wrkFile.Object;
+            DirectoryInfo di = new DirectoryInfo(solutionPath);
+            string slnPath = null;
+            string csPath = null;
+            //act
+            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+
+            //assert
+            Assert.AreEqual(true, b);
+            Assert.AreEqual(@"c:\test\testsolution\testsolution.sln", slnPath);
+            Assert.AreEqual(@"c:\test\testsolution\testsolution\testsolution.csproj", csPath);
+        }
+        [Test]
+        public void TryGetSolutionFiles_CSProj() {
+            //arrange
+            string solutionPath = @"c:\test\testsolution";
+            var wrkFile = new Mock<IWorkWithFile>();
+            wrkFile.Setup(x => x.EnumerateFiles(solutionPath, "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testsolution\testsolution\testsolution.csproj" });
+            ProjectProcessor proc = new ProjectProcessor(solutionPath);
+            proc.MyWorkWithFile = wrkFile.Object;
+            DirectoryInfo di = new DirectoryInfo(solutionPath);
+            string slnPath = null;
+            string csPath = null;
+            //act
+            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+
+            //assert
+            Assert.AreEqual(true, b);
+            Assert.AreEqual(@"c:\test\testsolution\testsolution\testsolution.csproj", slnPath);
+            Assert.AreEqual(@"c:\test\testsolution\testsolution\testsolution.csproj", csPath);
+        }
+        [Test]
+        public void TryGetSolutionFiles_VBProj() {
+            //arrange
+            string solutionPath = @"c:\test\testsolution";
+            var wrkFile = new Mock<IWorkWithFile>();
+            wrkFile.Setup(x => x.EnumerateFiles(solutionPath, "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testsolution\testsolution\testsolution.vbproj" });
+            ProjectProcessor proc = new ProjectProcessor(solutionPath);
+            proc.MyWorkWithFile = wrkFile.Object;
+            DirectoryInfo di = new DirectoryInfo(solutionPath);
+            string slnPath = null;
+            string csPath = null;
+            //act
+            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+
+            //assert
+            Assert.AreEqual(true, b);
+            Assert.AreEqual(@"c:\test\testsolution\testsolution\testsolution.vbproj", slnPath);
+            Assert.AreEqual(@"c:\test\testsolution\testsolution\testsolution.vbproj", csPath);
+        }
+        [Test]
+        public void TryGetSolutionFiles_None() {
+            //arrange
+            string solutionPath = @"c:\test\testsolution";
+            var wrkFile = new Mock<IWorkWithFile>();
+            ProjectProcessor proc = new ProjectProcessor(solutionPath);
+            proc.MyWorkWithFile = wrkFile.Object;
+            DirectoryInfo di = new DirectoryInfo(solutionPath);
+            string slnPath = null;
+            string csPath = null;
+            //act
+            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+
+            //assert
+            Assert.AreEqual(false, b);
+            //Assert.AreEqual(@"c:\test\testsolution\testsolution\testsolution.vbproj", slnPath);
+            //Assert.AreEqual(@"c:\test\testsolution\testsolution\testsolution.vbproj", csPath);
+        }
+    }
 }
+
 
 

@@ -8,18 +8,18 @@ using System.Xml.Linq;
 
 namespace THelper {
 
-    public interface IWorkWithFile {
-        XDocument LoadXDocument(string projectPath);
-        void SaveXDocument(XDocument projDocument, string projectPath);
-    }
-    public class CustomWorkWithFile : IWorkWithFile {
-        public XDocument LoadXDocument(string projectPath) {
-            return XDocument.Load(projectPath);
-        }
-        public void SaveXDocument(XDocument projDocument, string projectPath) {
-            projDocument.Save(projectPath);
-        }
-    }
+    //public interface IWorkWithFile {
+    //    XDocument LoadXDocument(string projectPath);
+    //    void SaveXDocument(XDocument projDocument, string projectPath);
+    //}
+    //public class CustomWorkWithFile : IWorkWithFile {
+    //    public XDocument LoadXDocument(string projectPath) {
+    //        return XDocument.Load(projectPath);
+    //    }
+    //    public void SaveXDocument(XDocument projDocument, string projectPath) {
+    //        projDocument.Save(projectPath);
+    //    }
+    //}
 
     public class CSProjProcessor {
         public string csProjFileName;

@@ -24,7 +24,7 @@ namespace THelper {
         Version currentProjectVersion;
         List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
-        bool isExample;
+        public bool isExample;
         bool isLibrariesPersist;
         bool isMainMajor;
         Version mainMajorLastVersion;
@@ -33,6 +33,9 @@ namespace THelper {
         string slnPath;
         DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
+
+        public IWorkWithFile MyWorkWithFile;
+
 
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
@@ -43,6 +46,9 @@ namespace THelper {
             ExtractFiles();
             ProcessFolder();
         }
+        public void SetIsExample() {//1.1 //tt
+            isExample = archiveFilePath.EndsWith(".dxsample");
+        }
         void ExtractFiles() { //1.2
             string winRarPath = Properties.Settings.Default.WinRarPath;
             string argsFullWinRar = GetArgsForWinRar();
@@ -50,18 +56,16 @@ namespace THelper {
             winrarProc.WaitForExit();
         }
 
-        private string GetArgsForWinRar() {//1.2.1
+        public string GetArgsForWinRar() {//1.2.1 /tt
             string argumentsFilePath = " x \"" + archiveFilePath + "\"";
             var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
             solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
-            solutionFolderInfo = Directory.CreateDirectory(solutionFolderName);
+            MyWorkWithFile.CreateDirectory(solutionFolderName);
             var argsFullWinRar = argumentsFilePath + " " + @"""" + solutionFolderName + @"""";
             return argsFullWinRar;
         }
 
-        private void SetIsExample() {//1.1
-            isExample = archiveFilePath.EndsWith(".dxsample");
-        }
+      
 
         private void ProcessFolder() { //2
             slnPath = string.Empty;
@@ -77,10 +81,10 @@ namespace THelper {
                 OpenFolder();
         }
         public bool TryGetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3
-            _slnPath = Directory.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
-            _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
+            _slnPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+            _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
             if (_csprojPath == null)
-                _csprojPath = Directory.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
+                _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
             if (string.IsNullOrEmpty(_slnPath))
                 _slnPath = _csprojPath;
             return !string.IsNullOrEmpty(_slnPath);
@@ -88,17 +92,17 @@ namespace THelper {
         private void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
             CustomWorkWithFile workWithFile = new CustomWorkWithFile();
-               csProjProccessor = new CSProjProcessor(cspath,workWithFile);
-            #if !DEBUGTEST
+            csProjProccessor = new CSProjProcessor(cspath, workWithFile);
+#if !DEBUGTEST
             GetInstalledVersions();
-            #endif
+#endif
 
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
-                #if !DEBUGTEST
+#if !DEBUGTEST
                 GetCurrentVersion();
-                #endif
+#endif
                 if (currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
                 }
@@ -301,7 +305,7 @@ namespace THelper {
                                     break;
                                 }
                                 Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
-                             
+
                                 ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
                             }
                             break;
@@ -347,12 +351,12 @@ namespace THelper {
             return new Version(res);
         }
         private void ConvertProjectWithSvetaConverter(Version v) {//16
-            ProcessStartInfo psi = new ProcessStartInfo(); 
-        //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
-        psi.FileName= @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
+            ProcessStartInfo psi = new ProcessStartInfo();
+            //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
+            psi.FileName = @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
             string versionConverterFormat = v.ToString(true);
             //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
-            psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat );
+            psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat);
             var proc = System.Diagnostics.Process.Start(psi);
             proc.WaitForExit();
         }
