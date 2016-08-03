@@ -411,7 +411,7 @@ namespace THelper {
             //act
             ProjectProcessor proc = new ProjectProcessor(st);
             //assert
-            Assert.AreEqual(st, proc.archiveFilePath);
+            Assert.AreEqual(st, proc.archiveFilePath_t);
         }
         [Test]
         public void SetIsExample() {
@@ -419,9 +419,9 @@ namespace THelper {
             string st = @"c:\test\test.dxsample";
             //act
             ProjectProcessor proc = new ProjectProcessor(st);
-            proc.SetIsExample();
+            proc.SetIsExample_t();
             //assert
-            Assert.AreEqual(true, proc.isExample);
+            Assert.AreEqual(true, proc.isExample_t);
         }
         [Test]
         public void GetArgsForWinRar() {
@@ -432,11 +432,11 @@ namespace THelper {
             wrkFile.Setup(x => x.CreateDirectory(@"c:\test\test")).Returns(new DirectoryInfo(@"c:\test\test"));
             proc.MyWorkWithFile = wrkFile.Object;
             //act
-            var res = proc.GetArgsForWinRar();
+            var res = proc.GetArgsForWinRar_t();
             //assert
             wrkFile.Verify(x => x.CreateDirectory(@"c:\test\test"), Times.Once);
             Assert.AreEqual(@" x ""c:\test\test.dxsample"" ""c:\test\test""", res);
-            Assert.AreEqual(proc.solutionFolderInfo.FullName, @"c:\test\test");
+            Assert.AreEqual(proc.solutionFolderInfo_t.FullName, @"c:\test\test");
         }
         [Test]
         public void TryGetSolutionFiles_SLN() {
@@ -451,7 +451,7 @@ namespace THelper {
             string slnPath = null;
             string csPath = null;
             //act
-            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+            var b = proc.TryGetSolutionFiles_T(di, out slnPath, out csPath);
 
             //assert
             Assert.AreEqual(true, b);
@@ -470,7 +470,7 @@ namespace THelper {
             string slnPath = null;
             string csPath = null;
             //act
-            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+            var b = proc.TryGetSolutionFiles_T(di, out slnPath, out csPath);
 
             //assert
             Assert.AreEqual(true, b);
@@ -489,7 +489,7 @@ namespace THelper {
             string slnPath = null;
             string csPath = null;
             //act
-            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+            var b = proc.TryGetSolutionFiles_T(di, out slnPath, out csPath);
 
             //assert
             Assert.AreEqual(true, b);
@@ -507,7 +507,7 @@ namespace THelper {
             string slnPath = null;
             string csPath = null;
             //act
-            var b = proc.TryGetSolutionFiles(di, out slnPath, out csPath);
+            var b = proc.TryGetSolutionFiles_T(di, out slnPath, out csPath);
 
             //assert
             Assert.AreEqual(false, b);
@@ -520,7 +520,7 @@ namespace THelper {
             var mock = new Mock<IWorkWithFile>();
             mock.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(new XDocument());
             proc.MyWorkWithFile = mock.Object;
-            proc.SetIsExample();
+            proc.SetIsExample_t();
             string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
             st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
             st = st + "  <ItemGroup>";
@@ -537,12 +537,12 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(2, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+            Assert.AreEqual(2, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.OpenSolution, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[1]);
         }
 
         [Test]
@@ -568,13 +568,13 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(3, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.ExactConversion, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
+            Assert.AreEqual(3, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.ExactConversion, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.MessagesList_t[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[2]);
         }
         [Test]
         public void Message_MainMajor() {
@@ -599,13 +599,13 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(3, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.ExactConversion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
+            Assert.AreEqual(3, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.ExactConversion, proc.MessagesList_t[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[2]);
         }
         [Test]
         public void Message_MainMajorLastMinor() {
@@ -631,12 +631,12 @@ namespace THelper {
             
 
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(2, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+            Assert.AreEqual(2, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.OpenSolution, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[1]);
         }
         [Test]
         public void Message_MainMajorZeroMinor() {
@@ -661,12 +661,12 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(2, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+            Assert.AreEqual(2, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[1]);
         }
         [Test]
         public void Message_InstalledMajor() {
@@ -691,14 +691,14 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(4, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.LastMinor, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.ExactConversion, proc.TestMessageList[2]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[3]);
+            Assert.AreEqual(4, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.LastMinor, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.MessagesList_t[1]);
+            Assert.AreEqual(ConverterMessages.ExactConversion, proc.MessagesList_t[2]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[3]);
         }
         [Test]
         public void Message_InstalledMajorLastMinor() {
@@ -724,13 +724,13 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(3, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
+            Assert.AreEqual(3, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.OpenSolution, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.MessagesList_t[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[2]);
         }
         [Test]
         public void Message_InstalledMajorZeroMinor() {
@@ -755,13 +755,13 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
 
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(3, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.LastMinor, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.TestMessageList[1]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[2]);
+            Assert.AreEqual(3, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.LastMinor, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.MainMajorLastVersion, proc.MessagesList_t[1]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[2]);
         }
         [Test]
         public void Message_IsNotDxSolution() {
@@ -784,12 +784,12 @@ namespace THelper {
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             //act
-            proc.TestGetMessageInfo();
+            proc.GetMessageInfo_t();
 
             //assert
-            Assert.AreEqual(2, proc.TestMessageList.Count);
-            Assert.AreEqual(ConverterMessages.OpenSolution, proc.TestMessageList[0]);
-            Assert.AreEqual(ConverterMessages.OpenFolder, proc.TestMessageList[1]);
+            Assert.AreEqual(2, proc.MessagesList_t.Count);
+            Assert.AreEqual(ConverterMessages.OpenSolution, proc.MessagesList_t[0]);
+            Assert.AreEqual(ConverterMessages.OpenFolder, proc.MessagesList_t[1]);
         }
         [Test]
         public void SetIsExample_False() {
@@ -797,10 +797,10 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor("test.rar");
 
             //act
-            proc.Test_SetIsExample();
+            proc.SetIsExample_t();
 
             //assert
-            Assert.AreEqual(false, proc.Test_IsExample);
+            Assert.AreEqual(false, proc.isExample_t);
         }
         [Test]
         public void SetIsExample_True() {
@@ -808,10 +808,10 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor("test.dxsample");
 
             //act
-            proc.Test_SetIsExample();
+            proc.SetIsExample_t();
 
             //assert
-            Assert.AreEqual(true, proc.Test_IsExample);
+            Assert.AreEqual(true, proc.isExample_t);
         }
 
 
@@ -825,7 +825,7 @@ namespace THelper {
             proc.MyWorkWithFile = moqWrk.Object;
         
             //act
-            var vers = proc.GetProjectUpgradeVersion(stPath);
+            var vers = proc.GetProjectUpgradeVersion_t(stPath);
             //assert
             Assert.AreEqual(142, vers.Major);
         }
@@ -838,7 +838,7 @@ namespace THelper {
             proc.MyWorkWithFile = moqWrk.Object;
 
             //act
-            var vers = proc.GetProjectUpgradeVersion(stPath);
+            var vers = proc.GetProjectUpgradeVersion_t(stPath);
             //assert
             Assert.AreEqual(true, vers.IsZero);
         }
@@ -856,10 +856,10 @@ namespace THelper {
             moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             proc.MyWorkWithFile = moqWrk.Object;
             //act
-            proc.GetInstalledVersions();
+            proc.GetInstalledVersions_t();
             //assert
             Assert.AreEqual(2, proc.installedVersions.Count);
-            Assert.AreEqual(151, proc.mainMajorLastVersion.Major);
+            Assert.AreEqual(151, proc.mainMajorLastVersion_t.Major);
 
         }
     

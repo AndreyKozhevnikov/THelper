@@ -17,21 +17,21 @@ namespace THelper {
 
 
     public class ProjectProcessor {
-        public string archiveFilePath;
+        string archiveFilePath;
         string cspath;
         CSProjProcessor csProjProccessor;
         Version currentInstalled;
         Version currentProjectVersion;
         public List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
-        public bool isExample;
+        bool isExample;
         bool isLibrariesPersist;
         bool isMainMajor;
-        public Version mainMajorLastVersion;
-        public List<ConverterMessages> MessagesList;
+        Version mainMajorLastVersion;
+        List<ConverterMessages> MessagesList;
         string mmlvConverterPath;
         string slnPath;
-        public DirectoryInfo solutionFolderInfo;
+        DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
 
         public IWorkWithFile MyWorkWithFile;
@@ -46,7 +46,7 @@ namespace THelper {
             ExtractFiles();
             ProcessFolder();
         }
-        public void SetIsExample() {//1.1 //tt
+        void SetIsExample() {//1.1 //tt
             isExample = archiveFilePath.EndsWith(".dxsample");
         }
         void ExtractFiles() { //1.2
@@ -56,7 +56,7 @@ namespace THelper {
             winrarProc.WaitForExit();
         }
 
-        public string GetArgsForWinRar() {//1.2.1 /tt
+        string GetArgsForWinRar() {//1.2.1 /tt
             string argumentsFilePath = " x \"" + archiveFilePath + "\"";
             var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
             solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
@@ -80,7 +80,7 @@ namespace THelper {
             else
                 OpenFolder();
         }
-        public bool TryGetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3 td
+        bool TryGetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3 td
             _slnPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
             _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
             if (_csprojPath == null)
@@ -89,7 +89,7 @@ namespace THelper {
                 _slnPath = _csprojPath;
             return !string.IsNullOrEmpty(_slnPath);
         }
-        public void GetMessageInfo() {//4
+        void GetMessageInfo() {//4
             MessagesList = new List<ConverterMessages>();
             csProjProccessor = new CSProjProcessor(cspath, MyWorkWithFile);
             GetInstalledVersions();
@@ -149,7 +149,7 @@ namespace THelper {
             MessagesList.Add(ConverterMessages.OpenFolder);
 
         }
-        public void GetInstalledVersions() {//5
+        void GetInstalledVersions() {//5
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
             List<string> versions = MyWorkWithFile.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
@@ -164,7 +164,7 @@ namespace THelper {
                 }
             }
         }
-        public Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1
+        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1
             string assemblyFullName = MyWorkWithFile.AssemblyLoadFileFullName(projectUpgradeToolPath);
             if (assemblyFullName != null)
                 return new Version(assemblyFullName, true);
@@ -379,36 +379,61 @@ namespace THelper {
 
 
 #if DEBUGTEST
-        public void TestSetCurrentVersion(string st) {
-            currentProjectVersion = new Version(st);
-        }
+        public DirectoryInfo solutionFolderInfo_t {
+            get {
+                return solutionFolderInfo;
+            }
 
-        public void TestAddToInstalledVersions(string st) {
-            if (installedVersions == null)
-                installedVersions = new List<Version>();
-            installedVersions.Add(new Version(st));
         }
-        public void TestGetMessageInfo() {
-            GetMessageInfo();
+        public List<ConverterMessages> MessagesList_t {
+            get {
+                return MessagesList;
+            }
         }
-        public List<ConverterMessages> TestMessageList { get { return MessagesList; } }
-        public void TestSetMainMajorLastVersion(string st) {
-            mainMajorLastVersion = new Version(st);
-        }
-        public void Test_SetIsExample() {
-            this.SetIsExample();
-        }
-        public bool Test_IsExample {
-            get { return isExample; }
-        }
-        public string Test_GetArgsForWinRar() {
+        public string GetArgsForWinRar_t() {
             return GetArgsForWinRar();
         }
-        //public CSProjProcessor Test_Csprojprocessor {
-        //    get {
-        //        return csProjProccessor;
-        //    }
+       
+        public void GetInstalledVersions_t() {
+            GetInstalledVersions();
+        }
+        public Version mainMajorLastVersion_t {
+            get {
+                return mainMajorLastVersion;
+            }
+        }
+        //public void TestAddToInstalledVersions(string st) {
+        //    if (installedVersions == null)
+        //        installedVersions = new List<Version>();
+        //    installedVersions.Add(new Version(st));
         //}
+        public void GetMessageInfo_t() {
+            GetMessageInfo();
+        }
+        public string archiveFilePath_t {
+            get {
+                return archiveFilePath;
+            }
+        }
+        //public List<ConverterMessages> MessagesList_t { get { return MessagesList; } }
+        //public void TestSetMainMajorLastVersion(string st) {
+        //    mainMajorLastVersion = new Version(st);
+        //}
+
+        public bool isExample_t {
+            get { return isExample; }
+        }
+      
+
+        public bool TryGetSolutionFiles_T(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) {
+            return TryGetSolutionFiles(dirInfo, out _slnPath, out _csprojPath);
+        }
+        public void SetIsExample_t() {
+            SetIsExample();
+        }
+        public Version GetProjectUpgradeVersion_t(string projectUpgradeToolPath) {
+            return GetProjectUpgradeVersion(projectUpgradeToolPath);
+        }
 #endif
     }
 
