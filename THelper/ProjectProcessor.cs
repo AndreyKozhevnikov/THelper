@@ -17,7 +17,7 @@ namespace THelper {
 
 
     public class ProjectProcessor {
-        private string archiveFilePath;
+        public string archiveFilePath;
         string cspath;
         CSProjProcessor csProjProccessor;
         Version currentInstalled;
