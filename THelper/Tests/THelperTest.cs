@@ -1039,6 +1039,91 @@ namespace THelper {
             //assert
             Assert.AreEqual(3, res);
         }
+        [Test]
+        public void OpenFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.zip");
+            var moqFile = new Mock<IWorkWithFile>();
+            proc.MyWorkWithFile = moqFile.Object;
+            proc.GetArgsForWinRar_t();
+            //act
+            proc.OpenFolder_t();
+            //assert
+            moqFile.Verify(x => x.ProcessStart(@"c:\test\testproject"), Times.Once);
+        }
+        [Test]
+        public void OpenSolution() {
+            //arrange
+            string solutionPath = @"c:\test\testsolution";
+            var wrkFile = new Mock<IWorkWithFile>();
+            wrkFile.Setup(x => x.EnumerateFiles(solutionPath, "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testsolution\testsolution.sln" });
+            wrkFile.Setup(x => x.EnumerateFiles(solutionPath, "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testsolution\testsolution\testsolution.csproj" });
+            ProjectProcessor proc = new ProjectProcessor(solutionPath);
+            proc.MyWorkWithFile = wrkFile.Object;
+            DirectoryInfo di = new DirectoryInfo(solutionPath);
+            string slnPath = null;
+            string csPath = null;
+            var b = proc.TryGetSolutionFiles_T(di, out slnPath, out csPath);
+            proc.slnPath_t = slnPath;
+            //act
+            proc.OpenSolution_t();
+            //assert
+            wrkFile.Verify(x => x.ProcessStart(@"c:\test\testsolution\testsolution.sln"), Times.Once);
+        }
+        [Test]
+        public void ProcessProject_OpenFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.zip");
+            var moqFile = new Mock<IWorkWithFile>();
+            proc.MyWorkWithFile = moqFile.Object;
+            proc.GetArgsForWinRar_t();
+            //act
+            proc.ProcessProject_t(ConverterMessages.OpenFolder);
+            //arrange
+            moqFile.Verify(x => x.ProcessStart(@"c:\test\testproject"), Times.Once);
+        }
+        [Test]
+        public void UpgradeToMainMajorLastVersion() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.zip");
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            proc.GetInstalledVersions_t();
+            proc.GetArgsForWinRar_t();
+            //act
+            proc.UpgradeToMainMajorLastVersion_t();
+            //assert
+            moqWrk.Verify(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\testproject""", true), Times.Once);
+        }
+        [Test]
+        public void ProcessProject_IsExample() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.dxsample");
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            proc.GetInstalledVersions_t();
+            proc.GetArgsForWinRar_t();
+            var csMoq = new Mock<ICSProjProcessor>();
+            proc.csProjProccessor_t = csMoq.Object;
+            proc.SetIsExample_t();
+            //act
+            proc.ProcessProject_t(ConverterMessages.MainMajorLastVersion);
+            //assert
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
+            moqWrk.Verify(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\testproject""", true), Times.Once);
+        }
     }
 }
 

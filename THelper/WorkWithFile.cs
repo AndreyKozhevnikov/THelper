@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,6 +17,8 @@ namespace THelper {
         IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOption);
         string AssemblyLoadFileFullName(string path);
         List<string> GetRegistryVersions(string path);
+        void ProcessStart(string path);
+        void ProcessStart(string fileName, string arguments, bool _wait);
     }
 
     public class CustomWorkWithFile : IWorkWithFile {
@@ -57,8 +60,18 @@ namespace THelper {
         public XDocument LoadXDocument(string projectPath) {
             return XDocument.Load(projectPath);
         }
+
+        public void ProcessStart(string path) {
+            Process.Start(path);
+        }
+
         public void SaveXDocument(XDocument projDocument, string projectPath) {
             projDocument.Save(projectPath);
+        }
+
+        public void ProcessStart(string fileName, string arguments, bool wait) {
+            var p = Process.Start(fileName, arguments);
+            p.WaitForExit();
         }
     }
 }

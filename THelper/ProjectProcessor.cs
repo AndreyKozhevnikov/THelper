@@ -19,7 +19,7 @@ namespace THelper {
     public class ProjectProcessor {
         string archiveFilePath;
         string cspath;
-        CSProjProcessor csProjProccessor;
+        ICSProjProcessor csProjProccessor;
         Version currentInstalledMajor;
         Version currentProjectVersion;
         public List<Version> installedVersions;
@@ -175,7 +175,7 @@ namespace THelper {
         private void GetCurrentVersion() {//6 td
             currentProjectVersion = csProjProccessor.GetCurrentVersion();
         }
-        private ConverterMessages PrintMessage() { //7
+        private ConverterMessages PrintMessage() { //7 tt
             if (isExample) {
                 MyMessenger.ConsoleWrite("The current project version is an ");
                 MyMessenger.ConsoleWrite("example", ConsoleColor.Red);
@@ -189,8 +189,8 @@ namespace THelper {
             foreach (ConverterMessages msg in MessagesList) {
                 PrintConverterMessage(msg, k++.ToString());
             }
-            ConsoleKey enterKey =MyMessenger.ConsoleReadKey(false);
-          
+            ConsoleKey enterKey = MyMessenger.ConsoleReadKey(false);
+
             int index = GetValueFromConsoleKey(enterKey);
             if (index == 9)
                 return ConverterMessages.OpenFolder;
@@ -200,7 +200,7 @@ namespace THelper {
             return MessagesList[index - 1];
         }
 
-        private void PrintConverterMessage(ConverterMessages msg, string key) {//8
+        private void PrintConverterMessage(ConverterMessages msg, string key) {//8tt
             if (msg == ConverterMessages.OpenSolution) {
                 MyMessenger.ConsoleWrite("To open solution press: ");
                 MyMessenger.ConsoleWrite(key, ConsoleColor.Red);
@@ -220,7 +220,7 @@ namespace THelper {
             MyMessenger.ConsoleWrite(key, ConsoleColor.Red);
             MyMessenger.ConsoleWriteLine();
         }
-        string GetMessageVersion(ConverterMessages msg) { //8.1
+        string GetMessageVersion(ConverterMessages msg) { //8.1 tt
             switch (msg) {
                 case ConverterMessages.ExactConversion:
                     return currentProjectVersion.ToString();
@@ -233,7 +233,7 @@ namespace THelper {
             }
         }
 
-        int GetValueFromConsoleKey(ConsoleKey key) {//9
+        int GetValueFromConsoleKey(ConsoleKey key) {//9 tt
             int value = -1;
             if (key >= (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
                 value = (int)key - ((int)ConsoleKey.NumPad0);
@@ -254,7 +254,7 @@ namespace THelper {
                 UpgradeToMainMajorLastVersion();
             }
             else { //check how to avoid csProjProccessor.SaveNewCsProj();
-                if (!(currentProjectVersion.CompareTo(Version.Zero) == 0)) {
+                if (!(currentProjectVersion.CompareTo(Version.Zero) == 0)) { //!there is no dx libs
                     csProjProccessor.RemoveLicense();
                     switch (message) {
                         case ConverterMessages.MainMajorLastVersion:
@@ -305,15 +305,9 @@ namespace THelper {
 
         }
 
-        private void UpgradeToMainMajorLastVersion() {//13
+        private void UpgradeToMainMajorLastVersion() {//13 tt
             string _projPath = "\"" + solutionFolderName + "\"";
-            Process updgrade = Process.Start(mmlvConverterPath, _projPath);
-            updgrade.WaitForExit();
-        }
-        private void FindIfLibrariesPersist() {//14
-            DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
-            var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
-            isLibrariesPersist = v.Count > 0;
+            MyWorkWithFile.ProcessStart(mmlvConverterPath, _projPath, true);
         }
         private Version FindLastVersionOfMajor() {//15
             var maj = currentProjectVersion.Major;
@@ -324,6 +318,13 @@ namespace THelper {
             var res = directories.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
             return new Version(res);
         }
+
+        private void FindIfLibrariesPersist() {//14
+            DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
+            var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
+            isLibrariesPersist = v.Count > 0;
+        }
+
         private void ConvertProjectWithSvetaConverter(Version v) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
             //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
@@ -348,12 +349,13 @@ namespace THelper {
 
 
 
-        private void OpenFolder() {
-            Process.Start(solutionFolderName);
+        private void OpenFolder() { //tt
+            MyWorkWithFile.ProcessStart(solutionFolderName);
         }
-        private void OpenSolution() {
-            Process.Start(slnPath);
+        private void OpenSolution() {//tt
+            MyWorkWithFile.ProcessStart(slnPath);
         }
+
 
 
 
@@ -368,13 +370,30 @@ namespace THelper {
 
 
 #if DEBUGTEST
+
+        public void UpgradeToMainMajorLastVersion_t() {
+            UpgradeToMainMajorLastVersion();
+        }
+        public void ProcessProject_t(ConverterMessages message) {
+            ProcessProject(message);
+        }
+        public string slnPath_t {
+            get { return slnPath; }
+            set { slnPath = value; }
+        }
+        public void OpenSolution_t() {
+            OpenSolution();
+        }
+        public void OpenFolder_t() {
+            OpenFolder();
+        }
         public DirectoryInfo solutionFolderInfo_t {
             get {
                 return solutionFolderInfo;
             }
 
         }
-       public ConverterMessages PrintMessage_t(){
+        public ConverterMessages PrintMessage_t() {
             return PrintMessage();
         }
         public List<ConverterMessages> MessagesList_t {
@@ -388,7 +407,7 @@ namespace THelper {
         public string GetArgsForWinRar_t() {
             return GetArgsForWinRar();
         }
-       
+
         public void GetInstalledVersions_t() {
             GetInstalledVersions();
         }
@@ -404,7 +423,7 @@ namespace THelper {
             PrintConverterMessage(msg, key);
         }
 
-    public    int GetValueFromConsoleKey_t(ConsoleKey key) {
+        public int GetValueFromConsoleKey_t(ConsoleKey key) {
             return GetValueFromConsoleKey(key);
         }
         public void GetMessageInfo_t() {
@@ -423,7 +442,7 @@ namespace THelper {
         public bool isExample_t {
             get { return isExample; }
         }
-      
+
 
         public bool TryGetSolutionFiles_T(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) {
             return TryGetSolutionFiles(dirInfo, out _slnPath, out _csprojPath);
@@ -438,12 +457,16 @@ namespace THelper {
             get { return currentProjectVersion; }
             set { currentProjectVersion = value; }
         }
-     public   string GetMessageVersion_t(ConverterMessages msg) {
+        public string GetMessageVersion_t(ConverterMessages msg) {
             return GetMessageVersion(msg);
         }
         public Version currentInstalledMajor_t {
             get { return currentInstalledMajor; }
             set { currentInstalledMajor = value; }
+        }
+        public ICSProjProcessor csProjProccessor_t {
+            get { return csProjProccessor; }
+            set { csProjProccessor = value; }
         }
 #endif
     }

@@ -20,8 +20,14 @@ namespace THelper {
     //        projDocument.Save(projectPath);
     //    }
     //}
-
-    public class CSProjProcessor {
+    public interface ICSProjProcessor {
+        void DisableUseVSHostingProcess();
+        Version GetCurrentVersion();
+        void RemoveLicense();
+        void SaveNewCsProj();
+        void SetSpecificVersionFalse();
+    }
+    public class CSProjProcessor : ICSProjProcessor {
         public string csProjFileName;
         public IWorkWithFile MyWorkWithFile;
 
@@ -54,7 +60,7 @@ namespace THelper {
                 return Version.Zero;
             }
         }
-        public void DisableUseVSHostingProcess() { 
+        public void DisableUseVSHostingProcess() {
             var UseVSHostingProcess = RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
             if (UseVSHostingProcess != null) {
                 UseVSHostingProcess.SetValue("False");
@@ -67,13 +73,13 @@ namespace THelper {
             }
         }
 
-        public void RemoveLicense() { 
+        public void RemoveLicense() {
             var licGroup = RootElements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
             if (licGroup != null)
                 licGroup.Remove();
         }
 
-        public void SetSpecificVersionFalse() { 
+        public void SetSpecificVersionFalse() {
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
 
@@ -90,7 +96,7 @@ namespace THelper {
         }
 
         public void SaveNewCsProj() {
-            MyWorkWithFile.SaveXDocument(RootDocument,csProjFileName);
+            MyWorkWithFile.SaveXDocument(RootDocument, csProjFileName);
         }
 
 
