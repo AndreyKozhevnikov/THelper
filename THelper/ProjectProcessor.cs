@@ -20,7 +20,7 @@ namespace THelper {
         string archiveFilePath;
         string cspath;
         CSProjProcessor csProjProccessor;
-        Version currentInstalled;
+        Version currentInstalledMajor;
         Version currentProjectVersion;
         public List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
@@ -35,7 +35,7 @@ namespace THelper {
         string solutionFolderName;
 
         public IWorkWithFile MyWorkWithFile;
-
+        public IMessenger MyMessenger;
 
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
@@ -89,7 +89,7 @@ namespace THelper {
                 _slnPath = _csprojPath;
             return !string.IsNullOrEmpty(_slnPath);
         }
-        void GetMessageInfo() {//4
+        void GetMessageInfo() {//4 td
             MessagesList = new List<ConverterMessages>();
             csProjProccessor = new CSProjProcessor(cspath, MyWorkWithFile);
             GetInstalledVersions();
@@ -104,8 +104,8 @@ namespace THelper {
                 }
                 else {
                     //#endif
-                    currentInstalled = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
-                    isCurrentVersionMajorInstalled = currentInstalled != null;
+                    currentInstalledMajor = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
+                    isCurrentVersionMajorInstalled = currentInstalledMajor != null;
                     if (isCurrentVersionMajorInstalled) {
                         isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
                         if (isMainMajor) {
@@ -123,7 +123,7 @@ namespace THelper {
                             }
                         }
                         else {
-                            if (currentProjectVersion.CompareTo(currentInstalled) == 0) {
+                            if (currentProjectVersion.CompareTo(currentInstalledMajor) == 0) {
                                 MessagesList.Add(ConverterMessages.OpenSolution);
                                 MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                             }
@@ -149,7 +149,7 @@ namespace THelper {
             MessagesList.Add(ConverterMessages.OpenFolder);
 
         }
-        void GetInstalledVersions() {//5
+        void GetInstalledVersions() {//5 td
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
             List<string> versions = MyWorkWithFile.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
@@ -164,7 +164,7 @@ namespace THelper {
                 }
             }
         }
-        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1
+        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1 td
             string assemblyFullName = MyWorkWithFile.AssemblyLoadFileFullName(projectUpgradeToolPath);
             if (assemblyFullName != null)
                 return new Version(assemblyFullName, true);
@@ -172,26 +172,26 @@ namespace THelper {
                 return Version.Zero;
         }
 
-        private void GetCurrentVersion() {//6
+        private void GetCurrentVersion() {//6 td
             currentProjectVersion = csProjProccessor.GetCurrentVersion();
         }
         private ConverterMessages PrintMessage() { //7
             if (isExample) {
-                ConsoleWrite("The current project version is an ");
-                ConsoleWrite("example", ConsoleColor.Red);
+                MyMessenger.ConsoleWrite("The current project version is an ");
+                MyMessenger.ConsoleWrite("example", ConsoleColor.Red);
             }
             else {
-                ConsoleWrite("The current project version is ");
-                ConsoleWrite(currentProjectVersion, ConsoleColor.Red);
+                MyMessenger.ConsoleWrite("The current project version is ");
+                MyMessenger.ConsoleWrite(currentProjectVersion.ToString(), ConsoleColor.Red);
             }
-            Console.WriteLine();
+            MyMessenger.ConsoleWriteLine();
             int k = 1;
             foreach (ConverterMessages msg in MessagesList) {
                 PrintConverterMessage(msg, k++.ToString());
             }
-            ConsoleKeyInfo enterKey = Console.ReadKey(false);
-            var v = enterKey.Key;
-            int index = GetValueFromConsoleKey(v);
+            ConsoleKey enterKey =MyMessenger.ConsoleReadKey(false);
+          
+            int index = GetValueFromConsoleKey(enterKey);
             if (index == 9)
                 return ConverterMessages.OpenFolder;
             if ((index - 1) > MessagesList.Count) {
@@ -202,38 +202,35 @@ namespace THelper {
 
         private void PrintConverterMessage(ConverterMessages msg, string key) {//8
             if (msg == ConverterMessages.OpenSolution) {
-                ConsoleWrite("To open solution press: ");
-                ConsoleWrite(key, ConsoleColor.Red);
-                Console.WriteLine();
+                MyMessenger.ConsoleWrite("To open solution press: ");
+                MyMessenger.ConsoleWrite(key, ConsoleColor.Red);
+                MyMessenger.ConsoleWriteLine();
                 return;
             }
             if (msg == ConverterMessages.OpenFolder) {
-                ConsoleWrite("To open folder press: ");
-                ConsoleWrite("9", ConsoleColor.Red);
-                Console.WriteLine();
+                MyMessenger.ConsoleWrite("To open folder press: ");
+                MyMessenger.ConsoleWrite("9", ConsoleColor.Red);
+                MyMessenger.ConsoleWriteLine();
                 return;
             }
             string vers = GetMessageVersion(msg);
-            ConsoleWrite("To convert to : ");
-            ConsoleWrite(vers, ConsoleColor.Red);
-            ConsoleWrite(" press ");
-            ConsoleWrite(key, ConsoleColor.Red);
-            Console.WriteLine();
+            MyMessenger.ConsoleWrite("To convert to : ");
+            MyMessenger.ConsoleWrite(vers, ConsoleColor.Red);
+            MyMessenger.ConsoleWrite(" press ");
+            MyMessenger.ConsoleWrite(key, ConsoleColor.Red);
+            MyMessenger.ConsoleWriteLine();
         }
         string GetMessageVersion(ConverterMessages msg) { //8.1
             switch (msg) {
                 case ConverterMessages.ExactConversion:
                     return currentProjectVersion.ToString();
                 case ConverterMessages.LastMinor:
-                    if (currentInstalled == null)
-                        return "0.0.0";
-                    return currentInstalled.ToString();
+                    return currentInstalledMajor.ToString();
                 case ConverterMessages.MainMajorLastVersion:
                     return mainMajorLastVersion.ToString();
                 default:
                     return null;
             }
-
         }
 
         int GetValueFromConsoleKey(ConsoleKey key) {//9
@@ -246,15 +243,7 @@ namespace THelper {
             }
             return value;
         }
-        void ConsoleWrite(object _message) { //10
-            Console.Write(_message);
-        }
-        void ConsoleWrite(object _message, ConsoleColor color) {//11
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(_message);
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
         private void ProcessProject(ConverterMessages message) {//12
             if (message == ConverterMessages.OpenFolder) {
                 OpenFolder();
@@ -385,9 +374,15 @@ namespace THelper {
             }
 
         }
+       public ConverterMessages PrintMessage_t(){
+            return PrintMessage();
+        }
         public List<ConverterMessages> MessagesList_t {
             get {
                 return MessagesList;
+            }
+            set {
+                MessagesList = value;
             }
         }
         public string GetArgsForWinRar_t() {
@@ -401,12 +396,17 @@ namespace THelper {
             get {
                 return mainMajorLastVersion;
             }
+            set {
+                mainMajorLastVersion = value;
+            }
         }
-        //public void TestAddToInstalledVersions(string st) {
-        //    if (installedVersions == null)
-        //        installedVersions = new List<Version>();
-        //    installedVersions.Add(new Version(st));
-        //}
+        public void PrintConverterMessage_t(ConverterMessages msg, string key) {
+            PrintConverterMessage(msg, key);
+        }
+
+    public    int GetValueFromConsoleKey_t(ConsoleKey key) {
+            return GetValueFromConsoleKey(key);
+        }
         public void GetMessageInfo_t() {
             GetMessageInfo();
         }
@@ -433,6 +433,17 @@ namespace THelper {
         }
         public Version GetProjectUpgradeVersion_t(string projectUpgradeToolPath) {
             return GetProjectUpgradeVersion(projectUpgradeToolPath);
+        }
+        public Version currentProjectVersion_t {
+            get { return currentProjectVersion; }
+            set { currentProjectVersion = value; }
+        }
+     public   string GetMessageVersion_t(ConverterMessages msg) {
+            return GetMessageVersion(msg);
+        }
+        public Version currentInstalledMajor_t {
+            get { return currentInstalledMajor; }
+            set { currentInstalledMajor = value; }
         }
 #endif
     }

@@ -191,6 +191,7 @@ namespace THelper {
             //assert
             moqFile.Verify(x => x.SaveXDocument(It.IsAny<XDocument>(), st), Times.AtLeastOnce);
         }
+
     }
 
     [TestFixture]
@@ -862,7 +863,182 @@ namespace THelper {
             Assert.AreEqual(151, proc.mainMajorLastVersion_t.Major);
 
         }
-    
+        //[Category("TODO")]
+        [Test]
+        public void PrintMessage_isExample() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.dxsample");
+            var moqPrint = new Mock<IMessenger>();
+            proc.MyMessenger = moqPrint.Object;
+            proc.SetIsExample_t();
+            List<String> lst = new List<string>();
+
+            moqPrint.Setup(x => x.ConsoleWrite(It.IsAny<string>(),It.IsAny<ConsoleColor>())).Callback<string,ConsoleColor>((x,y) => lst.Add(x));
+            moqPrint.Setup(x => x.ConsoleReadKey(It.IsAny<bool>())).Returns(ConsoleKey.D1);
+            proc.MessagesList_t = new List<ConverterMessages>();
+            proc.MessagesList_t.Add(ConverterMessages.OpenFolder);
+            //act
+            proc.PrintMessage_t();
+            //assert
+            var res = lst.Where(x => x.StartsWith("example")).Count();
+            Assert.AreEqual(1, res);
+
+        }
+        [Test]
+        public void PrintMessagee() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            var moqPrint = new Mock<IMessenger>();
+            proc.MyMessenger = moqPrint.Object;
+            proc.SetIsExample_t();
+            proc.currentProjectVersion_t = Version.Zero;
+            List<String> lst = new List<string>();
+
+            moqPrint.Setup(x => x.ConsoleWrite(It.IsAny<string>(), It.IsAny<ConsoleColor>())).Callback<string, ConsoleColor>((x, y) => lst.Add(x));
+            moqPrint.Setup(x => x.ConsoleReadKey(It.IsAny<bool>())).Returns(ConsoleKey.D9);
+            proc.MessagesList_t = new List<ConverterMessages>();
+            //act
+         var v =  proc.PrintMessage_t();
+            //assert
+            Assert.AreEqual(ConverterMessages.OpenFolder, v);
+        }
+        [Test]
+        public void PrintMessagee_wrongnumber() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            var moqPrint = new Mock<IMessenger>();
+            proc.MyMessenger = moqPrint.Object;
+            proc.SetIsExample_t();
+            proc.currentProjectVersion_t = Version.Zero;
+            List<String> lst = new List<string>();
+
+            moqPrint.Setup(x => x.ConsoleWrite(It.IsAny<string>(), It.IsAny<ConsoleColor>())).Callback<string, ConsoleColor>((x, y) => lst.Add(x));
+            moqPrint.Setup(x => x.ConsoleReadKey(It.IsAny<bool>())).Returns(ConsoleKey.D8);
+            proc.MessagesList_t = new List<ConverterMessages>();
+            //act
+            var v = proc.PrintMessage_t();
+            //assert
+            Assert.AreEqual(ConverterMessages.OpenSolution, v);
+        }
+        [Test]
+        public void PrintMessage_Common() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            var moqPrint = new Mock<IMessenger>();
+            proc.MyMessenger = moqPrint.Object;
+            proc.MessagesList_t = new List<ConverterMessages>();
+            proc.MessagesList_t.Add(ConverterMessages.ExactConversion);
+            proc.MessagesList_t.Add(ConverterMessages.MainMajorLastVersion);
+            proc.MessagesList_t.Add(ConverterMessages.OpenFolder);
+            proc.mainMajorLastVersion_t = new Version("16.1.5");
+            proc.currentProjectVersion_t = new Version("15.2.14");
+            moqPrint.Setup(x => x.ConsoleReadKey(It.IsAny<bool>())).Returns(ConsoleKey.D2);
+            //act
+            proc.PrintMessage_t();
+            //assert
+            moqPrint.Verify(x => x.ConsoleWrite("152.14.0", ConsoleColor.Red), Times.Exactly(2));
+            moqPrint.Verify(x => x.ConsoleWrite("161.5.0", ConsoleColor.Red), Times.Once);
+            moqPrint.Verify(x => x.ConsoleWrite("To open folder press: "), Times.Once);
+
+        }
+        [Test]
+        public void PrintConverterMessage_OpenSolution() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            var moqPrint = new Mock<IMessenger>();
+            proc.MyMessenger = moqPrint.Object;
+            var lst = new List<string>();
+            //act
+            proc.PrintConverterMessage_t(ConverterMessages.OpenSolution, "1");
+            //assert
+            moqPrint.Verify(x => x.ConsoleWrite("To open solution press: "), Times.Once);
+            moqPrint.Verify(x => x.ConsoleWrite("1",ConsoleColor.Red), Times.Once);
+        }
+        [Test]
+        public void PrintConverterMessage_OpenFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            var moqPrint = new Mock<IMessenger>();
+            proc.MyMessenger = moqPrint.Object;
+            var lst = new List<string>();
+            //act
+            proc.PrintConverterMessage_t(ConverterMessages.OpenFolder, "2");
+            //assert
+            moqPrint.Verify(x => x.ConsoleWrite("To open folder press: "), Times.Once);
+            moqPrint.Verify(x => x.ConsoleWrite("9", ConsoleColor.Red), Times.Once);
+        }
+        [Test]
+        public void PrintConverterMessage_Plain() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            var moqPrint = new Mock<IMessenger>();
+            proc.MyMessenger = moqPrint.Object;
+            proc.currentProjectVersion_t = new Version("15.2.14");
+            var lst = new List<string>();
+            //act
+            proc.PrintConverterMessage_t(ConverterMessages.ExactConversion, "2");
+            //assert
+            //moqPrint.Verify(x => x.ConsoleWrite("To open folder press: "), Times.Once);
+            moqPrint.Verify(x => x.ConsoleWrite("152.14.0", ConsoleColor.Red), Times.Once);
+        }
+        [Test]
+        public void GetMessageVersion_exact() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            proc.currentProjectVersion_t = new Version("15.2.14");
+            //act
+            var st = proc.GetMessageVersion_t(ConverterMessages.ExactConversion);
+            //Assert
+            Assert.AreEqual("152.14.0", st);
+        }
+        [Test]
+        public void GetMessageVersion_LastMinor() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            proc.currentInstalledMajor_t = new Version("15.1.11");
+            //act
+            var st = proc.GetMessageVersion_t(ConverterMessages.LastMinor);
+            //Assert
+            Assert.AreEqual("151.11.0", st);
+        }
+        [Test]
+        public void GetMessageVersion_MainMajor() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            proc.mainMajorLastVersion_t = new Version("15.1.11");
+            //act
+            var st = proc.GetMessageVersion_t(ConverterMessages.MainMajorLastVersion);
+            //Assert
+            Assert.AreEqual("151.11.0", st);
+        }
+        [Test]
+        public void GetMessageVersion_Null() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            proc.mainMajorLastVersion_t = new Version("15.1.11");
+            //act
+            var st = proc.GetMessageVersion_t(ConverterMessages.OpenFolder);
+            //Assert
+            Assert.AreEqual(null, st);
+        }
+        [Test]
+        public void GetValueFromConsoleKey_Key() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            //act
+            var res = proc.GetValueFromConsoleKey_t(ConsoleKey.D4);
+            //assert
+            Assert.AreEqual(4, res);
+        }
+        [Test]
+        public void GetValueFromConsoleKey_Num() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor("test.csproj");
+            //act
+            var res = proc.GetValueFromConsoleKey_t(ConsoleKey.NumPad3);
+            //assert
+            Assert.AreEqual(3, res);
+        }
     }
 }
 
