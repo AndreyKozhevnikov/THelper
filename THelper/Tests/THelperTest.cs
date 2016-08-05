@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.IO;
 using Moq;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace THelper {
 
@@ -1296,6 +1297,7 @@ namespace THelper {
             csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
             csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
             csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
+            moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
             var lst2 = new List<string>();
             lst2.Add(@"C:\temp\15.1.8");
             lst2.Add(@"C:\temp\15.1.9");
@@ -1311,6 +1313,7 @@ namespace THelper {
             csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
             csMoq.Verify(x => x.RemoveLicense(), Times.Once);
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
+            moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
         }
         [Test]
         public void FindLastVersionOfMajor() {

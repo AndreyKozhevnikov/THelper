@@ -19,6 +19,7 @@ namespace THelper {
         List<string> GetRegistryVersions(string path);
         void ProcessStart(string path);
         void ProcessStart(string fileName, string arguments, bool _wait);
+        void ProcessStart(ProcessStartInfo startInfo);
         IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption);
         string[] DirectoryGetDirectories(string path);
     }
@@ -83,5 +84,11 @@ namespace THelper {
         public string[] DirectoryGetDirectories(string path) {
             return Directory.GetDirectories(path);
         }
+
+        public void ProcessStart(ProcessStartInfo startInfo) {
+            var p = Process.Start(startInfo);
+            p.WaitForExit();
+        }
+
     }
 }

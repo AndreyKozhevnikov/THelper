@@ -340,8 +340,9 @@ namespace THelper {
             string versionConverterFormat = v.ToString(true);
             //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
             psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat);
-            var proc = System.Diagnostics.Process.Start(psi);
-            proc.WaitForExit();
+            MyWorkWithFile.ProcessStart(psi);
+            //var proc = System.Diagnostics.Process.Start(psi);
+           // proc.WaitForExit();
         }
 
 
