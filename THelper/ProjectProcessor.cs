@@ -25,7 +25,7 @@ namespace THelper {
         public List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
         bool isExample;
-        bool isLibrariesPersist;
+        
         bool isMainMajor;
         Version mainMajorLastVersion;
         List<ConverterMessages> MessagesList;
@@ -261,7 +261,7 @@ namespace THelper {
                 UpgradeToMainMajorLastVersion();
             }
             else { //check how to avoid csProjProccessor.SaveNewCsProj();
-                if (!(currentProjectVersion.CompareTo(Version.Zero) == 0)) { //!there is no dx libs
+                if (!(currentProjectVersion.CompareTo(Version.Zero) == 0)) { //there are dx libs
                     csProjProccessor.RemoveLicense();
                     switch (message) {
                         case ConverterMessages.MainMajorLastVersion:
@@ -281,8 +281,8 @@ namespace THelper {
                             }
                             else {
                                 csProjProccessor.SaveNewCsProj();
-                                FindIfLibrariesPersist();
-                                if (isLibrariesPersist) {
+                               
+                                if (GetIfLibrariesPersist()) {
                                     break;
                                 }
                                 Version LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
@@ -292,8 +292,8 @@ namespace THelper {
                             break;
                         case ConverterMessages.ExactConversion:
                             csProjProccessor.SaveNewCsProj();
-                            FindIfLibrariesPersist();
-                            if (isLibrariesPersist) {
+                         
+                            if (GetIfLibrariesPersist()) {
                                 break;
                             }
                             ConvertProjectWithSvetaConverter(currentProjectVersion);
@@ -327,10 +327,10 @@ namespace THelper {
             return new Version(res);
         }
 
-        private void FindIfLibrariesPersist() {//14
+        private bool GetIfLibrariesPersist() {//14
             DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
             var v =MyWorkWithFile.DirectoryEnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
-            isLibrariesPersist = v.Count > 0;
+            return v.Count > 0;
         }
 
         private void ConvertProjectWithSvetaConverter(Version v) {//16
@@ -481,7 +481,7 @@ namespace THelper {
             GetCurrentVersion();
         }
         public void FindIfLibrariesPersist_t() {
-            FindIfLibrariesPersist();
+            GetIfLibrariesPersist();
         }
 
         public Version FindLastVersionOfMajor_t(int m) {

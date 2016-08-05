@@ -1315,6 +1315,289 @@ namespace THelper {
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
             moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
         }
+
+        [Test]
+        public void ProcessProject_DXProj_LastMinor_NoInstalled_LibrariesExist() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.zip");
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            proc.GetInstalledVersions_t();
+            proc.GetArgsForWinRar_t();
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            moqWrk.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var csMoq = new Mock<ICSProjProcessor>();
+            csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
+
+            proc.csProjProccessor_t = csMoq.Object;
+            proc.SetIsExample_t();
+
+            var mesMoq = new Mock<IMessenger>();
+            proc.MyMessenger = mesMoq.Object;
+            mesMoq.Setup(x => x.ConsoleReadKey(true)).Returns(ConsoleKey.D2);
+            proc.GetMessageInfo_t();
+            int i = 0;
+            csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
+            csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
+            csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
+            moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
+            var lst2 = new List<string>();
+            lst2.Add(@"C:\temp\15.1.8");
+            lst2.Add(@"C:\temp\15.1.9");
+            lst2.Add(@"C:\temp\15.1.15");
+            lst2.Add(@"C:\temp\15.2.13");
+            lst2.Add(@"C:\temp\13.2.7");
+            lst2.Add(@"C:\temp\13.2.13");
+            lst2.Add(@"C:\temp\14.1.3");
+            moqWrk.Setup(x => x.DirectoryGetDirectories(It.IsAny<string>())).Returns(lst2.ToArray());
+            moqWrk.Setup(x => x.DirectoryEnumerateFiles(It.IsAny<string>(), "DevExpress*.dll", SearchOption.AllDirectories)).Returns(new List<string>() { "test" });
+
+            //act
+            proc.ProcessProject_t(ConverterMessages.LastMinor);
+            //assert
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
+            csMoq.Verify(x => x.RemoveLicense(), Times.Once);
+            csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
+         //   moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+        }
+
+        [Test]
+        public void ProcessProject_DXProj_LastMinor_ExactConversion_LibraryExist() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.zip");
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            proc.GetInstalledVersions_t();
+            proc.GetArgsForWinRar_t();
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            moqWrk.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var csMoq = new Mock<ICSProjProcessor>();
+            csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
+
+            proc.csProjProccessor_t = csMoq.Object;
+            proc.SetIsExample_t();
+
+            var mesMoq = new Mock<IMessenger>();
+            proc.MyMessenger = mesMoq.Object;
+            mesMoq.Setup(x => x.ConsoleReadKey(true)).Returns(ConsoleKey.D2);
+            proc.GetMessageInfo_t();
+            int i = 0;
+            csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
+            csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
+            csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
+            
+            var lst2 = new List<string>();
+            lst2.Add(@"C:\temp\15.1.8");
+            lst2.Add(@"C:\temp\15.1.9");
+            lst2.Add(@"C:\temp\15.1.15");
+            lst2.Add(@"C:\temp\15.2.13");
+            lst2.Add(@"C:\temp\13.2.7");
+            lst2.Add(@"C:\temp\13.2.13");
+            lst2.Add(@"C:\temp\14.1.3");
+            moqWrk.Setup(x => x.DirectoryGetDirectories(It.IsAny<string>())).Returns(lst2.ToArray());
+            moqWrk.Setup(x => x.DirectoryEnumerateFiles(It.IsAny<string>(), "DevExpress*.dll", SearchOption.AllDirectories)).Returns(new List<string>() { "test" });
+
+            //act
+            proc.ProcessProject_t(ConverterMessages.ExactConversion);
+            //assert
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
+            csMoq.Verify(x => x.RemoveLicense(), Times.Once);
+            csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
+            //   moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+        }
+
+        [Test]
+        public void ProcessProject_DXProj_LastMinor_ExactConversion_LibraryNOtExist() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.zip");
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            proc.GetInstalledVersions_t();
+            proc.GetArgsForWinRar_t();
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            moqWrk.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var csMoq = new Mock<ICSProjProcessor>();
+            csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
+
+            proc.csProjProccessor_t = csMoq.Object;
+            proc.SetIsExample_t();
+
+            var mesMoq = new Mock<IMessenger>();
+            proc.MyMessenger = mesMoq.Object;
+            mesMoq.Setup(x => x.ConsoleReadKey(true)).Returns(ConsoleKey.D2);
+            proc.GetMessageInfo_t();
+            int i = 0;
+            csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
+            csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
+            csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
+            moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
+            var lst2 = new List<string>();
+            lst2.Add(@"C:\temp\15.1.8");
+            lst2.Add(@"C:\temp\15.1.9");
+            lst2.Add(@"C:\temp\15.1.15");
+            lst2.Add(@"C:\temp\15.2.13");
+            lst2.Add(@"C:\temp\13.2.7");
+            lst2.Add(@"C:\temp\13.2.13");
+            lst2.Add(@"C:\temp\14.1.3");
+            moqWrk.Setup(x => x.DirectoryGetDirectories(It.IsAny<string>())).Returns(lst2.ToArray());
+
+            //act
+            proc.ProcessProject_t(ConverterMessages.ExactConversion);
+            //assert
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
+            csMoq.Verify(x => x.RemoveLicense(), Times.Once);
+            csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
+               moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+        }
+
+        [Test]
+        public void ProcessProject_DXProj_LastMinor_DefaultValue() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testproject.zip");
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            proc.GetInstalledVersions_t();
+            proc.GetArgsForWinRar_t();
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            moqWrk.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var csMoq = new Mock<ICSProjProcessor>();
+            csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
+
+            proc.csProjProccessor_t = csMoq.Object;
+            proc.SetIsExample_t();
+
+            var mesMoq = new Mock<IMessenger>();
+            proc.MyMessenger = mesMoq.Object;
+            mesMoq.Setup(x => x.ConsoleReadKey(true)).Returns(ConsoleKey.D2);
+            proc.GetMessageInfo_t();
+            int i = 0;
+            csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
+            csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
+            csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
+            moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
+            var lst2 = new List<string>();
+            lst2.Add(@"C:\temp\15.1.8");
+            lst2.Add(@"C:\temp\15.1.9");
+            lst2.Add(@"C:\temp\15.1.15");
+            lst2.Add(@"C:\temp\15.2.13");
+            lst2.Add(@"C:\temp\13.2.7");
+            lst2.Add(@"C:\temp\13.2.13");
+            lst2.Add(@"C:\temp\14.1.3");
+            moqWrk.Setup(x => x.DirectoryGetDirectories(It.IsAny<string>())).Returns(lst2.ToArray());
+
+            //act
+            proc.ProcessProject_t(ConverterMessages.OpenSolution);
+            //assert
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
+            csMoq.Verify(x => x.RemoveLicense(), Times.Once);
+            csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
+            //moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+        }
+        [Test]
+        public void ProcessProject_NOtDXProj() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testsolution.zip");
+            var moqWrk = new Mock<IWorkWithFile>();
+            var lst = new List<string>();
+            lst.Add(@"C:\Program Files (x86)\DevExpress 15.1\Components\");
+            lst.Add(@"C:\Program Files (x86)\DevExpress 14.2\Components\");
+            moqWrk.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 14.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqWrk.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            proc.MyWorkWithFile = moqWrk.Object;
+            proc.GetInstalledVersions_t();
+            proc.GetArgsForWinRar_t();
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+           // st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+
+            moqWrk.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            var csMoq = new Mock<ICSProjProcessor>();
+            csMoq.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero);
+
+            proc.csProjProccessor_t = csMoq.Object;
+            proc.SetIsExample_t();
+
+            var mesMoq = new Mock<IMessenger>();
+            proc.MyMessenger = mesMoq.Object;
+            mesMoq.Setup(x => x.ConsoleReadKey(true)).Returns(ConsoleKey.D2);
+            proc.GetMessageInfo_t();
+            int i = 0;
+           // csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
+           // csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
+            csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
+            moqWrk.Setup(x => x.ProcessStart(@"c:\test\testsolution\testsolution.sln")).Callback(() => Assert.That(i++, Is.EqualTo(1)));
+            //  moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
+            var lst2 = new List<string>();
+            lst2.Add(@"C:\temp\15.1.8");
+            lst2.Add(@"C:\temp\15.1.9");
+            lst2.Add(@"C:\temp\15.1.15");
+            lst2.Add(@"C:\temp\15.2.13");
+            lst2.Add(@"C:\temp\13.2.7");
+            lst2.Add(@"C:\temp\13.2.13");
+            lst2.Add(@"C:\temp\14.1.3");
+            moqWrk.Setup(x => x.DirectoryGetDirectories(It.IsAny<string>())).Returns(lst2.ToArray());
+
+            //act
+            proc.ProcessProject_t(ConverterMessages.OpenSolution);
+            //assert
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
+          
+            csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
+            moqWrk.Verify(x => x.ProcessStart(It.IsAny<string>()), Times.Once);
+            //moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+        }
         [Test]
         public void FindLastVersionOfMajor() {
             //arrange
