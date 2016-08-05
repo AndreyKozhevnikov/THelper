@@ -91,7 +91,7 @@ namespace THelper {
         }
         void GetMessageInfo() {//4 td
             MessagesList = new List<ConverterMessages>();
-            csProjProccessor = new CSProjProcessor(cspath, MyWorkWithFile);
+            csProjProccessor = CreateCSProjProcessor();
             GetInstalledVersions();
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
@@ -149,6 +149,13 @@ namespace THelper {
             MessagesList.Add(ConverterMessages.OpenFolder);
 
         }
+
+        private ICSProjProcessor CreateCSProjProcessor() { //how to get rid off?
+            if (csProjProccessor == null)
+                csProjProccessor = new CSProjProcessor(cspath, MyWorkWithFile);
+            return csProjProccessor;
+        }
+
         void GetInstalledVersions() {//5 td
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
@@ -278,7 +285,7 @@ namespace THelper {
                                 if (isLibrariesPersist) {
                                     break;
                                 }
-                                Version LastMinorOfCurrentMajor = FindLastVersionOfMajor();
+                                Version LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
 
                                 ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
                             }
@@ -309,10 +316,11 @@ namespace THelper {
             string _projPath = "\"" + solutionFolderName + "\"";
             MyWorkWithFile.ProcessStart(mmlvConverterPath, _projPath, true);
         }
-        private Version FindLastVersionOfMajor() {//15
-            var maj = currentProjectVersion.Major;
+        private Version FindLastVersionOfMajor(int major) {//15tt
+            var maj = major;
             List<string> directories = new List<string>();
-            foreach (string directory in Directory.GetDirectories(@"\\CORP\builds\release\DXDlls\"))
+            string[] dxDirectories =MyWorkWithFile.DirectoryGetDirectories(@"\\CORP\builds\release\DXDlls\");
+            foreach (string directory in dxDirectories)
                 directories.Add(Path.GetFileName(directory));
             directories.Sort(new VersionComparer());
             var res = directories.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
@@ -321,7 +329,7 @@ namespace THelper {
 
         private void FindIfLibrariesPersist() {//14
             DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
-            var v = Directory.EnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
+            var v =MyWorkWithFile.DirectoryEnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
             isLibrariesPersist = v.Count > 0;
         }
 
@@ -467,6 +475,16 @@ namespace THelper {
         public ICSProjProcessor csProjProccessor_t {
             get { return csProjProccessor; }
             set { csProjProccessor = value; }
+        }
+        public void GetCurrentVersion_t() {
+            GetCurrentVersion();
+        }
+        public void FindIfLibrariesPersist_t() {
+            FindIfLibrariesPersist();
+        }
+
+        public Version FindLastVersionOfMajor_t(int m) {
+            return FindLastVersionOfMajor(m);
         }
 #endif
     }

@@ -19,6 +19,8 @@ namespace THelper {
         List<string> GetRegistryVersions(string path);
         void ProcessStart(string path);
         void ProcessStart(string fileName, string arguments, bool _wait);
+        IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption);
+        string[] DirectoryGetDirectories(string path);
     }
 
     public class CustomWorkWithFile : IWorkWithFile {
@@ -72,6 +74,14 @@ namespace THelper {
         public void ProcessStart(string fileName, string arguments, bool wait) {
             var p = Process.Start(fileName, arguments);
             p.WaitForExit();
+        }
+
+        public IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption) {
+            return Directory.EnumerateFiles(path, searchPattern, searchOption);
+        }
+
+        public string[] DirectoryGetDirectories(string path) {
+            return Directory.GetDirectories(path);
         }
     }
 }
