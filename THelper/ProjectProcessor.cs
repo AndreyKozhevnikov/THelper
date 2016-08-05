@@ -305,7 +305,7 @@ namespace THelper {
 
         }
 
-        private void UpgradeToMainMajorLastVersion() {//13 tt
+        private void UpgradeToMainMajorLastVersion() {//13 tt 
             string _projPath = "\"" + solutionFolderName + "\"";
             MyWorkWithFile.ProcessStart(mmlvConverterPath, _projPath, true);
         }
