@@ -1297,7 +1297,7 @@ namespace THelper {
             csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
             csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
             csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
-            moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
+            moqWrk.Setup(x => x.ProcessStart(It.IsAny<string>(),It.IsAny<string>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
             var lst2 = new List<string>();
             lst2.Add(@"C:\temp\15.1.8");
             lst2.Add(@"C:\temp\15.1.9");
@@ -1313,7 +1313,7 @@ namespace THelper {
             csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
             csMoq.Verify(x => x.RemoveLicense(), Times.Once);
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
-            moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+            moqWrk.Verify(x => x.ProcessStart(It.IsAny<string>(),It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -1466,7 +1466,7 @@ namespace THelper {
             csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
             csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
             csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
-            moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
+            moqWrk.Setup(x => x.ProcessStart(It.IsAny<string>(),It.IsAny<string>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
             var lst2 = new List<string>();
             lst2.Add(@"C:\temp\15.1.8");
             lst2.Add(@"C:\temp\15.1.9");
@@ -1483,7 +1483,7 @@ namespace THelper {
             csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
             csMoq.Verify(x => x.RemoveLicense(), Times.Once);
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
-            moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+            moqWrk.Verify(x => x.ProcessStart(It.IsAny<string>(),It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -1617,25 +1617,38 @@ namespace THelper {
             Assert.AreEqual(15, v.Minor);
         }
 
+
+
+    }
+    [TestFixture]
+    public class Test_TEst {
         [Test]
         public void TestClass() {
             //arrange
             TestClass t = new TestClass();
             var moq = new Mock<ITestInterFace>();
             t.MyProcessor = moq.Object;
-            var seq = new MockSequence();
+          
 
-            int i = 0;
-            moq.Setup(x => x.Test1()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
-            moq.Setup(x => x.Test2()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
-            moq.Setup(x => x.Test3()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
+            int i = -1;
+            int tmpK = 0;
+        //    moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
+            moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
+
+            moq.Setup(x => x.Test2()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
+            moq.Setup(x => x.Test3()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
 
             t.MyMethod();
 
+            Assert.AreEqual(3, tmpK);
         }
-
     }
-
+    public static class MyExtensions {
+        public static object Do(this object o, Action a){
+            a.Invoke();
+            return o;
+        }
+    }
     public interface ITestInterFace {
         void Test1();
         void Test2();
@@ -1648,6 +1661,7 @@ namespace THelper {
             MyProcessor.Test1();
             MyProcessor.Test2();
             MyProcessor.Test3();
+           
 
         }
     }
@@ -1655,24 +1669,24 @@ namespace THelper {
 #endif
 
     [TestFixture]
-    public class HeavyTest {
+    public class HeavyTests {
         [Test]
         public void SimpleFolder() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\archinveWithImages.zip");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = 0;
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(0)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(1)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(2)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(3)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(4)));
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\archinveWithImages")).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(5)));
+            int callConsequenceCount = -1;
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\archinveWithImages")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
             //act
             proc.ProcessArchive();
             //assert
-            Assert.AreEqual(6, callConsequenceCount);
+            Assert.AreEqual(5, callConsequenceCount);
         }
         [Test]
         public void Example_MMLVinstalled_OpenSolution() {
@@ -1681,46 +1695,654 @@ namespace THelper {
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
             int callConsequenceCount = -1;
-            int tmpK = 0;
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             proc.csProjProccessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
-            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
             var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
             proc.MyMessenger = moqMessage.Object;
 
-            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
             moqMessage.Setup(x => x.ConsoleWriteLine());
-            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
 
-            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
 
-            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-           
-            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
-            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
             //act
             proc.ProcessArchive();
             //assert
-            Assert.AreEqual(18,callConsequenceCount);
+            Assert.AreEqual(18, callConsequenceCount);
             //moqFile.Verify(x => x.CreateDirectory(@"c:\test\archinveWithImages"), Times.Once);
             //moqFile.Verify(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages"""), Times.Once);
+        }
+
+        [Test] //++
+        public void Example_MMLVNOTinstalled_OpenSolution() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
+            moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(18, callConsequenceCount);
+        }
+
+        [Test]
+        public void Example_OpenFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+
+            //moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            //moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(15, callConsequenceCount);
+            //moqFile.Verify(x => x.CreateDirectory(@"c:\test\archinveWithImages"), Times.Once);
+            //moqFile.Verify(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages"""), Times.Once);
+        }
+
+
+        [Test]
+        public void Solution_without_dxlibs_opensolution() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.zip"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("0.0.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(17, callConsequenceCount);
+        }
+        [Test]
+        public void Solution_without_dxlibs_openFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.zip"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("0.0.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+
+            //moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            //moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(15, callConsequenceCount);
+        }
+
+        [Test]
+        public void MainMajorLastMinor_OpenSolution() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.4")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+            moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
+            //moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(18, callConsequenceCount);
+        }
+        [Test]
+        public void MainMajorLastMinor_OpenFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+    
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.4")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+
+            //moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            //moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(15, callConsequenceCount);
+        }
+
+        [Test]
+        public void MainMajorMinor0_MainMajorLastVersion() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+   
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.0")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.0.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(19)));
+
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(20)));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(21)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(21, callConsequenceCount);
+        }
+        [Test]
+        public void MainMajorMinor0_OpenFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+          
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.0")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.0.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
+
+            //moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            //moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(17, callConsequenceCount);
+        }
+
+        [Test]
+        public void MainMajorNoLastMinor_MainMajorLastVersion() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+        
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9, 15)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10,14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12,16)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10, 14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9,15)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12, 16)));
+            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(19)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(20)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(21)));
+            moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(22)));
+            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(23)));
+
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(24)));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(25)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(25, callConsequenceCount);
+        }
+        [Test]
+        public void MainMajorNotLastMinor_ExactConversion_NotLibraries() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+          
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9,15)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10,14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12,16)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10, 14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9, 15)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12, 16)));
+            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(19)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.NumPad2).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(20)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(21)));
+            moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(22)));
+            //   moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(23)));
+            moqFile.Setup(x => x.DirectoryEnumerateFiles(@"c:\test\testSolution", "DevExpress*.dll", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(24)));
+            var arguments = string.Format("{0} {1}", @"c:\test\testSolution", "16.1.2");
+            moqFile.Setup(x => x.ProcessStart(@"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe", arguments)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(25)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(26)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(26, callConsequenceCount);
+        }
+        [Test]
+        public void MainMajorNotLastMinor_ExactConversion_LibrariesExist() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+            
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9,15)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10,14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12,16)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10, 14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9, 15)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12, 16)));
+            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(19)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.NumPad2).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(20)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(21)));
+            moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(22)));
+            //   moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(23)));
+            moqFile.Setup(x => x.DirectoryEnumerateFiles(@"c:\test\testSolution", "DevExpress*.dll", SearchOption.AllDirectories)).Returns(new string[] { "test" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(24)));
+
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(25)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(25, callConsequenceCount);
+        }
+
+        [Test]
+        public void MainMajorNoLastMinor_OpenFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+    
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9,15)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10,14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12,16)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(10, 14)));
+            moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(9, 15)));
+            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange<int>(12, 16)));
+            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(19)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(20)));
+
+            //moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            //moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(21)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(21, callConsequenceCount);
         }
     }
 }

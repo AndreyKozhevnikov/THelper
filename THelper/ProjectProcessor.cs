@@ -263,6 +263,7 @@ namespace THelper {
                     csProjProccessor.SaveNewCsProj();
                 }
                 else {
+                     csProjProccessor.SaveNewCsProj();
                     UpgradeToMainMajorLastVersion();
                 }
             }
@@ -347,7 +348,7 @@ namespace THelper {
             string versionConverterFormat = v.ToString(true);
             //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
             psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat);
-            MyWorkWithFile.ProcessStart(psi);
+            MyWorkWithFile.ProcessStart(psi.FileName,psi.Arguments);
             //var proc = System.Diagnostics.Process.Start(psi);
             // proc.WaitForExit();
         }

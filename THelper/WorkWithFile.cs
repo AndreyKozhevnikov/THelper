@@ -73,7 +73,7 @@ namespace THelper {
             projDocument.Save(projectPath);
         }
 
-        public void ProcessStart(string fileName, string arguments, bool wait) {
+        public void ProcessStart(string fileName, string arguments, bool wait) { //???
             var p = Process.Start(fileName, arguments);
             p.WaitForExit();
         }
