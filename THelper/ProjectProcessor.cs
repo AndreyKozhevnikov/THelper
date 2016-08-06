@@ -25,7 +25,7 @@ namespace THelper {
         public List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
         bool isExample;
-        
+
         bool isMainMajor;
         Version mainMajorLastVersion;
         List<ConverterMessages> MessagesList;
@@ -52,8 +52,7 @@ namespace THelper {
         void ExtractFiles() { //1.2
             string winRarPath = Properties.Settings.Default.WinRarPath;
             string argsFullWinRar = GetArgsForWinRar();
-            var winrarProc = Process.Start(winRarPath, argsFullWinRar);
-            winrarProc.WaitForExit();
+            MyWorkWithFile.ProcessStart(winRarPath, argsFullWinRar);
         }
 
         string GetArgsForWinRar() {//1.2.1 /tt
@@ -257,8 +256,16 @@ namespace THelper {
                 return;
             }
             csProjProccessor.DisableUseVSHostingProcess();
+
+
             if (isExample) {
-                UpgradeToMainMajorLastVersion();
+                if (isMainMajor) {
+                    csProjProccessor.SetSpecificVersionFalse();
+                    csProjProccessor.SaveNewCsProj();
+                }
+                else {
+                    UpgradeToMainMajorLastVersion();
+                }
             }
             else { //check how to avoid csProjProccessor.SaveNewCsProj();
                 if (!(currentProjectVersion.CompareTo(Version.Zero) == 0)) { //there are dx libs
@@ -281,7 +288,7 @@ namespace THelper {
                             }
                             else {
                                 csProjProccessor.SaveNewCsProj();
-                               
+
                                 if (GetIfLibrariesPersist()) {
                                     break;
                                 }
@@ -292,7 +299,7 @@ namespace THelper {
                             break;
                         case ConverterMessages.ExactConversion:
                             csProjProccessor.SaveNewCsProj();
-                         
+
                             if (GetIfLibrariesPersist()) {
                                 break;
                             }
@@ -303,6 +310,7 @@ namespace THelper {
                             break;
                     }
                 }
+
                 else {
                     csProjProccessor.SaveNewCsProj();
                 }
@@ -319,7 +327,7 @@ namespace THelper {
         private Version FindLastVersionOfMajor(int major) {//15tt
             var maj = major;
             List<string> directories = new List<string>();
-            string[] dxDirectories =MyWorkWithFile.DirectoryGetDirectories(@"\\CORP\builds\release\DXDlls\");
+            string[] dxDirectories = MyWorkWithFile.DirectoryGetDirectories(@"\\CORP\builds\release\DXDlls\");
             foreach (string directory in dxDirectories)
                 directories.Add(Path.GetFileName(directory));
             directories.Sort(new VersionComparer());
@@ -329,7 +337,7 @@ namespace THelper {
 
         private bool GetIfLibrariesPersist() {//14
             DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
-            var v =MyWorkWithFile.DirectoryEnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
+            var v = MyWorkWithFile.DirectoryEnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
             return v.Count > 0;
         }
 
@@ -342,7 +350,7 @@ namespace THelper {
             psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat);
             MyWorkWithFile.ProcessStart(psi);
             //var proc = System.Diagnostics.Process.Start(psi);
-           // proc.WaitForExit();
+            // proc.WaitForExit();
         }
 
 

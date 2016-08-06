@@ -20,6 +20,7 @@ namespace THelper {
         void ProcessStart(string path);
         void ProcessStart(string fileName, string arguments, bool _wait);
         void ProcessStart(ProcessStartInfo startInfo);
+        void ProcessStart(string fileName, string arguments);
         IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption);
         string[] DirectoryGetDirectories(string path);
     }
@@ -90,5 +91,11 @@ namespace THelper {
             p.WaitForExit();
         }
 
+
+
+        public void ProcessStart(string fileName, string arguments) {
+            var p = Process.Start(fileName,arguments);
+            p.WaitForExit();
+        }
     }
 }

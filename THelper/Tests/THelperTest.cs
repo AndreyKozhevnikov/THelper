@@ -1653,6 +1653,54 @@ namespace THelper {
     }
 
 #endif
+
+    [TestFixture]
+    public class HeavyTest {
+        [Test]
+        public void SimpleFolder() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\archinveWithImages.zip");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = 0;
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(3)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(4)));
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\archinveWithImages")).Callback(() => Assert.That(callConsequenceCount++, Is.EqualTo(5)));
+            //act
+            proc.ProcessArchive();
+            //assert
+            Assert.AreEqual(6, callConsequenceCount);
+        }
+        [Test]
+        public void Example_MMLVinstalled() {
+            //arrange
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            proc.MyWorkWithFile = moqFile.Object;
+            int callConsequenceCount = -1;
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProccessor_t = moqCSProj.Object;
+               var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            //act
+            proc.ProcessArchive();
+            //assert
+          
+            //moqFile.Verify(x => x.CreateDirectory(@"c:\test\archinveWithImages"), Times.Once);
+            //moqFile.Verify(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages"""), Times.Once);
+        }
+    }
 }
 
 
