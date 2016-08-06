@@ -569,7 +569,7 @@ namespace THelper {
             mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
-            
+
             //act
             proc.GetMessageInfo_t();
 
@@ -600,7 +600,7 @@ namespace THelper {
             mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
-            
+
             //act
             proc.GetMessageInfo_t();
 
@@ -631,7 +631,7 @@ namespace THelper {
             mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
-            
+
 
             //act
             proc.GetMessageInfo_t();
@@ -692,7 +692,7 @@ namespace THelper {
             mock.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lst);
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             mock.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.1.13.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
-            
+
             //act
             proc.GetMessageInfo_t();
 
@@ -826,7 +826,7 @@ namespace THelper {
             var moqWrk = new Mock<IWorkWithFile>();
             moqWrk.Setup(x => x.AssemblyLoadFileFullName(stPath)).Returns("ProjectConverter, Version=14.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
             proc.MyWorkWithFile = moqWrk.Object;
-        
+
             //act
             var vers = proc.GetProjectUpgradeVersion_t(stPath);
             //assert
@@ -875,7 +875,7 @@ namespace THelper {
             proc.SetIsExample_t();
             List<String> lst = new List<string>();
 
-            moqPrint.Setup(x => x.ConsoleWrite(It.IsAny<string>(),It.IsAny<ConsoleColor>())).Callback<string,ConsoleColor>((x,y) => lst.Add(x));
+            moqPrint.Setup(x => x.ConsoleWrite(It.IsAny<string>(), It.IsAny<ConsoleColor>())).Callback<string, ConsoleColor>((x, y) => lst.Add(x));
             moqPrint.Setup(x => x.ConsoleReadKey(It.IsAny<bool>())).Returns(ConsoleKey.D1);
             proc.MessagesList_t = new List<ConverterMessages>();
             proc.MessagesList_t.Add(ConverterMessages.OpenFolder);
@@ -900,7 +900,7 @@ namespace THelper {
             moqPrint.Setup(x => x.ConsoleReadKey(It.IsAny<bool>())).Returns(ConsoleKey.D9);
             proc.MessagesList_t = new List<ConverterMessages>();
             //act
-         var v =  proc.PrintMessage_t();
+            var v = proc.PrintMessage_t();
             //assert
             Assert.AreEqual(ConverterMessages.OpenFolder, v);
         }
@@ -954,7 +954,7 @@ namespace THelper {
             proc.PrintConverterMessage_t(ConverterMessages.OpenSolution, "1");
             //assert
             moqPrint.Verify(x => x.ConsoleWrite("To open solution press: "), Times.Once);
-            moqPrint.Verify(x => x.ConsoleWrite("1",ConsoleColor.Red), Times.Once);
+            moqPrint.Verify(x => x.ConsoleWrite("1", ConsoleColor.Red), Times.Once);
         }
         [Test]
         public void PrintConverterMessage_OpenFolder() {
@@ -1118,7 +1118,7 @@ namespace THelper {
             proc.GetInstalledVersions_t();
             proc.GetArgsForWinRar_t();
             var csMoq = new Mock<ICSProjProcessor>();
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             //act
@@ -1151,8 +1151,8 @@ namespace THelper {
             moqWrk.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.1.8"));
-       
-            proc.csProjProccessor_t = csMoq.Object;
+
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1195,7 +1195,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.6"));
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1209,10 +1209,10 @@ namespace THelper {
             //act
             proc.ProcessProject_t(ConverterMessages.MainMajorLastVersion);
             //assert
-            csMoq.Verify(x => x.DisableUseVSHostingProcess(),Times.Once);
-            csMoq.Verify(x => x.RemoveLicense(),Times.Once);
-            csMoq.Verify(x => x.SaveNewCsProj(),Times.Once);
-            moqWrk.Verify(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\testproject""",true), Times.Once);
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
+            csMoq.Verify(x => x.RemoveLicense(), Times.Once);
+            csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
+            moqWrk.Verify(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 15.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\testproject""", true), Times.Once);
         }
 
         [Test]
@@ -1240,7 +1240,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.7"));
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1255,7 +1255,7 @@ namespace THelper {
             //act
             proc.ProcessProject_t(ConverterMessages.LastMinor);
             //assert
-            csMoq.Verify(x => x.DisableUseVSHostingProcess(),Times.Once);
+            csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
             csMoq.Verify(x => x.RemoveLicense(), Times.Once);
             csMoq.Verify(x => x.SetSpecificVersionFalse(), Times.Once);
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
@@ -1286,7 +1286,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1341,7 +1341,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1370,7 +1370,7 @@ namespace THelper {
             csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
             csMoq.Verify(x => x.RemoveLicense(), Times.Once);
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
-         //   moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+            //   moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
         }
 
         [Test]
@@ -1398,7 +1398,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1409,7 +1409,7 @@ namespace THelper {
             csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
             csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
             csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
-            
+
             var lst2 = new List<string>();
             lst2.Add(@"C:\temp\15.1.8");
             lst2.Add(@"C:\temp\15.1.9");
@@ -1455,7 +1455,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1483,7 +1483,7 @@ namespace THelper {
             csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
             csMoq.Verify(x => x.RemoveLicense(), Times.Once);
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
-               moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
+            moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
         }
 
         [Test]
@@ -1511,7 +1511,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(new Version("13.2.6"));
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1558,7 +1558,7 @@ namespace THelper {
             string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
             st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
             st = st + "  <ItemGroup>";
-           // st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            // st = st + "   <Reference Include=\"DevExpress.Data.v14.2, Version=14.2.2.0  Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
             st = st + "  </ItemGroup>";
             st = st + " </Project>";
 
@@ -1566,7 +1566,7 @@ namespace THelper {
             var csMoq = new Mock<ICSProjProcessor>();
             csMoq.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero);
 
-            proc.csProjProccessor_t = csMoq.Object;
+            proc.csProjProccessor = csMoq.Object;
             proc.SetIsExample_t();
 
             var mesMoq = new Mock<IMessenger>();
@@ -1574,8 +1574,8 @@ namespace THelper {
             mesMoq.Setup(x => x.ConsoleReadKey(true)).Returns(ConsoleKey.D2);
             proc.GetMessageInfo_t();
             int i = 0;
-           // csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
-           // csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
+            // csMoq.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
+            // csMoq.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
             csMoq.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
             moqWrk.Setup(x => x.ProcessStart(@"c:\test\testsolution\testsolution.sln")).Callback(() => Assert.That(i++, Is.EqualTo(1)));
             //  moqWrk.Setup(x => x.ProcessStart(It.IsAny<ProcessStartInfo>())).Callback(() => Assert.That(i++, Is.EqualTo(3)));
@@ -1593,7 +1593,7 @@ namespace THelper {
             proc.ProcessProject_t(ConverterMessages.OpenSolution);
             //assert
             csMoq.Verify(x => x.DisableUseVSHostingProcess(), Times.Once);
-          
+
             csMoq.Verify(x => x.SaveNewCsProj(), Times.Once);
             moqWrk.Verify(x => x.ProcessStart(It.IsAny<string>()), Times.Once);
             //moqWrk.Verify(x => x.ProcessStart(It.IsAny<ProcessStartInfo>()), Times.Once);
@@ -1612,7 +1612,7 @@ namespace THelper {
             lst.Add(@"C:\temp\14.1.3");
             wrkMock.Setup(x => x.DirectoryGetDirectories(It.IsAny<string>())).Returns(lst.ToArray());
             //act
-            var v= proc.FindLastVersionOfMajor_t(151);
+            var v = proc.FindLastVersionOfMajor_t(151);
             //assert
             Assert.AreEqual(15, v.Minor);
         }
@@ -1626,14 +1626,14 @@ namespace THelper {
             var seq = new MockSequence();
 
             int i = 0;
-            moq.Setup(x => x.Test1()).Callback(() => Assert.That(i++,Is.EqualTo(0)));
+            moq.Setup(x => x.Test1()).Callback(() => Assert.That(i++, Is.EqualTo(0)));
             moq.Setup(x => x.Test2()).Callback(() => Assert.That(i++, Is.EqualTo(1)));
             moq.Setup(x => x.Test3()).Callback(() => Assert.That(i++, Is.EqualTo(2)));
 
             t.MyMethod();
 
         }
-        
+
     }
 
     public interface ITestInterFace {
@@ -1648,7 +1648,7 @@ namespace THelper {
             MyProcessor.Test1();
             MyProcessor.Test2();
             MyProcessor.Test3();
-         
+
         }
     }
 
@@ -1675,28 +1675,50 @@ namespace THelper {
             Assert.AreEqual(6, callConsequenceCount);
         }
         [Test]
-        public void Example_MMLVinstalled() {
+        public void Example_MMLVinstalled_OpenSolution() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
             int callConsequenceCount = -1;
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            int tmpK = 0;
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor_t = moqCSProj.Object;
-               var lstRegistryVersions = new List<string>();
+            proc.csProjProccessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
-            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
+            proc.MyMessenger = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+           
+            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
+
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(tmpK++)));
             //act
             proc.ProcessArchive();
             //assert
-          
+            Assert.AreEqual(18,callConsequenceCount);
             //moqFile.Verify(x => x.CreateDirectory(@"c:\test\archinveWithImages"), Times.Once);
             //moqFile.Verify(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages"""), Times.Once);
         }

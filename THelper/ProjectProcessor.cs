@@ -19,7 +19,6 @@ namespace THelper {
     public class ProjectProcessor {
         string archiveFilePath;
         string cspath;
-        ICSProjProcessor csProjProccessor;
         Version currentInstalledMajor;
         Version currentProjectVersion;
         public List<Version> installedVersions;
@@ -36,6 +35,7 @@ namespace THelper {
 
         public IWorkWithFile MyWorkWithFile;
         public IMessenger MyMessenger;
+       public ICSProjProcessor csProjProccessor;
 
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
@@ -92,12 +92,11 @@ namespace THelper {
             MessagesList = new List<ConverterMessages>();
             csProjProccessor = CreateCSProjProcessor();
             GetInstalledVersions();
+            GetCurrentVersion();
+            isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
             if (isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
-
-                GetCurrentVersion();
-
                 if (currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
                 }
@@ -106,7 +105,7 @@ namespace THelper {
                     currentInstalledMajor = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                     isCurrentVersionMajorInstalled = currentInstalledMajor != null;
                     if (isCurrentVersionMajorInstalled) {
-                        isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
+                     
                         if (isMainMajor) {
                             if (currentProjectVersion.CompareTo(mainMajorLastVersion) == 0) {
                                 MessagesList.Add(ConverterMessages.OpenSolution);
@@ -481,10 +480,7 @@ namespace THelper {
             get { return currentInstalledMajor; }
             set { currentInstalledMajor = value; }
         }
-        public ICSProjProcessor csProjProccessor_t {
-            get { return csProjProccessor; }
-            set { csProjProccessor = value; }
-        }
+    
         public void GetCurrentVersion_t() {
             GetCurrentVersion();
         }
