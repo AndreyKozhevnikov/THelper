@@ -139,7 +139,8 @@ namespace THelper {
                         }
                     }
                     else {
-                        if (currentProjectVersion.Minor == 0 ) {
+                        LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
+                        if (currentProjectVersion.Minor == 0 || currentProjectVersion.Minor == LastMinorOfCurrentMajor.Minor) {
                             MessagesList.Add(ConverterMessages.LastMinor);
                             MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                         }
@@ -238,7 +239,7 @@ namespace THelper {
                     return currentProjectVersion.ToString();
                 case ConverterMessages.LastMinor:
                     if (currentInstalledMajor == null) {
-                         LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
+                    
                          return LastMinorOfCurrentMajor.ToString();
                     }
                     return currentInstalledMajor.ToString();
