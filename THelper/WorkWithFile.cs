@@ -23,6 +23,7 @@ namespace THelper {
         void ProcessStart(string fileName, string arguments);
         IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption);
         string[] DirectoryGetDirectories(string path);
+        string StreamReaderReadToEnd(string path);
     }
 
     public class CustomWorkWithFile : IWorkWithFile {
@@ -96,6 +97,15 @@ namespace THelper {
         public void ProcessStart(string fileName, string arguments) {
             var p = Process.Start(fileName,arguments);
             p.WaitForExit();
+        }
+
+
+        public string StreamReaderReadToEnd(string path) {
+            var sr = new StreamReader(path);
+            string st = sr.ReadToEnd();
+            sr.Close();
+            return st;
+        
         }
     }
 }

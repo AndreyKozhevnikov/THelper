@@ -28,6 +28,7 @@ namespace THelper {
         bool isMainMajor;
         Version mainMajorLastVersion;
         List<ConverterMessages> MessagesList;
+        Version LastMinorOfCurrentMajor;
         string mmlvConverterPath;
         string slnPath;
         DirectoryInfo solutionFolderInfo;
@@ -105,7 +106,6 @@ namespace THelper {
                     currentInstalledMajor = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                     isCurrentVersionMajorInstalled = currentInstalledMajor != null;
                     if (isCurrentVersionMajorInstalled) {
-                     
                         if (isMainMajor) {
                             if (currentProjectVersion.CompareTo(mainMajorLastVersion) == 0) {
                                 MessagesList.Add(ConverterMessages.OpenSolution);
@@ -139,8 +139,15 @@ namespace THelper {
                         }
                     }
                     else {
-                        MessagesList.Add(ConverterMessages.ExactConversion);
-                        MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                        if (currentProjectVersion.Minor == 0 ) {
+                            MessagesList.Add(ConverterMessages.LastMinor);
+                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                        }
+                        else {
+                            MessagesList.Add(ConverterMessages.ExactConversion);
+                            MessagesList.Add(ConverterMessages.LastMinor);
+                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                        }
                     }
                 }
             }
@@ -230,6 +237,10 @@ namespace THelper {
                 case ConverterMessages.ExactConversion:
                     return currentProjectVersion.ToString();
                 case ConverterMessages.LastMinor:
+                    if (currentInstalledMajor == null) {
+                         LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
+                         return LastMinorOfCurrentMajor.ToString();
+                    }
                     return currentInstalledMajor.ToString();
                 case ConverterMessages.MainMajorLastVersion:
                     return mainMajorLastVersion.ToString();
@@ -292,9 +303,7 @@ namespace THelper {
                                 if (GetIfLibrariesPersist()) {
                                     break;
                                 }
-                                Version LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
-
-                                ConvertProjectWithSvetaConverter(LastMinorOfCurrentMajor);
+                                ConvertProjectWithDxConverter(LastMinorOfCurrentMajor);
                             }
                             break;
                         case ConverterMessages.ExactConversion:
@@ -303,7 +312,7 @@ namespace THelper {
                             if (GetIfLibrariesPersist()) {
                                 break;
                             }
-                            ConvertProjectWithSvetaConverter(currentProjectVersion);
+                            ConvertProjectWithDxConverter(currentProjectVersion);
                             break;
                         default:
                             csProjProccessor.SaveNewCsProj();
@@ -327,7 +336,10 @@ namespace THelper {
         private Version FindLastVersionOfMajor(int major) {//15tt
             var maj = major;
             List<string> directories = new List<string>();
-            string[] dxDirectories = MyWorkWithFile.DirectoryGetDirectories(@"\\CORP\builds\release\DXDlls\");
+            string filePath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.txt";
+            var stringLst = MyWorkWithFile.StreamReaderReadToEnd(filePath);
+            var dxDirectories = stringLst.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+       
             foreach (string directory in dxDirectories)
                 directories.Add(Path.GetFileName(directory));
             directories.Sort(new VersionComparer());
@@ -341,7 +353,7 @@ namespace THelper {
             return v.Count > 0;
         }
 
-        private void ConvertProjectWithSvetaConverter(Version v) {//16
+        private void ConvertProjectWithDxConverter(Version v) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
             //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
             psi.FileName = @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
