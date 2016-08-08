@@ -36,7 +36,7 @@ namespace THelper {
 
         public IWorkWithFile MyWorkWithFile;
         public IMessenger MyMessenger;
-       public ICSProjProcessor csProjProccessor;
+        public ICSProjProcessor csProjProccessor;
 
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
@@ -239,8 +239,7 @@ namespace THelper {
                     return currentProjectVersion.ToString();
                 case ConverterMessages.LastMinor:
                     if (currentInstalledMajor == null) {
-                    
-                         return LastMinorOfCurrentMajor.ToString();
+                        return LastMinorOfCurrentMajor.ToString();
                     }
                     return currentInstalledMajor.ToString();
                 case ConverterMessages.MainMajorLastVersion:
@@ -275,7 +274,7 @@ namespace THelper {
                     csProjProccessor.SaveNewCsProj();
                 }
                 else {
-                     csProjProccessor.SaveNewCsProj();
+                    csProjProccessor.SaveNewCsProj();
                     UpgradeToMainMajorLastVersion();
                 }
             }
@@ -340,7 +339,7 @@ namespace THelper {
             string filePath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.txt";
             var stringLst = MyWorkWithFile.StreamReaderReadToEnd(filePath);
             var dxDirectories = stringLst.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-       
+
             foreach (string directory in dxDirectories)
                 directories.Add(Path.GetFileName(directory));
             directories.Sort(new VersionComparer());
@@ -361,7 +360,7 @@ namespace THelper {
             string versionConverterFormat = v.ToString(true);
             //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
             psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat);
-            MyWorkWithFile.ProcessStart(psi.FileName,psi.Arguments);
+            MyWorkWithFile.ProcessStart(psi.FileName, psi.Arguments);
             //var proc = System.Diagnostics.Process.Start(psi);
             // proc.WaitForExit();
         }
