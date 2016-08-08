@@ -15,6 +15,7 @@ namespace THelper {
                 string filePath = args[0];
                 ProjectProcessor p = new ProjectProcessor(filePath);
                 p.MyWorkWithFile = new CustomWorkWithFile();
+                p.MyMessenger = new CustomMessenger();
                 p.ProcessArchive();
             }
 
