@@ -1634,6 +1634,8 @@ namespace THelper {
 
 
     }
+
+#endif
     [TestFixture]
     public class Test_TEst {
         [Test]
@@ -1644,15 +1646,15 @@ namespace THelper {
             t.MyProcessor = moq.Object;
 
 
-            int i = -1;
-            int tmpi = -1;
+            int i = 0;
+            
             int tmpK = 0;
             //    moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
             //moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
             Dictionary<string, int> tmpDict = new Dictionary<string, int>();
-            moq.Do((x2) => { tmpDict["Test1"] = tmpK++; }).Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpDict["Test1"])));
-            moq.Do((x2) => { tmpDict["Test2"] = tmpK++; }).Setup(x => x.Test2()).Callback(() => Assert.That(++i, Is.EqualTo(tmpDict["Test2"])));
-            moq.Do((x2) => { tmpDict["Test3"] = tmpK++; }).Setup(x => x.Test3()).Callback(() => Assert.That(++i, Is.EqualTo(tmpDict["Test3"])));
+            moq.Do((x2) => { tmpDict["Test1"] = tmpK++; }).Setup(x => x.Test1()).Callback(() => Assert.That(i++, Is.EqualTo(tmpDict["Test1"])));
+            moq.Do((x2) => { tmpDict["Test2"] = tmpK++; }).Setup(x => x.Test2()).Callback(() => Assert.That(i++, Is.EqualTo(tmpDict["Test2"])));
+            moq.Do((x2) => { tmpDict["Test3"] = tmpK++; }).Setup(x => x.Test3()).Callback(() => Assert.That(i++, Is.EqualTo(tmpDict["Test3"])));
             //  moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
 
             //moq.Setup(x => x.Test2()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
@@ -1660,7 +1662,7 @@ namespace THelper {
 
             t.MyMethod();
 
-            Assert.AreEqual(3, tmpK);
+            Assert.AreEqual(3, i);
         }
     }
     public static class MyExtensions {
@@ -1681,17 +1683,17 @@ namespace THelper {
     public class TestClass {
         public ITestInterFace MyProcessor;
         public void MyMethod() {
-
+             MyProcessor.Test3();
             MyProcessor.Test1();
             MyProcessor.Test2();
-
-            MyProcessor.Test3();
+          
+         
 
 
         }
     }
 
-#endif
+
 
     [TestFixture]
     public class HeavyTests {
