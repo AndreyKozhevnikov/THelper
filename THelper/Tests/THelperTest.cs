@@ -1634,6 +1634,7 @@ namespace THelper {
 
 
     }
+#endif
     [TestFixture]
     public class Test_TEst {
         [Test]
@@ -1691,7 +1692,7 @@ namespace THelper {
         }
     }
 
-#endif
+
 
     [TestFixture]
     public class HeavyTests {
