@@ -30,7 +30,7 @@ namespace THelper {
         List<ConverterMessages> MessagesList;
         Version LastMinorOfCurrentMajor;
         string mmlvConverterPath;
-        string slnPath;
+        
         DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
 
@@ -68,11 +68,10 @@ namespace THelper {
 
 
         private void ProcessFolder() { //2
-            slnPath = string.Empty;
             cspath = string.Empty;
-            bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
-
-            if (isSoluiton) {
+            //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
+            string[] solutionsFiles = TryGetSolutionFiles(solutionFolderInfo);
+            if (solutionsFiles.Count()==1) {
                 GetMessageInfo();
                 var result = PrintMessage();
                 ProcessProject(result);
@@ -80,14 +79,19 @@ namespace THelper {
             else
                 OpenFolder();
         }
-        bool TryGetSolutionFiles(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) { //3 td
-            _slnPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
-            _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
-            if (_csprojPath == null)
-                _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
-            if (string.IsNullOrEmpty(_slnPath))
-                _slnPath = _csprojPath;
-            return !string.IsNullOrEmpty(_slnPath);
+        string[] TryGetSolutionFiles(DirectoryInfo dirInfo) { //3 td
+            var st = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).ToArray();
+            if (st.Count() == 0) {
+                st = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).ToArray();
+            }
+            return st;
+            //_slnPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
+            //_csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
+            //if (_csprojPath == null)
+            //    _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
+            //if (string.IsNullOrEmpty(_slnPath))
+            //    _slnPath = _csprojPath;
+            //return !string.IsNullOrEmpty(_slnPath);
         }
         void GetMessageInfo() {//4 td
             MessagesList = new List<ConverterMessages>();
@@ -382,7 +386,7 @@ namespace THelper {
             MyWorkWithFile.ProcessStart(solutionFolderName);
         }
         private void OpenSolution() {//tt
-            MyWorkWithFile.ProcessStart(slnPath);
+            MyWorkWithFile.ProcessStart(cspath);
         }
 
 
