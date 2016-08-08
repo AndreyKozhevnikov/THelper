@@ -72,6 +72,7 @@ namespace THelper {
             //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             string[] solutionsFiles = TryGetSolutionFiles(solutionFolderInfo);
             if (solutionsFiles.Count()==1) {
+                cspath = solutionsFiles[0];
                 GetMessageInfo();
                 var result = PrintMessage();
                 ProcessProject(result);
