@@ -1635,130 +1635,91 @@ namespace THelper {
 
     }
 #endif
-    [TestFixture]
-    public class Test_TEst {
-        [Test]
-        public void TestClass() {
-            //arrange
-            TestClass t = new TestClass();
-            var moq = new Mock<ITestInterFace>();
-            t.MyProcessor = moq.Object;
-
-
-            int i = -1;
-            int tmpi = -1;
-            int tmpK = 0;
-            //    moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
-            //moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
-            Dictionary<string, int> tmpDict = new Dictionary<string, int>();
-            moq.Do((x2) => { tmpDict["Test1"] = tmpK++; }).Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpDict["Test1"])));
-            moq.Do((x2) => { tmpDict["Test2"] = tmpK++; }).Setup(x => x.Test2()).Callback(() => Assert.That(++i, Is.EqualTo(tmpDict["Test2"])));
-            moq.Do((x2) => { tmpDict["Test3"] = tmpK++; }).Setup(x => x.Test3()).Callback(() => Assert.That(++i, Is.EqualTo(tmpDict["Test3"])));
-            //  moq.Setup(x => x.Test1()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
-
-            //moq.Setup(x => x.Test2()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
-            //moq.Setup(x => x.Test3()).Callback(() => Assert.That(++i, Is.EqualTo(tmpK++)));
-
-            t.MyMethod();
-
-            Assert.AreEqual(3, tmpK);
-        }
-    }
-    public static class MyExtensions {
-        public static TI Do<TI>(this TI input, Action<TI> action) where TI : class {
-            if (input == null)
-                return null;
-            action(input);
-            return input;
-        }
-    }
-    public interface ITestInterFace {
-        void Test1();
-
-        void Test3();
-        void Test2();
-    }
-
-    public class TestClass {
-        public ITestInterFace MyProcessor;
-        public void MyMethod() {
-
-            MyProcessor.Test1();
-            MyProcessor.Test2();
-
-            MyProcessor.Test3();
-
-
-        }
-    }
-
+ 
 
 
     [TestFixture]
     public class HeavyTests {
-
+        private string ReturnNameDelete(object x3) {
+            var st = x3.GetType();
+            var st2 = x3.ToString();
+            var ind = st2.IndexOf("=> x.") + 5;
+            var st3 = st2.Substring(ind, st2.Length - ind);
+            var ind2 = st3.IndexOf("(");
+            var st4 = st3.Substring(0,  ind2);
+            // var st5 = (x3 as Moq.IProxyCall);
+            return st4;
+            return "null";
+        }
         [Test]
         public void SimpleFolder() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\archinveWithImages.zip");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\archinveWithImages")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
+
+            int callBackCounter = 0;
+            int orderCounter = 0;
+            Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
+
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDirectory"])));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"zip"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStartzip"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"sln"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFilessln"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"csproj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFilescsproj"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"]))); 
             //act
             proc.ProcessArchive();
             //assert
-            Assert.AreEqual(5, callConsequenceCount);
+            Assert.AreEqual(6, callBackCounter);
         }
+    
         [Test]
         public void Example_MMLVinstalled_OpenSolution() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            int callBackCounter = 0;
+            int orderCounter = 0;
+            Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
+            moqFile.Do((x2) => { callOrderDictionary["CreateDir"] = orderCounter++; }).Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDir"])));
+            moqFile.Do((x2) => { callOrderDictionary["ProcStartzip"] = orderCounter++; }).Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcStartzip"])));
+            moqFile.Do((x2) => { callOrderDictionary["GetSln"] = orderCounter++; }).Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetSln"])));
+            moqFile.Do((x2) => { callOrderDictionary["GetScproj"] = orderCounter++; }).Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetScproj"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             proc.csProjProccessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
-            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
-            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            moqFile.Do((x2) => { callOrderDictionary["GetRegVers"] = orderCounter++; }).Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetRegVers"])));
+            moqFile.Do((x2) => { callOrderDictionary["Getass1"] = orderCounter++; }).Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Getass1"])));
+            moqFile.Do((x2) => { callOrderDictionary["GetAss2"] = orderCounter++; }).Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetAss2"])));
+            moqCSProj.Do((x2) => { callOrderDictionary["GetCurVer"] = orderCounter++; }).Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurVer"])));
             var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
             proc.MyMessenger = moqMessage.Object;
 
-            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
-            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Do((x2) => { callOrderDictionary["ConsCurr"] = orderCounter++; }).Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsCurr"])));
+            moqMessage.Do((x2) => { callOrderDictionary["ConsExamp"] = orderCounter++; }).Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsExamp"])));
             moqMessage.Setup(x => x.ConsoleWriteLine());
-            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
-            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
-            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
-            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Do((x2) => { callOrderDictionary["ConsToOpen"] = orderCounter++; }).Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsToOpen"])));
+            moqMessage.Do((x2) => { callOrderDictionary["Cons1"] = orderCounter++; }).Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Cons1"])));
+            moqMessage.Do((x2) => { callOrderDictionary["ConsToOpenFolder"] = orderCounter++; }).Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsToOpenFolder"])));
+            moqMessage.Do((x2) => { callOrderDictionary["Cons9"] = orderCounter++; }).Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Cons9"])));
 
-            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+            moqMessage.Do((x2) => { callOrderDictionary["ContReturn1"] = orderCounter++; }).Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ContReturn1"])));
 
-            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+            moqCSProj.Do((x2) => { callOrderDictionary["Disable"] = orderCounter++; }).Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Disable"])));
 
-            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
-            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqCSProj.Do((x2) => { callOrderDictionary["SetSpec"] = orderCounter++; }).Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SetSpec"])));
+            moqCSProj.Do((x2) => { callOrderDictionary["SaveNew"] = orderCounter++; }).Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNew"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqFile.Do((x2) => { callOrderDictionary["ProcStartSLN"] = orderCounter++; }).Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcStartSLN"])));
             //act
             proc.ProcessArchive();
             //assert
-            Assert.AreEqual(18, callConsequenceCount);
+            Assert.AreEqual(19, callBackCounter);
             //moqFile.Verify(x => x.CreateDirectory(@"c:\test\archinveWithImages"), Times.Once);
             //moqFile.Verify(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages"""), Times.Once);
         }
@@ -1769,45 +1730,47 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callBackCounter = 0;
+            int orderCounter = 0;
+            Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
 
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            moqFile.Do((x2) => { callOrderDictionary["CreatDir"] = orderCounter++; }).Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreatDir"])));
+            moqFile.Do((x2) => { callOrderDictionary["ProcStartzip"] = orderCounter++; }).Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcStartzip"])));
+            moqFile.Do((x2) => { callOrderDictionary["getsln"] = orderCounter++; }).Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["getsln"])));
+            moqFile.Do((x2) => { callOrderDictionary["getcsproj"] = orderCounter++; }).Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["getcsproj"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             proc.csProjProccessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
-            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
-            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.1.2")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            moqFile.Do((x2) => { callOrderDictionary["getregver"] = orderCounter++; }).Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["getregver"])));
+            moqFile.Do((x2) => { callOrderDictionary["getass1"] = orderCounter++; }).Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["getass1"])));
+            moqFile.Do((x2) => { callOrderDictionary["getass2"] = orderCounter++; }).Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["getass2"])));
+            moqCSProj.Do((x2) => { callOrderDictionary["getcurr"] = orderCounter++; }).Setup(x => x.GetCurrentVersion()).Returns(new Version("15.1.2")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["getcurr"])));
             var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
             proc.MyMessenger = moqMessage.Object;
 
-            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
-            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Do((x2) => { callOrderDictionary["consthecurr"] = orderCounter++; }).Setup(x => x.ConsoleWrite("The current project version is an ")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["consthecurr"])));
+            moqMessage.Do((x2) => { callOrderDictionary["consexample"] = orderCounter++; }).Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["consexample"])));
             moqMessage.Setup(x => x.ConsoleWriteLine());
-            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
-            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
-            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
-            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
+            moqMessage.Do((x) => { callOrderDictionary["consopentsol"] = orderCounter++; }).Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["consopentsol"])));
+            moqMessage.Do((x2) => { callOrderDictionary["cons1"] = orderCounter++; }).Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["cons1"])));
+            moqMessage.Do((x2) => { callOrderDictionary["consopenfolder"] = orderCounter++; }).Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["consopenfolder"])));
+            moqMessage.Do((x2) => { callOrderDictionary["cons9"] = orderCounter++; }).Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["cons9"])));
 
-            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
+            moqMessage.Do((x2) => { callOrderDictionary["consreturn1"] = orderCounter++; }).Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["consreturn1"])));
 
-            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
+            moqCSProj.Do((x2) => { callOrderDictionary["disable"] = orderCounter++; }).Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["disable"])));
 
-            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
-            moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqCSProj.Do((x2) => { callOrderDictionary["savecs"] = orderCounter++; }).Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["savecs"])));
+            moqFile.Do((x2) => { callOrderDictionary["proccstartconverter"] = orderCounter++; }).Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["proccstartconverter"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqFile.Do((x2) => { callOrderDictionary["procstartproject"] = orderCounter++; }).Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["procstartproject"])));
             //act
             proc.ProcessArchive();
             //assert
-            Assert.AreEqual(18, callConsequenceCount);
+            Assert.AreEqual(19, callBackCounter);
         }
 
         [Test]
@@ -1816,7 +1779,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -1866,7 +1829,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.zip"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -1911,7 +1874,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.zip"" ""c:\test\dxExample""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -1957,7 +1920,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2005,7 +1968,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2054,7 +2017,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2104,7 +2067,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2155,7 +2118,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2210,7 +2173,7 @@ namespace THelper {
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
 
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2267,7 +2230,7 @@ namespace THelper {
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
 
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2322,7 +2285,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2377,7 +2340,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2429,7 +2392,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2486,7 +2449,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2543,7 +2506,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2600,7 +2563,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2661,7 +2624,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2722,7 +2685,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2784,7 +2747,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2848,7 +2811,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2912,7 +2875,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -2964,7 +2927,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3018,7 +2981,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3077,7 +3040,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3138,7 +3101,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3198,7 +3161,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3262,7 +3225,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3325,7 +3288,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3389,7 +3352,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3445,7 +3408,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3503,7 +3466,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3560,7 +3523,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3616,7 +3579,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
@@ -3673,7 +3636,7 @@ namespace THelper {
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = -1;
+            int callConsequenceCount = 100;
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
