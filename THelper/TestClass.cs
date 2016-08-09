@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Moq.Language.Flow;
 using System.Runtime.Remoting.Messaging;
+using System.Runtime.CompilerServices;
 
 namespace THelper {
     [TestFixture]
@@ -21,8 +22,7 @@ namespace THelper {
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
-            
-            moq.Setup(x => x.Test1()).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)]= orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Test1"])));
+            moq.Setup(x => x.Test1()).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Test1"])));
             moq.Setup(x => x.Test2()).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Test2"])));
             moq.Setup(x => x.Test3()).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["Test3"])));
 
@@ -30,6 +30,17 @@ namespace THelper {
             t.MyMethod();
 
             Assert.AreEqual(orderCounter, callBackCounter);
+        }
+
+        private void MyCallBack(object o,[CallerMemberName]string st2="") {
+            var st = o as ITestInterFace;
+       
+            throw new NotImplementedException();
+        }
+        private void MyCallBack2(object o, [CallerMemberName]string st2 = "") {
+            var st = o as ITestInterFace;
+
+            throw new NotImplementedException();
         }
 
         private string ReturnNameDelete(object x3) {
@@ -64,8 +75,8 @@ namespace THelper {
 
             MyProcessor.Test1();
             MyProcessor.Test2();
-          
-            MyProcessor.Test3();
+        
+            //MyProcessor.Test3();
 
 
         }
