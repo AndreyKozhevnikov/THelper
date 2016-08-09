@@ -76,7 +76,7 @@ namespace THelper {
             MyProcessor.Test1();
             MyProcessor.Test2();
         
-            //MyProcessor.Test3();
+            MyProcessor.Test3();
 
 
         }
