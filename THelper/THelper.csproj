@@ -90,6 +90,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TestClass.cs" />
     <Compile Include="Tests\THelperTest.cs" />
     <Compile Include="Version.cs" />
     <Compile Include="ProjectProcessor.cs" />
