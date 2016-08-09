@@ -2354,113 +2354,119 @@ namespace THelper {
 
         [Test]
         public void MajorLastMinor_OpenSolution() {
-            //arrange
+            //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = 100;
+            int callBackCounter = 0;
+            int orderCounter = 0;
+            Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
 
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["CreateDirectory"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDirectory"])));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Do((x3) => { callOrderDictionary["ProcessStart2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart2"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             proc.csProjProccessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
-            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
-            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Do((x3) => { callOrderDictionary["GetRegistryVersions"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetRegistryVersions"])));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
             proc.MyMessenger = moqMessage.Object;
 
-            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
-            moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
+            moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
             moqMessage.Setup(x => x.ConsoleWriteLine());
-            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
-            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
-            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(12)));
-            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
-            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(14)));
-            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
-            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(16)));
-            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : "));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite3"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite3"])));
+            moqMessage.Setup(x => x.ConsoleWrite(" press "));
+            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite2"])));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Do((x3) => { callOrderDictionary["ConsoleWrite1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite1"])));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite"])));
 
-            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
-            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(19)));
-            moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(20)));
-            //moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Do((x3) => { callOrderDictionary["DisableUseVSHostingProcess"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DisableUseVSHostingProcess"])));
+            moqCSProj.Setup(x => x.RemoveLicense()).Do((x3) => { callOrderDictionary["RemoveLicense"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["RemoveLicense"])));
+            //moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Do((x3) => { callOrderDictionary["SetSpecificVersionFalse"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SetSpecificVersionFalse"])));
 
-            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(21)));
-            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(22)));
-            //act
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            //act  
             proc.ProcessArchive();
-            //assert
-            Assert.AreEqual(22, callConsequenceCount);
+            //assert  
+            Assert.AreEqual(21, callBackCounter);
         }
+
         [Test]
         public void MajorZeroMinor_LastMinor() {
-            //arrange
+            //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
             proc.MyWorkWithFile = moqFile.Object;
-            int callConsequenceCount = 100;
+            int callBackCounter = 0;
+            int orderCounter = 0;
+            Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
 
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(0)));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(1)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(2)));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(3)));
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["CreateDirectory"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDirectory"])));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Do((x3) => { callOrderDictionary["ProcessStart2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart2"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution.sln" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             proc.csProjProccessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
-            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(4)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(5)));
-            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(6)));
-            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(7)));
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions).Do((x3) => { callOrderDictionary["GetRegistryVersions"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetRegistryVersions"])));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
             proc.MyMessenger = moqMessage.Object;
 
-            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(8)));
-            moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(9)));
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
+            moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite8"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite8"])));
             moqMessage.Setup(x => x.ConsoleWriteLine());
-            //moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(10)));
-            //moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
-            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange(10, 14)));
-            moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(11)));
-            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange(12, 16)));
-            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(13)));
-            moqMessage.Setup(x => x.ConsoleWrite("To convert to : ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange(10, 14)));
-            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(15)));
-            moqMessage.Setup(x => x.ConsoleWrite(" press ")).Callback(() => Assert.That(++callConsequenceCount, Is.InRange(12, 16)));
-            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(17)));
+            //moqMessage.Setup(x => x.ConsoleWrite("To open solution press: ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
+            //moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : "));
+            moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
+            moqMessage.Setup(x => x.ConsoleWrite(" press "));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
+            moqMessage.Setup(x => x.ConsoleWrite("To convert to : "));
+            moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite3"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite3"])));
+            moqMessage.Setup(x => x.ConsoleWrite(" press "));
+            moqMessage.Setup(x => x.ConsoleWrite("2", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite2"])));
 
-            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(18)));
-            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(19)));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: ")).Do((x3) => { callOrderDictionary["ConsoleWrite1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite1"])));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite"])));
 
-            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(20)));
+            moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
-            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(21)));
-            moqCSProj.Setup(x => x.RemoveLicense()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(22)));
-            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(23)));
+            moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Do((x3) => { callOrderDictionary["DisableUseVSHostingProcess"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DisableUseVSHostingProcess"])));
+            moqCSProj.Setup(x => x.RemoveLicense()).Do((x3) => { callOrderDictionary["RemoveLicense"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["RemoveLicense"])));
+            moqCSProj.Setup(x => x.SetSpecificVersionFalse()).Do((x3) => { callOrderDictionary["SetSpecificVersionFalse"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SetSpecificVersionFalse"])));
 
-            moqCSProj.Setup(x => x.SaveNewCsProj()).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(24)));
-            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(999)));
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
+            //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Callback(() => Assert.That(++callConsequenceCount, Is.EqualTo(25)));
-            //act
+            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            //act  
             proc.ProcessArchive();
-            //assert
-            Assert.AreEqual(25, callConsequenceCount);
+            //assert  
+            Assert.AreEqual(22, callBackCounter);
         }
+
         [Test]
         public void MajorZeroMinor_MainMajor() {
             //arrange
