@@ -30,7 +30,7 @@ namespace THelper {
         List<ConverterMessages> MessagesList;
         Version LastMinorOfCurrentMajor;
         string mmlvConverterPath;
-        
+
         DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
 
@@ -71,15 +71,44 @@ namespace THelper {
             cspath = string.Empty;
             //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             string[] solutionsFiles = TryGetSolutionFiles(solutionFolderInfo);
-            if (solutionsFiles.Count()==1) {
-                cspath = solutionsFiles[0];
-                GetMessageInfo();
-                var result = PrintMessage();
-                ProcessProject(result);
+            int solutionsCount = solutionsFiles.Count();
+            switch (solutionsCount) {
+                case 1:
+                    cspath = solutionsFiles[0];
+                    WorkWithSolution();
+                    break;
+                case 0:
+                    OpenFolder();
+                    break;
+                default:
+                    var dxPath = FindDXCsproj(solutionsFiles);
+                    if (dxPath != null) {
+                        cspath = dxPath;
+                        WorkWithSolution();
+                    }
+                    else {
+                        OpenFolder();
+                    }
+                    break;
             }
-            else
-                OpenFolder();
         }
+
+        private string FindDXCsproj(string[] solutionsFiles) {
+            foreach (string st in solutionsFiles) {
+                var tx = MyWorkWithFile.StreamReaderReadToEnd(st);
+                if (tx.Contains("DevExpress")) {
+                    return st;
+                }
+            }
+            return null;
+        }
+
+        private void WorkWithSolution() {
+            GetMessageInfo();
+            var result = PrintMessage();
+            ProcessProject(result);
+        }
+
         string[] TryGetSolutionFiles(DirectoryInfo dirInfo) { //3 td
             var st = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).ToArray();
             if (st.Count() == 0) {
