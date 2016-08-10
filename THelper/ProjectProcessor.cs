@@ -403,113 +403,7 @@ namespace THelper {
 
 
 
-#if DEBUGTEST
 
-        public void UpgradeToMainMajorLastVersion_t() {
-            UpgradeToMainMajorLastVersion();
-        }
-        public void ProcessProject_t(ConverterMessages message) {
-            ProcessProject(message);
-        }
-        public string slnPath_t {
-            get { return slnPath; }
-            set { slnPath = value; }
-        }
-        public void OpenSolution_t() {
-            OpenSolution();
-        }
-        public void OpenFolder_t() {
-            OpenFolder();
-        }
-        public DirectoryInfo solutionFolderInfo_t {
-            get {
-                return solutionFolderInfo;
-            }
-
-        }
-        public ConverterMessages PrintMessage_t() {
-            return PrintMessage();
-        }
-        public List<ConverterMessages> MessagesList_t {
-            get {
-                return MessagesList;
-            }
-            set {
-                MessagesList = value;
-            }
-        }
-        public string GetArgsForWinRar_t() {
-            return GetArgsForWinRar();
-        }
-
-        public void GetInstalledVersions_t() {
-            GetInstalledVersions();
-        }
-        public Version mainMajorLastVersion_t {
-            get {
-                return mainMajorLastVersion;
-            }
-            set {
-                mainMajorLastVersion = value;
-            }
-        }
-        public void PrintConverterMessage_t(ConverterMessages msg, string key) {
-            PrintConverterMessage(msg, key);
-        }
-
-        public int GetValueFromConsoleKey_t(ConsoleKey key) {
-            return GetValueFromConsoleKey(key);
-        }
-        public void GetMessageInfo_t() {
-            GetMessageInfo();
-        }
-        public string archiveFilePath_t {
-            get {
-                return archiveFilePath;
-            }
-        }
-        //public List<ConverterMessages> MessagesList_t { get { return MessagesList; } }
-        //public void TestSetMainMajorLastVersion(string st) {
-        //    mainMajorLastVersion = new Version(st);
-        //}
-
-        public bool isExample_t {
-            get { return isExample; }
-        }
-
-
-        public bool TryGetSolutionFiles_T(DirectoryInfo dirInfo, out string _slnPath, out string _csprojPath) {
-            return TryGetSolutionFiles(dirInfo, out _slnPath, out _csprojPath);
-        }
-        public void SetIsExample_t() {
-            SetIsExample();
-        }
-        public Version GetProjectUpgradeVersion_t(string projectUpgradeToolPath) {
-            return GetProjectUpgradeVersion(projectUpgradeToolPath);
-        }
-        public Version currentProjectVersion_t {
-            get { return currentProjectVersion; }
-            set { currentProjectVersion = value; }
-        }
-        public string GetMessageVersion_t(ConverterMessages msg) {
-            return GetMessageVersion(msg);
-        }
-        public Version currentInstalledMajor_t {
-            get { return currentInstalledMajor; }
-            set { currentInstalledMajor = value; }
-        }
-    
-        public void GetCurrentVersion_t() {
-            GetCurrentVersion();
-        }
-        public void FindIfLibrariesPersist_t() {
-            GetIfLibrariesPersist();
-        }
-
-        public Version FindLastVersionOfMajor_t(int m) {
-            return FindLastVersionOfMajor(m);
-        }
-#endif
     }
 
     public class VersionComparer : IComparer<string> {
@@ -526,8 +420,5 @@ namespace THelper {
         }
     }
 
-    //public class RegistryVersion {
-    //    public string Version;
-    //    public string RootDirectory;
-    //}
+
 }
