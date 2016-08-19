@@ -213,10 +213,10 @@ namespace THelper {
         }
         Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1 td
             string assemblyFullName = MyWorkWithFile.AssemblyLoadFileFullName(projectUpgradeToolPath);
-            if (assemblyFullName != null)
+          //  if (assemblyFullName != null)
                 return new Version(assemblyFullName, true);
-            else
-                return Version.Zero;
+            //else
+            //    return Version.Zero;
         }
 
         private void GetCurrentVersion() {//6 td
@@ -384,7 +384,7 @@ namespace THelper {
         private bool GetIfLibrariesPersist() {//14
             DirectoryInfo dirInfo = new DirectoryInfo(solutionFolderName);
             var v = MyWorkWithFile.DirectoryEnumerateFiles(dirInfo.FullName, "DevExpress*.dll", SearchOption.AllDirectories).ToList();
-            return v.Count > 0;
+            return v.Count == csProjProccessor.DXLibrariesCount;
         }
 
         private void ConvertProjectWithDxConverter(Version v) {//16
