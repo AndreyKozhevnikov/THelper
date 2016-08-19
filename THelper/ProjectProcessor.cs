@@ -393,7 +393,7 @@ namespace THelper {
             psi.FileName = @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
             string versionConverterFormat = v.ToString(true);
             //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
-            psi.Arguments = string.Format("{0} {1}", solutionFolderName, versionConverterFormat);
+            psi.Arguments = string.Format("\"{0}\" \"{1}\"", solutionFolderName, versionConverterFormat);
             MyWorkWithFile.ProcessStart(psi.FileName, psi.Arguments);
             //var proc = System.Diagnostics.Process.Start(psi);
             // proc.WaitForExit();
