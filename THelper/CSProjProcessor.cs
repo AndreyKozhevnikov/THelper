@@ -26,6 +26,7 @@ namespace THelper {
         void RemoveLicense();
         void SaveNewCsProj();
         void SetSpecificVersionFalse();
+        int DXLibrariesCount { get; }
     }
     public class CSProjProcessor : ICSProjProcessor {
         public string csProjFileName;
@@ -44,14 +45,16 @@ namespace THelper {
         public XDocument RootDocument;
         public IEnumerable<XElement> RootElements;
 
-
-
+        public int DXLibrariesCount {
+            get;set;
+        }
 
         public Version GetCurrentVersion() {
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
             string _dxLibraryString = null;
-            if (dxlibraries.Count() > 0) {
+            DXLibrariesCount = dxlibraries.Count();
+            if (DXLibrariesCount > 0) {
                 _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
                 Version v = new Version(_dxLibraryString, true);
                 return v;
@@ -99,6 +102,6 @@ namespace THelper {
             MyWorkWithFile.SaveXDocument(RootDocument, csProjFileName);
         }
 
-
+      
     }
 }

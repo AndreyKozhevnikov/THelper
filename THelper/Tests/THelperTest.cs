@@ -78,6 +78,27 @@ namespace THelper {
             Assert.AreEqual(5, v.Minor);
         }
         [Test]
+        public void DxLibrariesCount() {
+            //assert
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "   <Reference Include=\"DevExpress.Grid.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+            var moqFile = new Mock<IWorkWithFile>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+
+            //act
+            Version v = proc.GetCurrentVersion();
+            int cnt = proc.DXLibrariesCount;
+
+            //assert
+            Assert.AreEqual(2, cnt);
+        }
+        [Test]
         public void GetCurrentversion_Zero() {
             //assert
             string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
