@@ -46,7 +46,7 @@ namespace THelper {
         public IEnumerable<XElement> RootElements;
 
         public int DXLibrariesCount {
-            get;set;
+            get; set;
         }
 
         public Version GetCurrentVersion() {
@@ -55,7 +55,11 @@ namespace THelper {
             string _dxLibraryString = null;
             DXLibrariesCount = dxlibraries.Count();
             if (DXLibrariesCount > 0) {
-                _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
+                var lstHasVersion = dxlibraries.Where(x => x.Attribute("Include").ToString().IndexOf("Version") > 0);
+                if (lstHasVersion.Count() > 0)
+                    _dxLibraryString = lstHasVersion.First().Attribute("Include").ToString();
+                else
+                    _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
                 Version v = new Version(_dxLibraryString, true);
                 return v;
             }
@@ -102,6 +106,6 @@ namespace THelper {
             MyWorkWithFile.SaveXDocument(RootDocument, csProjFileName);
         }
 
-      
+
     }
 }
