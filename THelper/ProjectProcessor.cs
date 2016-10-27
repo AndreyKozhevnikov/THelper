@@ -304,7 +304,7 @@ namespace THelper {
 
             if (isExample) {
                 if (isMainMajor) {
-                    csProjProccessor.SetSpecificVersionFalse();
+                    csProjProccessor.SetSpecificVersionFalseAndRemoveHintPath();
                     csProjProccessor.SaveNewCsProj();
                 }
                 else {
@@ -318,7 +318,7 @@ namespace THelper {
                     switch (message) {
                         case ConverterMessages.MainMajorLastVersion:
                             if (isMainMajor) {
-                                csProjProccessor.SetSpecificVersionFalse();
+                                csProjProccessor.SetSpecificVersionFalseAndRemoveHintPath();
                                 csProjProccessor.SaveNewCsProj();
                             }
                             else {
@@ -328,7 +328,7 @@ namespace THelper {
                             break;
                         case ConverterMessages.LastMinor:
                             if (isCurrentVersionMajorInstalled) {
-                                csProjProccessor.SetSpecificVersionFalse();
+                                csProjProccessor.SetSpecificVersionFalseAndRemoveHintPath();
                                 csProjProccessor.SaveNewCsProj();
                             }
                             else {

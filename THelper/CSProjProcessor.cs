@@ -25,7 +25,7 @@ namespace THelper {
         Version GetCurrentVersion();
         void RemoveLicense();
         void SaveNewCsProj();
-        void SetSpecificVersionFalse();
+        void SetSpecificVersionFalseAndRemoveHintPath();
         int DXLibrariesCount { get; }
     }
     public class CSProjProcessor : ICSProjProcessor {
@@ -86,7 +86,7 @@ namespace THelper {
                 licGroup.Remove();
         }
 
-        public void SetSpecificVersionFalse() {
+        public void SetSpecificVersionFalseAndRemoveHintPath() {
             var references = RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
 
@@ -99,13 +99,16 @@ namespace THelper {
                     XElement xatr = new XElement(xName, "False");
                     dxlib.Add(xatr);
                 }
+                var hintPathNode= dxlib.Element(XName.Get("HintPath", dxlib.Name.Namespace.NamespaceName));
+                if (hintPathNode != null)
+                    hintPathNode.Remove();
             }
         }
 
         public void SaveNewCsProj() {
             MyWorkWithFile.SaveXDocument(RootDocument, csProjFileName);
         }
-
+      
 
     }
 }
