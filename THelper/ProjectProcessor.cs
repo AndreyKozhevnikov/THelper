@@ -24,7 +24,7 @@ namespace THelper {
         public List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
         bool isExample;
-
+        
         bool isMainMajor;
         Version mainMajorLastVersion;
         List<ConverterMessages> MessagesList;
@@ -203,20 +203,17 @@ namespace THelper {
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
             foreach (string rootPath in versions) {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
-                Version projectUpgradeVersion = GetProjectUpgradeVersion(rootPath2);
-                installedVersions.Add(projectUpgradeVersion);
-                if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 162) {
-                    mainMajorLastVersion = projectUpgradeVersion;
+                Version fileVersion = GetVersionFromFile(rootPath2);
+                installedVersions.Add(fileVersion);
+                if (mainMajorLastVersion.CompareTo(fileVersion) == -1 && fileVersion.Major != 162) {
+                    mainMajorLastVersion = fileVersion;
                     mmlvConverterPath = rootPath2;
                 }
             }
         }
-        Version GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1 td
+        Version GetVersionFromFile(string projectUpgradeToolPath) {//5.1 td
             string assemblyFullName = MyWorkWithFile.AssemblyLoadFileFullName(projectUpgradeToolPath);
-          //  if (assemblyFullName != null)
-                return new Version(assemblyFullName, true);
-            //else
-            //    return Version.Zero;
+            return new Version(assemblyFullName, true);
         }
 
         private void GetCurrentVersion() {//6 td
@@ -389,14 +386,10 @@ namespace THelper {
 
         private void ConvertProjectWithDxConverter(Version v) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
-            //    psi.FileName = @"\\corp\internal\common\4Nikishina\Converter\EXE\Converter.exe";
             psi.FileName = @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
             string versionConverterFormat = v.ToString(true);
-            //psi.Arguments = string.Format("{0} \\\"{1}\\\"", versionConverterFormat, solutionFolderName);
             psi.Arguments = string.Format("\"{0}\" \"{1}\"", solutionFolderName, versionConverterFormat);
             MyWorkWithFile.ProcessStart(psi.FileName, psi.Arguments);
-            //var proc = System.Diagnostics.Process.Start(psi);
-            // proc.WaitForExit();
         }
 
 
