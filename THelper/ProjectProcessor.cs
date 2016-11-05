@@ -200,14 +200,14 @@ namespace THelper {
             installedVersions = new List<Version>();
             mainMajorLastVersion = Version.Zero;
             List<string> versions = MyWorkWithFile.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
-            const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter.exe";
+            const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
             foreach (string rootPath in versions) {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
                 Version projectUpgradeVersion = GetProjectUpgradeVersion(rootPath2);
                 installedVersions.Add(projectUpgradeVersion);
                 if (mainMajorLastVersion.CompareTo(projectUpgradeVersion) == -1 && projectUpgradeVersion.Major != 162) {
                     mainMajorLastVersion = projectUpgradeVersion;
-                    mmlvConverterPath = rootPath2.Replace("ProjectConverter", "ProjectConverter-console");
+                    mmlvConverterPath = rootPath2;
                 }
             }
         }
