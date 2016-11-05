@@ -29,7 +29,6 @@ namespace THelper {
         Version mainMajorLastVersion;
         List<ConverterMessages> MessagesList;
         Version LastMinorOfCurrentMajor;
-        string mmlvConverterPath;
 
         DirectoryInfo solutionFolderInfo;
         string solutionFolderName;
@@ -207,7 +206,6 @@ namespace THelper {
                 installedVersions.Add(fileVersion);
                 if (mainMajorLastVersion.CompareTo(fileVersion) == -1 && fileVersion.Major != 162) {
                     mainMajorLastVersion = fileVersion;
-                    mmlvConverterPath = rootPath2;
                 }
             }
         }
@@ -306,7 +304,7 @@ namespace THelper {
                 }
                 else {
                     csProjProccessor.SaveNewCsProj();
-                    UpgradeToMainMajorLastVersion();
+                    ConvertToMainMajorLastVersion();
                 }
             }
             else { //check how to avoid csProjProccessor.SaveNewCsProj();
@@ -320,7 +318,7 @@ namespace THelper {
                             }
                             else {
                                 csProjProccessor.SaveNewCsProj();
-                                UpgradeToMainMajorLastVersion();
+                                ConvertToMainMajorLastVersion();
                             }
                             break;
                         case ConverterMessages.LastMinor:
@@ -360,9 +358,8 @@ namespace THelper {
 
         }
 
-        private void UpgradeToMainMajorLastVersion() {//13 tt 
-            string _projPath = "\"" + solutionFolderName + "\"";
-            MyWorkWithFile.ProcessStart(mmlvConverterPath, _projPath, true);
+        private void ConvertToMainMajorLastVersion() {//13 tt 
+            ConvertProjectWithDxConverter(mainMajorLastVersion);
         }
         private Version FindLastVersionOfMajor(int major) {//15tt
             var maj = major;
