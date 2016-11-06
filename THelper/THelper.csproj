@@ -101,7 +101,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Classes\WorkWithFile.cs" />
+    <Compile Include="Classes\FileWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

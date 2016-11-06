@@ -21,7 +21,7 @@ namespace THelper {
         public void CSProjProcessor() {
             //arrange
             string st2 = @"c:\test\testproject\test.csproj";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
             st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
             st = st + "  <ItemGroup>";
@@ -46,7 +46,7 @@ namespace THelper {
             st = st + "     <Reference Include=\"DevExpress.Mvvm.v15.2\" />";
             st = st + "  </ItemGroup>";
             st = st + " </Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
             //proc.Test_SetRootElements(st);
@@ -66,7 +66,7 @@ namespace THelper {
             st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
             st = st + "  </ItemGroup>";
             st = st + " </Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
 
@@ -87,7 +87,7 @@ namespace THelper {
              st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
             st = st + "  </ItemGroup>";
             st = st + " </Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
 
@@ -108,7 +108,7 @@ namespace THelper {
             st = st + "   <Reference Include=\"DevExpress.Grid.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
             st = st + "  </ItemGroup>";
             st = st + " </Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
 
@@ -127,7 +127,7 @@ namespace THelper {
             st = st + "  <ItemGroup>";
             st = st + "  </ItemGroup>";
             st = st + " </Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
 
@@ -147,7 +147,7 @@ namespace THelper {
             st = st + " <UseVSHostingProcess> True </UseVSHostingProcess>";
             st = st + " </PropertyGroup>";
             st = st + "</Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
             //act
@@ -165,7 +165,7 @@ namespace THelper {
             st = st + " <PropertyGroup Condition = \"'$(Configuration)|$(Platform)' == 'Debug|x86'\">";
             st = st + " </PropertyGroup>";
             st = st + "</Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
             //act
@@ -184,7 +184,7 @@ namespace THelper {
             st = st + " <EmbeddedResource Include=\"Properties\\Licenses.licx\" />";
             st = st + " </ItemGroup>";
             st = st + "</Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
             //act
@@ -204,7 +204,7 @@ namespace THelper {
             st = st + "    </Reference>";
             st = st + " </ItemGroup>";
             st = st + "</Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
             //act
@@ -232,7 +232,7 @@ namespace THelper {
               st = st + "    </Reference>";
             st = st + " </ItemGroup>";
             st = st + "</Project>";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
             CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
             //act
@@ -248,7 +248,7 @@ namespace THelper {
         public void SaveNewCsProj() {
             //arrange
             string st = @"c:\test\testproject\test.csproj";
-            var moqFile = new Mock<IWorkWithFile>();
+            var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(st)).Returns(new XDocument());
             CSProjProcessor proc = new CSProjProcessor(st, moqFile.Object);
             //act
@@ -487,8 +487,8 @@ namespace THelper {
         public void SimpleFolder() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\archinveWithImages.zip");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
 
             int callBackCounter = 0;
             int orderCounter = 0;
@@ -510,8 +510,8 @@ namespace THelper {
         public void Example_MMLVinstalled_OpenSolution() {
             //arrange 
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -520,7 +520,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -529,8 +529,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -560,8 +560,8 @@ namespace THelper {
         public void Example_MMLVNOTinstalled_OpenSolution() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -571,7 +571,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -580,8 +580,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -610,8 +610,8 @@ namespace THelper {
         public void Example_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -621,7 +621,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -630,8 +630,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -656,8 +656,8 @@ namespace THelper {
         public void Solution_without_dxlibs_opensolution() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -666,7 +666,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -675,8 +675,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("0.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -703,8 +703,8 @@ namespace THelper {
         public void Solution_without_dxlibs_openFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -715,7 +715,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -724,8 +724,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("0.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -753,8 +753,8 @@ namespace THelper {
         public void MainMajorLastMinor_OpenSolution() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -764,7 +764,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -773,8 +773,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.4")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -804,8 +804,8 @@ namespace THelper {
         public void MainMajorLastMinor_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -815,7 +815,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -824,8 +824,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.4")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -856,8 +856,8 @@ namespace THelper {
         public void MainMajorMinor0_MainMajorLastVersion() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -867,7 +867,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -876,8 +876,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -908,8 +908,8 @@ namespace THelper {
         public void MainMajorMinor0_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -919,7 +919,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -928,8 +928,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -955,8 +955,8 @@ namespace THelper {
         public void MainMajorNoLastMinor_MainMajorLastVersion() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -966,7 +966,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -975,8 +975,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1012,9 +1012,9 @@ namespace THelper {
         public void MainMajorNotLastMinor_ExactConversion_NotLibraries() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
 
-            proc.MyWorkWithFile = moqFile.Object;
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1024,7 +1024,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1033,8 +1033,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1072,9 +1072,9 @@ namespace THelper {
         public void MainMajorNotLastMinor_ExactConversion_LibrariesExist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
 
-            proc.MyWorkWithFile = moqFile.Object;
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1084,7 +1084,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1093,8 +1093,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1131,8 +1131,8 @@ namespace THelper {
         public void MainMajorNoLastMinor_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1142,7 +1142,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1151,8 +1151,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1190,8 +1190,8 @@ namespace THelper {
         public void MajorLastMinor_OpenSolution() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1201,7 +1201,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1210,8 +1210,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1245,8 +1245,8 @@ namespace THelper {
         public void MajorZeroMinor_LastMinor() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1256,7 +1256,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1265,8 +1265,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite8"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite8"])));
@@ -1305,8 +1305,8 @@ namespace THelper {
         public void MajorZeroMinor_MainMajor() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1316,7 +1316,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1325,8 +1325,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite8"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite8"])));
@@ -1367,8 +1367,8 @@ namespace THelper {
         public void MajorZeroMinor_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1378,7 +1378,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1387,8 +1387,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite8"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite8"])));
@@ -1419,8 +1419,8 @@ namespace THelper {
         public void MajorNotLastMinor_LastMinor() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1430,7 +1430,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1439,8 +1439,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1483,8 +1483,8 @@ namespace THelper {
         public void MajorNotLastMinor_MainMajor() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1494,7 +1494,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1503,8 +1503,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1548,8 +1548,8 @@ namespace THelper {
         public void MajorNotLastMinor_ExactConversion_LibrariesPersist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1559,7 +1559,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1568,8 +1568,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1614,8 +1614,8 @@ namespace THelper {
         public void MajorNotLastMinor_ExactConversion_LibrariesNotPersist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1625,7 +1625,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1634,8 +1634,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1682,8 +1682,8 @@ namespace THelper {
         public void MajorNotLastMinor_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1693,7 +1693,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1702,8 +1702,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1739,8 +1739,8 @@ namespace THelper {
         public void MajorLastMinor_MainMajorLastVersion() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1750,7 +1750,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1759,8 +1759,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1795,8 +1795,8 @@ namespace THelper {
         public void MajorLastMinor_Openfolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1806,7 +1806,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1815,8 +1815,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1845,8 +1845,8 @@ namespace THelper {
         public void NotIstalledMajorNotZeroMinor_LastMinor_LibrariesExist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1856,7 +1856,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1865,8 +1865,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -1908,8 +1908,8 @@ namespace THelper {
         public void NotIstalledMajorNotZeroMinor_LastMinor_LibrariesNotExist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1919,7 +1919,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1928,8 +1928,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -1973,8 +1973,8 @@ namespace THelper {
         public void NotIstalledMajorNotZeroMinor_ExactConversion_LibrariesPersist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -1984,7 +1984,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -1993,8 +1993,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2037,8 +2037,8 @@ namespace THelper {
         public void NotIstalledMajorNotZeroMinor_ExactConversion_LibrariesNotPersist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2048,7 +2048,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2057,8 +2057,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
@@ -2105,8 +2105,8 @@ namespace THelper {
         public void NotIstalledMajorNotZeroMinor_MainMajorLastVersion() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2116,7 +2116,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2125,8 +2125,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2176,8 +2176,8 @@ namespace THelper {
         public void NotIstalledMajorNotZeroMinor_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2187,7 +2187,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2196,8 +2196,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2232,8 +2232,8 @@ namespace THelper {
         public void NotIstalledMajorZeroMinor_LastMinor_LibrariesExist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2243,7 +2243,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2252,8 +2252,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2292,8 +2292,8 @@ namespace THelper {
         public void NotIstalledMajorZeroMinor_LastMinor_LibrariesNotExist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2303,7 +2303,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2312,8 +2312,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2355,8 +2355,8 @@ namespace THelper {
         public void NotIstalledMajorLastMinor_LastMinor_LibrariesExist() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2366,7 +2366,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2375,8 +2375,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.13")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2415,8 +2415,8 @@ namespace THelper {
         public void NotIstalledMajorZeroMinor_MainMajor() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2426,7 +2426,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2435,8 +2435,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2477,8 +2477,8 @@ namespace THelper {
         public void NotIstalledMajorZeroMinor_OpenFolder() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2488,7 +2488,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2497,8 +2497,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2530,8 +2530,8 @@ namespace THelper {
         public void NotIstalledMajorZeroMinor_OpenFolder_WrongKey() {
             //arrange  
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2541,7 +2541,7 @@ namespace THelper {
             //moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\testSolution.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2550,8 +2550,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
             string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
 
@@ -2589,8 +2589,8 @@ namespace THelper {
         public void MoreThanOneSolutions_HasDX() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -2603,7 +2603,7 @@ namespace THelper {
 
 
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
-            proc.csProjProccessor = moqCSProj.Object;
+            proc.csProjProcessor = moqCSProj.Object;
 
             var lstRegistryVersions = new List<string>();
             lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
@@ -2612,8 +2612,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessenger>(MockBehavior.Strict);
-            proc.MyMessenger = moqMessage.Object;
+            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
+            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -2660,8 +2660,8 @@ namespace THelper {
         public void MoreThanOneSolutions_NotDX() {
             //arrange
             ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
-            var moqFile = new Mock<IWorkWithFile>(MockBehavior.Strict);
-            proc.MyWorkWithFile = moqFile.Object;
+            var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
+            proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();

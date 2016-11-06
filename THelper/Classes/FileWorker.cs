@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace THelper {
-    public interface IWorkWithFile {
+    public interface IFileWorker {
         XDocument LoadXDocument(string projectPath);
         void SaveXDocument(XDocument projDocument, string projectPath);
         DirectoryInfo CreateDirectory(string _path);
@@ -26,7 +26,7 @@ namespace THelper {
         string StreamReaderReadToEnd(string path);
     }
 
-    public class CustomWorkWithFile : IWorkWithFile {
+    public class FileWorker : IFileWorker {
         public string AssemblyLoadFileFullName(string path) {
             try {
                 var assembly = Assembly.LoadFile(path);

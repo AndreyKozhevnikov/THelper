@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace THelper {
-    public interface IMessenger {
+    public interface IMessageProcessor {
         void ConsoleWrite(string _message);
         void ConsoleWrite(string _message, ConsoleColor color);
         void ConsoleWriteLine();
         ConsoleKey ConsoleReadKey(bool intercept);
     }
-    public class CustomMessenger : IMessenger {
+    public class MessageProcessor : IMessageProcessor {
         public void ConsoleWrite(string _message) { //10
             Console.Write(_message);
         }

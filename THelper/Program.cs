@@ -14,8 +14,8 @@ namespace THelper {
             if (args.Count() > 0 && args[0] is string) {
                 string filePath = args[0];
                 ProjectProcessor p = new ProjectProcessor(filePath);
-                p.MyWorkWithFile = new CustomWorkWithFile();
-                p.MyMessenger = new CustomMessenger();
+                p.MyFileWorker = new FileWorker();
+                p.MyMessageProcessor = new MessageProcessor();
                 p.ProcessArchive();
             }
 

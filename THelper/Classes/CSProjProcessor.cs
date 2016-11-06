@@ -30,9 +30,9 @@ namespace THelper {
     }
     public class CSProjProcessor : ICSProjProcessor {
         public string csProjFileName;
-        public IWorkWithFile MyWorkWithFile;
+        public IFileWorker MyWorkWithFile;
 
-        public CSProjProcessor(string _csProjFileName, IWorkWithFile _workWithFile) {//tested 
+        public CSProjProcessor(string _csProjFileName, IFileWorker _workWithFile) {//tested 
             csProjFileName = _csProjFileName;
             MyWorkWithFile = _workWithFile;
 
