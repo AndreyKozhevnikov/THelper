@@ -12,10 +12,6 @@ using System.Windows.Forms;
 using System.Collections;
 
 namespace THelper {
-    public enum ConverterMessages { OpenSolution, MainMajorLastVersion, LastMinor, ExactConversion, OpenFolder }
-
-
-
     public class ProjectProcessor {
         string archiveFilePath;
         string cspath;
@@ -114,13 +110,6 @@ namespace THelper {
                 st = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).ToArray();
             }
             return st;
-            //_slnPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).FirstOrDefault();
-            //_csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).FirstOrDefault();
-            //if (_csprojPath == null)
-            //    _csprojPath = MyWorkWithFile.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).FirstOrDefault();
-            //if (string.IsNullOrEmpty(_slnPath))
-            //    _slnPath = _csprojPath;
-            //return !string.IsNullOrEmpty(_slnPath);
         }
         void GetMessageInfo() {//4 td
             MessagesList = new List<ConverterMessages>();

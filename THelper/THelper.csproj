@@ -82,8 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSProjProcessor.cs" />
-    <Compile Include="IMessager.cs" />
+    <Compile Include="Classes\ConverterMessages.cs" />
+    <Compile Include="Classes\CSProjProcessor.cs" />
+    <Compile Include="Classes\IMessager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -92,15 +93,15 @@
     </Compile>
     <Compile Include="TestClass.cs" />
     <Compile Include="Tests\THelperTest.cs" />
-    <Compile Include="Version.cs" />
-    <Compile Include="ProjectProcessor.cs" />
+    <Compile Include="Classes\Version.cs" />
+    <Compile Include="Classes\ProjectProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="WorkWithFile.cs" />
+    <Compile Include="Classes\WorkWithFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
