@@ -352,15 +352,11 @@ namespace THelper {
         }
         private Version FindLastVersionOfMajor(int major) {//15tt
             var maj = major;
-            List<string> directories = new List<string>();
-            string filePath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.txt";
-            var stringLst = MyFileWorker.StreamReaderReadToEnd(filePath);
-            var dxDirectories = stringLst.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (string directory in dxDirectories)
-                directories.Add(Path.GetFileName(directory));
-            directories.Sort(new VersionComparer());
-            var res = directories.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
+            string filePath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.xml";
+            var xDoc = MyFileWorker.LoadXDocument(filePath);
+            var stringLst = xDoc.Element("Versions").Element("AllVersions").Value;
+            var dxVersions = stringLst.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var res = dxVersions.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
             return new Version(res);
         }
 

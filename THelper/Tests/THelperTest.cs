@@ -1867,8 +1867,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.5.0", ConsoleColor.Red));
@@ -1930,8 +1937,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.5.0", ConsoleColor.Red));
@@ -1995,8 +2009,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //   string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.5.0", ConsoleColor.Red));
@@ -2059,8 +2080,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            // string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.5.0", ConsoleColor.Red));
             moqMessage.Setup(x => x.ConsoleWriteLine());
@@ -2127,8 +2155,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.5.0", ConsoleColor.Red));
@@ -2198,8 +2233,17 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
+
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.5.0", ConsoleColor.Red));
@@ -2254,8 +2298,16 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -2314,8 +2366,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //   string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -2377,8 +2436,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.13")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            // string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.13.0", ConsoleColor.Red));
@@ -2437,8 +2503,13 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -2499,8 +2570,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            // string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -2552,8 +2630,15 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
-            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(lst).Do((x3) => { callOrderDictionary["StreamReaderReadToEnd"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd"])));
+            //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
+            XElement xlEl = new XElement("AllVersions");
+            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            XElement xlRoot = new XElement("Versions");
+            xlRoot.Add(xlEl);
+            XDocument xDoc = new XDocument();
+            xDoc.Add(xlRoot);
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
+
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("142.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
