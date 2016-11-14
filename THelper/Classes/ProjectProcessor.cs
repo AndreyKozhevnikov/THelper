@@ -368,7 +368,7 @@ namespace THelper {
 
         private void ConvertProjectWithDxConverter(Version v) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = @"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe";
+            psi.FileName = Properties.Settings.Default.DXConverterPath;
             string versionConverterFormat = v.ToString(true);
             psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\"", solutionFolderName, versionConverterFormat);
             MyFileWorker.ProcessStart(psi.FileName, psi.Arguments);
