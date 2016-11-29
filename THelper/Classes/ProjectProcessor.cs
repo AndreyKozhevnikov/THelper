@@ -193,7 +193,7 @@ namespace THelper {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
                 Version fileVersion = GetVersionFromFile(rootPath2);
                 installedVersions.Add(fileVersion);
-                if (mainMajorLastVersion.CompareTo(fileVersion) == -1 && fileVersion.Major != 162) {
+                if (mainMajorLastVersion.CompareTo(fileVersion) == -1 && fileVersion.Major != 171) {
                     mainMajorLastVersion = fileVersion;
                 }
             }
