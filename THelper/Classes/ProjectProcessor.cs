@@ -14,13 +14,14 @@ using System.Collections;
 namespace THelper {
     public class ProjectProcessor {
         string archiveFilePath;
-        string cspath;
+        string csPath;
+        string slnPath;
         Version currentInstalledMajor;
         Version currentProjectVersion;
         public List<Version> installedVersions;
         bool isCurrentVersionMajorInstalled;
         bool isExample;
-        
+
         bool isMainMajor;
         Version mainMajorLastVersion;
         List<ConverterMessages> MessagesList;
@@ -63,22 +64,27 @@ namespace THelper {
 
 
         private void ProcessFolder() { //2
-            cspath = string.Empty;
+            csPath = string.Empty;
             //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
-            string[] solutionsFiles = TryGetSolutionFiles(solutionFolderInfo);
-            int solutionsCount = solutionsFiles.Count();
-            switch (solutionsCount) {
+            string[] solutionFiles = TryGetSolutionFiles(solutionFolderInfo);
+            if (solutionFiles.Count() == 1) {
+                slnPath = solutionFiles[0];
+            }
+
+            string[] projectFiles = TryGetProjectFiles(solutionFolderInfo);
+            int projectsCount = projectFiles.Count();
+            switch (projectsCount) {
                 case 1:
-                    cspath = solutionsFiles[0];
+                    csPath = projectFiles[0];
                     WorkWithSolution();
                     break;
                 case 0:
                     OpenFolder();
                     break;
                 default:
-                    var dxPath = FindDXCsproj(solutionsFiles);
+                    var dxPath = FindDXCsproj(projectFiles);
                     if (dxPath != null) {
-                        cspath = dxPath;
+                        csPath = dxPath;
                         WorkWithSolution();
                     }
                     else {
@@ -104,11 +110,15 @@ namespace THelper {
             ProcessProject(result);
         }
 
-        string[] TryGetSolutionFiles(DirectoryInfo dirInfo) { //3 td
+        string[] TryGetProjectFiles(DirectoryInfo dirInfo) { //3 td
             var st = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).ToArray();
             if (st.Count() == 0) {
                 st = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).ToArray();
             }
+            return st;
+        }
+        string[] TryGetSolutionFiles(DirectoryInfo dirInfo) {
+            var st = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).ToArray();
             return st;
         }
         void GetMessageInfo() {//4 td
@@ -180,7 +190,7 @@ namespace THelper {
 
         private ICSProjProcessor CreateCSProjProcessor() { //how to get rid off?
             if (csProjProcessor == null)
-                csProjProcessor = new CSProjProcessor(cspath, MyFileWorker);
+                csProjProcessor = new CSProjProcessor(csPath, MyFileWorker);
             return csProjProcessor;
         }
 
@@ -391,7 +401,10 @@ namespace THelper {
             MyFileWorker.ProcessStart(solutionFolderName);
         }
         private void OpenSolution() {//tt
-            MyFileWorker.ProcessStart(cspath);
+            if (slnPath != null)
+                MyFileWorker.ProcessStart(slnPath);
+            else
+                MyFileWorker.ProcessStart(csPath);
         }
 
 
