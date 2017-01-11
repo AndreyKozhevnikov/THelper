@@ -97,7 +97,7 @@ namespace THelper {
         private string FindDXCsproj(string[] solutionsFiles) {
             foreach (string st in solutionsFiles) {
                 var tx = MyFileWorker.StreamReaderReadToEnd(st);
-                if (tx.Contains("DevExpress")) {
+                if (tx.Contains(@"Reference Include=""DevExpress.")) {
                     return st;
                 }
             }
