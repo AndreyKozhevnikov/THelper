@@ -343,6 +343,7 @@ namespace THelper {
                             ConvertProjectWithDxConverter(currentProjectVersion);
                             break;
                         default:
+                            csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                             csProjProcessor.SaveNewCsProj();
                             break;
                     }
