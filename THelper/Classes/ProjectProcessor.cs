@@ -230,14 +230,15 @@ namespace THelper {
             foreach (ConverterMessages msg in MessagesList) {
                 PrintConverterMessage(msg, k++.ToString());
             }
-            ConsoleKey enterKey = MyMessageProcessor.ConsoleReadKey(false);
-
-            int index = GetValueFromConsoleKey(enterKey);
+            int index = -1;
+      
+            while (index == -1||(index!=9&&index>MessagesList.Count-1)) {
+                ConsoleKey enterKey = MyMessageProcessor.ConsoleReadKey(false);
+                index = GetValueFromConsoleKey(enterKey);
+            }
             if (index == 9)
                 return ConverterMessages.OpenFolder;
-            if ((index - 1) > MessagesList.Count) {
-                return ConverterMessages.OpenSolution;
-            }
+
             return MessagesList[index - 1];
         }
 
