@@ -512,7 +512,7 @@ namespace THelper {
             SetupMoqFileSlnFile(moqFile);
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"csproj"] = orderCounter++; }).Callback(()=>Test(callOrderDictionary["EnumerateFilescsproj"]));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(()=>Test(callOrderDictionary["EnumerateFiles"]));
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() =>Test(callOrderDictionary["ProcessStart"])); 
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() =>Test(callOrderDictionary["OpenFolder"])); 
             //act
             proc.ProcessArchive();
             //assert
@@ -656,7 +656,7 @@ namespace THelper {
 
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\dxExample")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -801,7 +801,7 @@ namespace THelper {
 
             //moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\dxExample")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -904,7 +904,7 @@ namespace THelper {
             //moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
             //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -1003,7 +1003,7 @@ namespace THelper {
 
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -1237,7 +1237,7 @@ namespace THelper {
             //moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
             //moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\dxExample""", true)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -1468,7 +1468,7 @@ namespace THelper {
             moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite"])));
 
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -1788,7 +1788,7 @@ namespace THelper {
 
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -1892,7 +1892,7 @@ namespace THelper {
 
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -2324,7 +2324,7 @@ namespace THelper {
             moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite"])));
 
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.NumPad9).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -2656,7 +2656,7 @@ namespace THelper {
 
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D9).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["OpenFolder"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act  
             proc.ProcessArchive();
             //assert  
@@ -2797,7 +2797,7 @@ namespace THelper {
             moqFile.Setup(x => x.StreamReaderReadToEnd(@"c:\test\testSolution\testSolution\solution1\solution1.csproj")).Returns("test string").Do((x3) => { callOrderDictionary["StreamReaderReadToEnd3"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd3"])));
             moqFile.Setup(x => x.StreamReaderReadToEnd(@"c:\test\testSolution\testSolution\solution2\solution2.csproj")).Returns("test string Xpf.Grid TestAppDevExpress").Do((x3) => { callOrderDictionary["StreamReaderReadToEnd2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd2"])));
 
-            moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
             //act
             proc.ProcessArchive();
             //assert

@@ -21,12 +21,15 @@ namespace THelper {
         void ProcessStart(string fileName, string arguments, bool _wait);
         void ProcessStart(ProcessStartInfo startInfo);
         void ProcessStart(string fileName, string arguments);
+        void OpenFolder(string path);
         IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption);
         string[] DirectoryGetDirectories(string path);
         string StreamReaderReadToEnd(string path);
+
     }
 
     public class FileWorker : IFileWorker {
+        static string totalCmdPath = @"C:\Program Files (x86)\totalcmd\TOTALCMD64.EXE";
         public string AssemblyLoadFileFullName(string path) {
             try {
                 var assembly = Assembly.LoadFile(path);
@@ -106,6 +109,13 @@ namespace THelper {
             sr.Close();
             return st;
         
+        }
+
+        public void OpenFolder(string path) {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = totalCmdPath;
+            startInfo.Arguments = string.Format("/O /T /R=\"{0}\"", path);
+            Process.Start(startInfo);
         }
     }
 }

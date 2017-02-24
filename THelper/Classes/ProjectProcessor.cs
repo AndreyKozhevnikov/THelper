@@ -400,7 +400,7 @@ namespace THelper {
 
 
         private void OpenFolder() { //tt
-            MyFileWorker.ProcessStart(solutionFolderName);
+            MyFileWorker.OpenFolder(solutionFolderName);
         }
         private void OpenSolution() {//tt
             if (slnPath != null)
