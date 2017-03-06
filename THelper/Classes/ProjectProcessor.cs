@@ -67,8 +67,13 @@ namespace THelper {
             csPath = string.Empty;
             //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             string[] solutionFiles = TryGetSolutionFiles(solutionFolderInfo);
-            if (solutionFiles.Count() == 1) {
+            var solutionCount = solutionFiles.Count();
+            if (solutionCount > 0) {
                 slnPath = solutionFiles[0];
+            }
+            if (solutionCount > 1) {
+                MyMessageProcessor.ConsoleWrite("There are many sln files!", ConsoleColor.Red);
+                MyMessageProcessor.ConsoleWriteLine();
             }
 
             string[] projectFiles = TryGetProjectFiles(solutionFolderInfo);
