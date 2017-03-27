@@ -285,10 +285,10 @@ namespace THelper {
 
         int GetValueFromConsoleKey(ConsoleKey key) {//9 tt
             int value = -1;
-            if (key >= (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
+            if (key > (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
                 value = (int)key - ((int)ConsoleKey.NumPad0);
             }
-            else if ((int)key >= ((int)ConsoleKey.D0) && (int)key <= ((int)ConsoleKey.D9)) { // regular numbers
+            else if ((int)key > ((int)ConsoleKey.D0) && (int)key <= ((int)ConsoleKey.D9)) { // regular numbers
                 value = (int)key - ((int)ConsoleKey.D0);
             }
             return value;

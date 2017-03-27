@@ -662,7 +662,48 @@ namespace THelper {
             //assert  
             Assert.AreEqual(16, callBackCounter);
         }
+        [Test]
+        public void WrongKeyBoardInput() {
+            //arrange  
+            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            var moqFile = new Mock<IFileWorker>();
+            proc.MyFileWorker = moqFile.Object;
+        
+            Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
 
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample"));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.dxsample"" ""c:\test\dxExample"""));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample.sln" });
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" });
+            var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
+            proc.csProjProcessor = moqCSProj.Object;
+
+            var lstRegistryVersions = new List<string>();
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 15.2\Components\");
+            lstRegistryVersions.Add(@"C:\Program Files (x86)\DevExpress 16.1\Components\");
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(lstRegistryVersions);
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a");
+            moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2"));
+            var moqMessage = new Mock<IMessageProcessor>();
+            proc.MyMessageProcessor = moqMessage.Object;
+
+            moqMessage.Setup(x => x.ConsoleWrite("The current project version is an "));
+            moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red));
+            moqMessage.Setup(x => x.ConsoleWriteLine());
+            moqMessage.Setup(x => x.ConsoleWrite("To open solution press: "));
+            moqMessage.Setup(x => x.ConsoleWrite("1", ConsoleColor.Red));
+            moqMessage.Setup(x => x.ConsoleWrite("To open folder press: "));
+            moqMessage.Setup(x => x.ConsoleWrite("9", ConsoleColor.Red));
+
+
+            moqMessage.SetupSequence(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D0).Returns(ConsoleKey.D8).Returns(ConsoleKey.D9);
+
+            //act  
+            proc.ProcessArchive();
+            //assert  
+            moqFile.Verify(x => x.OpenFolder(@"c:\test\dxExample"), Times.Once);
+        }
 
 
         [Test]
