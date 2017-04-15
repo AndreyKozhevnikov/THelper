@@ -74,6 +74,9 @@ namespace THelper {
         }
 
         public void SaveXDocument(XDocument projDocument, string projectPath) {
+            var fileInfo = new FileInfo(projectPath);
+            if (fileInfo.IsReadOnly)
+                fileInfo.IsReadOnly = false;
             projDocument.Save(projectPath);
         }
 
