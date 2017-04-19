@@ -494,21 +494,19 @@ namespace THelper {
         int callBackCounter = 0;
         int orderCounter = 0;
         Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
+        ProjectProcessor InitializeProcessor(string st ) {
+            ProjectProcessor proc = new ProjectProcessor(st);
+            proc.LastReleasedVersion = 162;
+            return proc;
+        }
         [Test]
         public void SimpleFolder() {
             //arrange
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\archinveWithImages.zip");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\archinveWithImages.zip");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
-
-          //  int callBackCounter = 0;
-          
-           
-
-            //moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDirectory"])));
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() =>Test(callOrderDictionary["CreateDirectory"]));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"zip"] = orderCounter++; }).Callback(() =>Test(callOrderDictionary["ProcessStartzip"]));
-            //  moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"sln"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFilessln"])));
             SetupMoqFileSlnFile(moqFile);
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"csproj"] = orderCounter++; }).Callback(()=>Test(callOrderDictionary["EnumerateFilescsproj"]));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(()=>Test(callOrderDictionary["EnumerateFiles"]));
@@ -522,7 +520,7 @@ namespace THelper {
         [Test]
         public void Example_MMLVinstalled_OpenSolution() {
             //arrange 
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -565,14 +563,12 @@ namespace THelper {
             proc.ProcessArchive();
             //assert 
             Assert.AreEqual(19, callBackCounter);
-            //moqFile.Verify(x => x.CreateDirectory(@"c:\test\archinveWithImages"), Times.Once); 
-            //moqFile.Verify(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages"""), Times.Once); 
         }
 
         [Test] //++  
         public void Example_MMLVNOTinstalled_OpenSolution() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -622,7 +618,7 @@ namespace THelper {
         [Test]
         public void Example_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -665,7 +661,7 @@ namespace THelper {
         [Test]
         public void WrongKeyBoardInput() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.dxsample");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IFileWorker>();
             proc.MyFileWorker = moqFile.Object;
         
@@ -709,7 +705,7 @@ namespace THelper {
         [Test]
         public void Solution_without_dxlibs_opensolution() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.zip");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -755,7 +751,7 @@ namespace THelper {
         [Test]
         public void Solution_with_several_projects_open_solution() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.zip");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
@@ -805,7 +801,7 @@ namespace THelper {
         [Test]
         public void Solution_without_dxlibs_openFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\dxExample.zip");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.zip");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -855,7 +851,7 @@ namespace THelper {
         [Test]
         public void MainMajorLastMinor_OpenSolution() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -906,7 +902,7 @@ namespace THelper {
         [Test]
         public void MainMajorLastMinor_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -958,7 +954,7 @@ namespace THelper {
         [Test]
         public void MainMajorMinor0_MainMajorLastVersion() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1010,7 +1006,7 @@ namespace THelper {
         [Test]
         public void MainMajorMinor0_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1057,7 +1053,7 @@ namespace THelper {
         [Test]
         public void MainMajorNoLastMinor_MainMajorLastVersion() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1114,7 +1110,7 @@ namespace THelper {
         [Test]
         public void MainMajorNotLastMinor_ExactConversion_NotLibraries() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
 
             proc.MyFileWorker = moqFile.Object;
@@ -1174,7 +1170,7 @@ namespace THelper {
         [Test]
         public void MainMajorNotLastMinor_ExactConversion_LibrariesExist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
 
             proc.MyFileWorker = moqFile.Object;
@@ -1233,7 +1229,7 @@ namespace THelper {
         [Test]
         public void MainMajorNoLastMinor_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1292,7 +1288,7 @@ namespace THelper {
         [Test]
         public void MajorLastMinor_OpenSolution() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1347,7 +1343,7 @@ namespace THelper {
         [Test]
         public void MajorZeroMinor_LastMinor() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1407,7 +1403,7 @@ namespace THelper {
         [Test]
         public void MajorZeroMinor_MainMajor() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1469,7 +1465,7 @@ namespace THelper {
         [Test]
         public void MajorZeroMinor_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1521,7 +1517,7 @@ namespace THelper {
         [Test]
         public void MajorNotLastMinor_LastMinor() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1585,7 +1581,7 @@ namespace THelper {
         [Test]
         public void MajorNotLastMinor_MainMajor() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1650,7 +1646,7 @@ namespace THelper {
         [Test]
         public void MajorNotLastMinor_ExactConversion_LibrariesPersist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1716,7 +1712,7 @@ namespace THelper {
         [Test]
         public void MajorNotLastMinor_ExactConversion_LibrariesNotPersist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1784,7 +1780,7 @@ namespace THelper {
         [Test]
         public void MajorNotLastMinor_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1841,7 +1837,7 @@ namespace THelper {
         [Test]
         public void MajorLastMinor_MainMajorLastVersion() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1897,7 +1893,7 @@ namespace THelper {
         [Test]
         public void MajorLastMinor_Openfolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -1947,7 +1943,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorNotZeroMinor_LastMinor_LibrariesExist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2017,7 +2013,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorNotZeroMinor_LastMinor_LibrariesNotExist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2089,7 +2085,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorNotZeroMinor_ExactConversion_LibrariesPersist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2160,7 +2156,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorNotZeroMinor_ExactConversion_LibrariesNotPersist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2235,7 +2231,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorNotZeroMinor_MainMajorLastVersion() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2313,7 +2309,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorNotZeroMinor_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2378,7 +2374,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorZeroMinor_LastMinor_LibrariesExist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2446,7 +2442,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorZeroMinor_LastMinor_LibrariesNotExist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2516,7 +2512,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorLastMinor_LastMinor_LibrariesExist() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2583,7 +2579,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorZeroMinor_MainMajor() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2650,7 +2646,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorZeroMinor_OpenFolder() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2710,7 +2706,7 @@ namespace THelper {
         [Test]
         public void NotIstalledMajorZeroMinor_OpenFolder_WrongKey() {
             //arrange  
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>();
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2754,7 +2750,7 @@ namespace THelper {
         [Test]
         public void MoreThanOneSolutions_HasDX() {
             //arrange
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;
@@ -2826,7 +2822,7 @@ namespace THelper {
         [Test]
         public void MoreThanOneSolutions_NotDX() {
             //arrange
-            ProjectProcessor proc = new ProjectProcessor(@"c:\test\testSolution.rar");
+            ProjectProcessor proc = InitializeProcessor(@"c:\test\testSolution.rar");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
             int callBackCounter = 0;

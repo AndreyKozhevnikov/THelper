@@ -16,6 +16,7 @@ namespace THelper {
                 ProjectProcessor p = new ProjectProcessor(filePath);
                 p.MyFileWorker = new FileWorker();
                 p.MyMessageProcessor = new MessageProcessor();
+                p.GetSettings();
                 p.ProcessArchive();
             }
 

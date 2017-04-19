@@ -13,6 +13,7 @@ using System.Collections;
 
 namespace THelper {
     public class ProjectProcessor {
+        protected internal int LastReleasedVersion;
         string archiveFilePath;
         string csPath;
         string slnPath;
@@ -37,7 +38,16 @@ namespace THelper {
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
         }
+        internal void GetSettings() {
+            string pathToSettingsFile = @"C:\MSSQLSettings.ini";
+            StreamReader sr = new StreamReader(pathToSettingsFile);
+            string st = sr.ReadToEnd();
+            sr.Close();
 
+            XElement xl = XElement.Parse(st);
+            var lastVersion = xl.Element("LastDXVersion").Value;
+            LastReleasedVersion = int.Parse(lastVersion);
+        }
         internal void ProcessArchive() { //0
             SetIsExample();
             ExtractFiles();
@@ -208,7 +218,7 @@ namespace THelper {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
                 Version fileVersion = GetVersionFromFile(rootPath2);
                 installedVersions.Add(fileVersion);
-                if (mainMajorLastVersion.CompareTo(fileVersion) == -1 && fileVersion.Major != 171) {
+                if (mainMajorLastVersion.CompareTo(fileVersion) == -1 && fileVersion.Major <=LastReleasedVersion) {
                     mainMajorLastVersion = fileVersion;
                 }
             }
@@ -236,8 +246,8 @@ namespace THelper {
                 PrintConverterMessage(msg, k++.ToString());
             }
             int index = -1;
-      
-            while (index == -1||(index!=9&&index>MessagesList.Count-1)) {
+
+            while (index == -1 || (index != 9 && index > MessagesList.Count - 1)) {
                 ConsoleKey enterKey = MyMessageProcessor.ConsoleReadKey(false);
                 index = GetValueFromConsoleKey(enterKey);
             }
