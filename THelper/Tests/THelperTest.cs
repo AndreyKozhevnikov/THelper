@@ -84,7 +84,7 @@ namespace THelper {
             st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
             st = st + "  <ItemGroup>";
             st = st + "     <Reference Include = \"DevExpress.Xpf.Core.v15.2\"/>";
-             st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
+            st = st + "   <Reference Include=\"DevExpress.Data.v15.2, Version=15.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL\"><SpecificVersion>False</SpecificVersion></Reference>";
             st = st + "  </ItemGroup>";
             st = st + " </Project>";
             var moqFile = new Mock<IFileWorker>();
@@ -229,7 +229,7 @@ namespace THelper {
             st = st + "  <Reference Include=\"DevExpress.Xpf.Core.v16.1, Version = 16.1.4.0, Culture = neutral, PublicKeyToken = b88d1754d700e49a, processorArchitecture = MSIL\">";
             st = st + "      <SpecificVersion>True</SpecificVersion>";
             st = st + @"   <HintPath>..\DevExpressRef\DevExpress.Mvvm.v16.1.dll </HintPath >";
-              st = st + "    </Reference>";
+            st = st + "    </Reference>";
             st = st + " </ItemGroup>";
             st = st + "</Project>";
             var moqFile = new Mock<IFileWorker>();
@@ -467,7 +467,7 @@ namespace THelper {
             Assert.AreEqual(-1, buildMinRes);
             Assert.AreEqual(1, buildMaxRes);
         }
-    } 
+    }
 
 
     [TestFixture]
@@ -478,13 +478,13 @@ namespace THelper {
             var ind = st2.IndexOf("=> x.") + 5;
             var st3 = st2.Substring(ind, st2.Length - ind);
             var ind2 = st3.IndexOf("(");
-            var st4 = st3.Substring(0,  ind2);
+            var st4 = st3.Substring(0, ind2);
             // var st5 = (x3 as Moq.IProxyCall);
             return st4;
             return "null";
         }
         public Mock<IFileWorker> SetupMoqFileSlnFile(Mock<IFileWorker> moqFile) {
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3) + "sln"] = orderCounter++; }).Callback(()=>Test( callOrderDictionary["EnumerateFilessln"]));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3) + "sln"] = orderCounter++; }).Callback(() => Test(callOrderDictionary["EnumerateFilessln"]));
             return moqFile;
         }
 
@@ -494,7 +494,7 @@ namespace THelper {
         int callBackCounter = 0;
         int orderCounter = 0;
         Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
-        ProjectProcessor InitializeProcessor(string st ) {
+        ProjectProcessor InitializeProcessor(string st) {
             ProjectProcessor proc = new ProjectProcessor(st);
             proc.LastReleasedVersion = 162;
             return proc;
@@ -505,12 +505,12 @@ namespace THelper {
             ProjectProcessor proc = InitializeProcessor(@"c:\test\archinveWithImages.zip");
             var moqFile = new Mock<IFileWorker>(MockBehavior.Strict);
             proc.MyFileWorker = moqFile.Object;
-            moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() =>Test(callOrderDictionary["CreateDirectory"]));
-            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"zip"] = orderCounter++; }).Callback(() =>Test(callOrderDictionary["ProcessStartzip"]));
+            moqFile.Setup(x => x.CreateDirectory(@"c:\test\archinveWithImages")).Returns(new DirectoryInfo(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Test(callOrderDictionary["CreateDirectory"]));
+            moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\archinveWithImages.zip"" ""c:\test\archinveWithImages""")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3) + "zip"] = orderCounter++; }).Callback(() => Test(callOrderDictionary["ProcessStartzip"]));
             SetupMoqFileSlnFile(moqFile);
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)+"csproj"] = orderCounter++; }).Callback(()=>Test(callOrderDictionary["EnumerateFilescsproj"]));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(()=>Test(callOrderDictionary["EnumerateFiles"]));
-            moqFile.Setup(x => x.OpenFolder(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() =>Test(callOrderDictionary["OpenFolder"])); 
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3) + "csproj"] = orderCounter++; }).Callback(() => Test(callOrderDictionary["EnumerateFilescsproj"]));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\archinveWithImages", "*.vbproj", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Test(callOrderDictionary["EnumerateFiles"]));
+            moqFile.Setup(x => x.OpenFolder(@"c:\test\archinveWithImages")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Test(callOrderDictionary["OpenFolder"]));
             //act
             proc.ProcessArchive();
             //assert
@@ -606,7 +606,7 @@ namespace THelper {
 
             moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
             var arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"0.0.0\"", @"c:\test\dxExample", "16.1.4");
-            moqFile.Setup(x => x.ProcessStart(@"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe",arguments)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
+            moqFile.Setup(x => x.ProcessStart(@"c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe", arguments)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
 
             moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
             //act  
@@ -664,7 +664,7 @@ namespace THelper {
             ProjectProcessor proc = InitializeProcessor(@"c:\test\dxExample.dxsample");
             var moqFile = new Mock<IFileWorker>();
             proc.MyFileWorker = moqFile.Object;
-        
+
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample"));
@@ -713,7 +713,7 @@ namespace THelper {
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Do((x3) => { callOrderDictionary["CreateDirectory"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDirectory"])));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.zip"" ""c:\test\dxExample""")).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] {  }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             proc.csProjProcessor = moqCSProj.Object;
@@ -774,8 +774,8 @@ namespace THelper {
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 15.2\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName1"])));
             moqFile.Setup(x => x.AssemblyLoadFileFullName(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe")).Returns(@"ProjectConverter, Version=16.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a").Do((x3) => { callOrderDictionary["AssemblyLoadFileFullName"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["AssemblyLoadFileFullName"])));
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-      
-           
+
+
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("0.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
             moqMessage.Setup(x => x.ConsoleWriteLine());
@@ -811,7 +811,7 @@ namespace THelper {
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\dxExample")).Returns(new DirectoryInfo(@"c:\test\dxExample")).Do((x3) => { callOrderDictionary["CreateDirectory"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDirectory"])));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\dxExample.zip"" ""c:\test\dxExample""")).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] {}).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\dxExample", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\dxExample\dxExample\dxExample.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             var moqCSProj = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             proc.csProjProcessor = moqCSProj.Object;
@@ -1699,7 +1699,7 @@ namespace THelper {
 
             moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
             moqFile.Setup(x => x.DirectoryEnumerateFiles(@"c:\test\testSolution", "DevExpress*.dll", SearchOption.AllDirectories)).Returns(new string[] { "test" }).Do((x3) => { callOrderDictionary["DirectoryEnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DirectoryEnumerateFiles"])));
-            moqCSProj.Setup(x=>x.DXLibrariesCount).Returns(1).Do((x3) => { callOrderDictionary["DXLibrariesCount"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DXLibrariesCount"])));
+            moqCSProj.Setup(x => x.DXLibrariesCount).Returns(1).Do((x3) => { callOrderDictionary["DXLibrariesCount"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DXLibrariesCount"])));
             //  moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\testSolution""", true)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
 
             moqFile.Setup(x => x.ProcessStart(@"c:\test\testSolution\testSolution.sln")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
@@ -1968,7 +1968,8 @@ namespace THelper {
             proc.MyMessageProcessor = moqMessage.Object;
             //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2038,7 +2039,8 @@ namespace THelper {
             proc.MyMessageProcessor = moqMessage.Object;
             //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2110,7 +2112,8 @@ namespace THelper {
             proc.MyMessageProcessor = moqMessage.Object;
             //   string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2181,7 +2184,8 @@ namespace THelper {
             proc.MyMessageProcessor = moqMessage.Object;
             // string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2256,7 +2260,8 @@ namespace THelper {
             proc.MyMessageProcessor = moqMessage.Object;
             //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2332,9 +2337,9 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            //string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2397,9 +2402,9 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2437,7 +2442,14 @@ namespace THelper {
             //assert  
             Assert.AreEqual(24, callBackCounter);
         }
-
+        void CreateXelemetsVersion(string vers, XElement allVersionXElement) {
+            var verString = vers.Split('\n');
+            foreach (string s in verString) {
+                var xL = new XElement("Version");
+                xL.Add(new XAttribute("Version", s));
+                allVersionXElement.Add(xL);
+            }
+        }
 
         [Test]
         public void NotIstalledMajorZeroMinor_LastMinor_LibrariesNotExist() {
@@ -2465,9 +2477,9 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            //   string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+               string lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2495,7 +2507,7 @@ namespace THelper {
 
             moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
             moqFile.Setup(x => x.DirectoryEnumerateFiles(@"c:\test\testSolution", "DevExpress*.dll", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary["DirectoryEnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DirectoryEnumerateFiles"])));
-            
+
             moqCSProj.Setup(x => x.DXLibrariesCount).Returns(1).Do((x3) => { callOrderDictionary["DXLibrariesCount"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DXLibrariesCount"])));
             //  moqFile.Setup(x => x.ProcessStart(@"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe", @"""c:\test\testSolution""", true)).Do((x3) => { callOrderDictionary["ProcessStart2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart2"])));
             var arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"0.0.0\"", @"c:\test\testSolution", "14.2.13");
@@ -2535,9 +2547,9 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.13")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            // string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2603,7 +2615,8 @@ namespace THelper {
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+           var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2669,9 +2682,9 @@ namespace THelper {
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
             var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
             proc.MyMessageProcessor = moqMessage.Object;
-            // string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2730,9 +2743,9 @@ namespace THelper {
             var moqMessage = new Mock<IMessageProcessor>();
             proc.MyMessageProcessor = moqMessage.Object;
             moqMessage.SetupSequence(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.Home).Returns(ConsoleKey.D9);
-            //  string lst = "15.1.16\r\n14.2.3\r\n16.1.1\r\n14.2.13\r\n9.8.1";
             XElement xlEl = new XElement("AllVersions");
-            xlEl.Value = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            var lst = "16.1.1\n15.1.16\n14.2.13\n14.2.8\n14.2.3\n9.8.1";
+            CreateXelemetsVersion(lst, xlEl);
             XElement xlRoot = new XElement("Versions");
             xlRoot.Add(xlEl);
             XDocument xDoc = new XDocument();
@@ -2740,12 +2753,12 @@ namespace THelper {
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(xDoc).Do((x3) => { callOrderDictionary["LoadXDocument"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["LoadXDocument"])));
             //act  
             proc.ProcessArchive();
-         
+
             //assert  
-        
+
         }
 
-    
+
 
         [Test]
         public void MoreThanOneSolutions_HasDX() {
@@ -2759,7 +2772,7 @@ namespace THelper {
 
             moqFile.Setup(x => x.CreateDirectory(@"c:\test\testSolution")).Returns(new DirectoryInfo(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary["CreateDirectory"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CreateDirectory"])));
             moqFile.Setup(x => x.ProcessStart(It.IsAny<string>(), @" x ""c:\test\testSolution.rar"" ""c:\test\testSolution""")).Do((x3) => { callOrderDictionary["ProcessStart3"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart3"])));
-            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] {  }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
+            moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.sln", SearchOption.AllDirectories)).Returns(new string[] { }).Do((x3) => { callOrderDictionary["EnumerateFiles1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles1"])));
             moqFile.Setup(x => x.EnumerateFiles(@"c:\test\testSolution", "*.csproj", SearchOption.AllDirectories)).Returns(new string[] { @"c:\test\testSolution\testSolution\solution1\solution1.csproj", @"c:\test\testSolution\testSolution\solution2\solution2.csproj" }).Do((x3) => { callOrderDictionary["EnumerateFiles"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["EnumerateFiles"])));
             moqFile.Setup(x => x.StreamReaderReadToEnd(@"c:\test\testSolution\testSolution\solution1\solution1.csproj")).Returns("test string").Do((x3) => { callOrderDictionary["StreamReaderReadToEnd3"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd3"])));
             moqFile.Setup(x => x.StreamReaderReadToEnd(@"c:\test\testSolution\testSolution\solution2\solution2.csproj")).Returns(@"test string Reference Include=""DevExpress.Printing.v15.2.Core").Do((x3) => { callOrderDictionary["StreamReaderReadToEnd2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd2"])));

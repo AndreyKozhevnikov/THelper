@@ -381,9 +381,8 @@ namespace THelper {
             var maj = major;
             string filePath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.xml";
             var xDoc = MyFileWorker.LoadXDocument(filePath);
-            var stringLst = xDoc.Element("Versions").Element("AllVersions").Value;
-            var dxVersions = stringLst.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var res = dxVersions.Where(x => x.Split('.')[0] + x.Split('.')[1] == maj.ToString()).First();
+            var allVersions = xDoc.Element("Versions").Element("AllVersions").Elements();
+            var res = allVersions.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == maj.ToString()).First().FirstAttribute.Value;
             return new Version(res);
         }
 
