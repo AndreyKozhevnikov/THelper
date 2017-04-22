@@ -209,28 +209,16 @@ namespace THelper {
                 csProjProcessor = new CSProjProcessor(csPath, MyFileWorker);
             return csProjProcessor;
         }
-
+        List<XElement> AllVersionsList;
         protected internal void GetInstalledVersions() {//5 td
             var xDoc = MyFileWorker.LoadXDocument(fileWithVersionsPath);
             var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
-            var tmpallvers = allVersionElement.Elements().Select(x => x.Attribute("Version").Value).ToList();
+            AllVersionsList = allVersionElement.Elements().ToList();
             var installVersionsElement = xDoc.Element("Versions").Element("InstalledVersions");
             installedVersions = installVersionsElement.Elements().Select(x => new Version(x.FirstAttribute.Value)).ToList();
             mainMajorLastVersion = installedVersions.Where(x => x.Major <= LastReleasedVersion).Max();
-            //TODO setup all versions here
+            
 
-            //installedVersions = new List<Version>();
-            //mainMajorLastVersion = Version.Zero;
-            //List<string> versions = MyFileWorker.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
-            //const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
-            //foreach (string rootPath in versions) {
-            //    var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
-            //    Version fileVersion = GetVersionFromFile(rootPath2);
-            //    installedVersions.Add(fileVersion);
-            //    if (mainMajorLastVersion.CompareTo(fileVersion) == -1 && fileVersion.Major <= LastReleasedVersion) {
-            //        mainMajorLastVersion = fileVersion;
-            //    }
-            //}
         }
         Version GetVersionFromFile(string projectUpgradeToolPath) {//5.1 td
             string assemblyFullName = MyFileWorker.AssemblyLoadFileFullName(projectUpgradeToolPath);
@@ -387,11 +375,7 @@ namespace THelper {
             ConvertProjectWithDxConverter(mainMajorLastVersion);
         }
         private Version FindLastVersionOfMajor(int major) {//15tt
-            var maj = major;
-
-            var xDoc = MyFileWorker.LoadXDocument(fileWithVersionsPath);
-            var allVersions = xDoc.Element("Versions").Element("AllVersions").Elements();
-            var res = allVersions.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == maj.ToString()).First().FirstAttribute.Value;
+            var res = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).First().FirstAttribute.Value;
             return new Version(res);
         }
 
