@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace THelper {
-    public class Version {
+    public class Version :IComparable{
         int major;
         string stringMajor;
         int minor;
@@ -121,6 +121,10 @@ namespace THelper {
                     build = 0;
                 }
             }
+        }
+
+        public int CompareTo(object obj) {
+            return this.CompareTo((Version)obj);
         }
     }
 }
