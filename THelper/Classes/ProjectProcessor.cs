@@ -217,9 +217,9 @@ namespace THelper {
             var installVersionsElement = xDoc.Element("Versions").Element("InstalledVersions");
             installedVersions = installVersionsElement.Elements().Select(x => new Version(x.FirstAttribute.Value)).ToList();
             mainMajorLastVersion = installedVersions.Where(x => x.Major <= LastReleasedVersion).Max();
-            
-
+            mainMajorLastVersionConverterPath = installVersionsElement.Elements().Where(x => x.FirstAttribute.Value == mainMajorLastVersion.ToString(true)).First().Attribute("Path").Value;
         }
+        string mainMajorLastVersionConverterPath;
         Version GetVersionFromFile(string projectUpgradeToolPath) {//5.1 td
             string assemblyFullName = MyFileWorker.AssemblyLoadFileFullName(projectUpgradeToolPath);
             return new Version(assemblyFullName, true);
@@ -372,7 +372,7 @@ namespace THelper {
         }
 
         private void ConvertToMainMajorLastVersion() {//13 tt 
-            ConvertProjectWithDxConverter(mainMajorLastVersion);
+            ConvertProjectWithDxConverter(mainMajorLastVersion,mainMajorLastVersionConverterPath);
         }
         private Version FindLastVersionOfMajor(int major) {//15tt
             var res = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).First().FirstAttribute.Value;
@@ -385,11 +385,11 @@ namespace THelper {
             return v.Count == csProjProcessor.DXLibrariesCount;
         }
 
-        private void ConvertProjectWithDxConverter(Version v) {//16
+        private void ConvertProjectWithDxConverter(Version v,string converterPath=null) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = Properties.Settings.Default.DXConverterPath;
             string versionConverterFormat = v.ToString(true);
-            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"0.0.0\"", solutionFolderName, versionConverterFormat);
+            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"0.0.0\" \"{2}\"", solutionFolderName, versionConverterFormat,converterPath);
             MyFileWorker.ProcessStart(psi.FileName, psi.Arguments);
         }
 
