@@ -31,11 +31,11 @@ namespace THelper {
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
 
             // Act
-            var proc = new CSProjProcessor(st2, moqFile.Object);
+            var proc = new CSProjProcessor(new List<string>() { st2 }, moqFile.Object);
             //assert
-            Assert.AreEqual(st2, proc.csProjFileName);
-            Assert.AreNotEqual(null, proc.RootDocument);
-            Assert.AreEqual(1, proc.RootElements.Count());
+            Assert.AreEqual(st2, proc.csProjFileNames[0]);
+            Assert.AreNotEqual(null, proc.RootDocuments[0]);
+            Assert.AreEqual(1, proc.RootDocuments.Count());
         }
         [Test]
         public void GetCurrentversion_woMinor() {
@@ -48,7 +48,7 @@ namespace THelper {
             st = st + " </Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
             //act
             Version v = proc.GetCurrentVersion();
 
@@ -67,7 +67,7 @@ namespace THelper {
             st = st + " </Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
 
             //act
             Version v = proc.GetCurrentVersion();
@@ -88,7 +88,7 @@ namespace THelper {
             st = st + " </Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
 
             //act
             Version v = proc.GetCurrentVersion();
@@ -109,7 +109,7 @@ namespace THelper {
             st = st + " </Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
 
             //act
             Version v = proc.GetCurrentVersion();
@@ -128,7 +128,7 @@ namespace THelper {
             st = st + " </Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
 
             //act
             Version v = proc.GetCurrentVersion();
@@ -148,11 +148,11 @@ namespace THelper {
             st = st + "</Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
             //act
             proc.DisableUseVSHostingProcess();
             //assert
-            var el = proc.RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
+            var el = proc.RootDocuments[0].RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
             var val = el.Value;
             Assert.AreEqual("False", val);
         }
@@ -166,11 +166,11 @@ namespace THelper {
             st = st + "</Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
             //act
             proc.DisableUseVSHostingProcess();
             //assert
-            var el = proc.RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
+            var el = proc.RootDocuments[0].RootElements.SelectMany(x => x.Elements()).Where(y => y.Name.LocalName == "UseVSHostingProcess").FirstOrDefault();
             Assert.AreNotEqual(null, el);
             var val = el.Value;
             Assert.AreEqual("False", val);
@@ -185,11 +185,11 @@ namespace THelper {
             st = st + "</Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
             //act
             proc.RemoveLicense();
             //assert
-            var lic = proc.RootElements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
+            var lic = proc.RootDocuments[0].RootElements.SelectMany(x => x.Elements()).Where(y => y.Attribute("Include") != null && y.Attribute("Include").Value.IndexOf("licenses.licx", StringComparison.InvariantCultureIgnoreCase) > -1).FirstOrDefault();
             Assert.AreEqual(null, lic);
         }
         [Test]
@@ -205,11 +205,11 @@ namespace THelper {
             st = st + "</Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
             //act
             proc.SetSpecificVersionFalseAndRemoveHintPath();
             //assert
-            var libs = proc.RootElements.SelectMany(x => x.Elements()).Where(x => x.Name == "Reference").ToList();
+            var libs = proc.RootDocuments[0].RootElements.SelectMany(x => x.Elements()).Where(x => x.Name == "Reference").ToList();
             Assert.AreEqual(true, libs[0].HasElements);
             var spec = libs[0].Elements().First();
             Assert.AreEqual("SpecificVersion", spec.Name.LocalName);
@@ -233,11 +233,11 @@ namespace THelper {
             st = st + "</Project>";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
-            CSProjProcessor proc = new CSProjProcessor(null, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
             //act
             proc.SetSpecificVersionFalseAndRemoveHintPath();
             //assert
-            var libs = proc.RootElements.SelectMany(x => x.Elements()).Where(x => x.Name == "Reference").ToList();
+            var libs = proc.RootDocuments[0].RootElements.SelectMany(x => x.Elements()).Where(x => x.Name == "Reference").ToList();
             Assert.AreEqual(true, libs[0].HasElements);
             var elCount = libs[0].Elements().Count();
             Assert.AreEqual(1, elCount);
@@ -249,7 +249,7 @@ namespace THelper {
             string st = @"c:\test\testproject\test.csproj";
             var moqFile = new Mock<IFileWorker>();
             moqFile.Setup(x => x.LoadXDocument(st)).Returns(new XDocument());
-            CSProjProcessor proc = new CSProjProcessor(st, moqFile.Object);
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { st }, moqFile.Object);
             //act
             proc.SaveNewCsProj();
             //assert

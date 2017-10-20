@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Classes\ConverterMessages.cs" />
     <Compile Include="Classes\CSProjProcessor.cs" />
+    <Compile Include="Classes\DXProjDocument.cs" />
     <Compile Include="Classes\IMessager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -92,7 +93,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TestClass.cs" />
-    <Compile Include="Tests\THelperTest.cs" />
     <Compile Include="Classes\Version.cs" />
     <Compile Include="Classes\ProjectProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,6 +102,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Classes\FileWorker.cs" />
+    <Compile Include="Tests\THelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -143,6 +144,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>If $(ConfigurationName) == Release (  call $(SolutionDir)\..\..\..\Deploy\AssemblyInfoDeploy\AssemblyInfo.exe $(SolutionDir)THelper\Properties\AssemblyInfo.cs -set: 

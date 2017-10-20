@@ -15,7 +15,7 @@ namespace THelper {
     public class ProjectProcessor {
         protected internal int LastReleasedVersion;
         string archiveFilePath;
-        string csPath;
+        List<string> csPaths;
         string slnPath;
         Version currentInstalledMajor;
         Version currentProjectVersion;
@@ -75,7 +75,7 @@ namespace THelper {
 
 
         private void ProcessFolder() { //2
-            csPath = string.Empty;
+           // csPaths = string.Empty;
             //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             string[] solutionFiles = TryGetSolutionFiles(solutionFolderInfo);
             var solutionCount = solutionFiles.Count();
@@ -91,16 +91,16 @@ namespace THelper {
             int projectsCount = projectFiles.Count();
             switch (projectsCount) {
                 case 1:
-                    csPath = projectFiles[0];
+                    csPaths =new List<string>() { projectFiles[0] };
                     WorkWithSolution();
                     break;
                 case 0:
                     OpenFolder();
                     break;
                 default:
-                    var dxPath = FindDXCsproj(projectFiles);
-                    if (dxPath != null) {
-                        csPath = dxPath;
+                    var dxPaths = FindDXCsprojs(projectFiles);
+                    if (dxPaths.Count>0) {
+                        csPaths = dxPaths;
                         WorkWithSolution();
                     }
                     else {
@@ -110,14 +110,15 @@ namespace THelper {
             }
         }
 
-        private string FindDXCsproj(string[] solutionsFiles) {
+        private List<string> FindDXCsprojs(string[] solutionsFiles) {
+            List<string> list = new List<string>();
             foreach (string st in solutionsFiles) {
                 var tx = MyFileWorker.StreamReaderReadToEnd(st);
                 if (tx.Contains(@"Reference Include=""DevExpress.")) {
-                    return st;
+                    list.Add(st);
                 }
             }
-            return null;
+            return list;
         }
 
         private void WorkWithSolution() {
@@ -206,7 +207,7 @@ namespace THelper {
 
         private ICSProjProcessor CreateCSProjProcessor() { //how to get rid off?
             if (csProjProcessor == null)
-                csProjProcessor = new CSProjProcessor(csPath, MyFileWorker);
+                csProjProcessor = new CSProjProcessor(csPaths, MyFileWorker);
             return csProjProcessor;
         }
         List<XElement> AllVersionsList;
@@ -306,6 +307,9 @@ namespace THelper {
                 OpenFolder();
                 return;
             }
+
+            bool isXafSolution = GetIsXafSolution();
+
             csProjProcessor.DisableUseVSHostingProcess();
 
 
@@ -370,6 +374,9 @@ namespace THelper {
             OpenSolution();
 
         }
+        bool GetIsXafSolution() {
+            return false;
+        }
 
         private void ConvertToMainMajorLastVersion() {//13 tt 
             ConvertProjectWithDxConverter(mainMajorLastVersion,mainMajorLastVersionConverterPath);
@@ -413,7 +420,7 @@ namespace THelper {
             if (slnPath != null)
                 MyFileWorker.ProcessStart(slnPath);
             else
-                MyFileWorker.ProcessStart(csPath);
+                MyFileWorker.ProcessStart(csPaths[0]);
         }
 
 
