@@ -69,11 +69,39 @@ namespace THelper.Properties {
         ///    &lt;ProductVersion&gt;8.0.30703&lt;/ProductVersion&gt;
         ///    &lt;SchemaVersion&gt;2.0&lt;/SchemaVersion&gt;
         ///    &lt;ProjectGuid&gt;{15A0B679-5A23-4E98-9BEC-E934DC0B8CF3}&lt;/ProjectGuid&gt;
-        ///    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;        /// [rest of string was truncated]&quot;;.
+        ///    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string dxSampleGrid {
             get {
                 return ResourceManager.GetString("dxSampleGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///Microsoft Visual Studio Solution File, Format Version 12.00
+        ///# Visual Studio 15
+        ///VisualStudioVersion = 15.0.26430.6
+        ///MinimumVisualStudioVersion = 10.0.40219.1
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;)=&quot;dxT999999.Win&quot;,&quot;dxT999999.Win\dxT999999.Win.csproj&quot;,&quot;{D05D93DF-312D-4D4E-B980-726871EC7833}&quot;
+        ///EndProject
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;)=&quot;dxT999999.Module.Win&quot;,&quot;dxT999999.Module.Win\dxT999999.Module.Win.csproj&quot;,&quot;{7964F87D-BC5D-4C4E-8B2F-71E89739AA97}&quot;
+        ///EndProject
+        ///Project(&quot;{FAE04 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string RightSln {
+            get {
+                return ResourceManager.GetString("RightSln", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string WrongSln {
+            get {
+                return ResourceManager.GetString("WrongSln", resourceCulture);
             }
         }
     }

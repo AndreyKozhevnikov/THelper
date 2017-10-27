@@ -25,6 +25,7 @@ namespace THelper {
         IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption);
         string[] DirectoryGetDirectories(string path);
         string StreamReaderReadToEnd(string path);
+        void StreamWriterWriteLine(string path, string text);
 
     }
 
@@ -119,6 +120,13 @@ namespace THelper {
             startInfo.FileName = totalCmdPath;
             startInfo.Arguments = string.Format("/O /T /R=\"{0}\"", path);
             Process.Start(startInfo);
+        }
+
+        public void StreamWriterWriteLine(string path, string text) {
+            using(StreamWriter writer=new StreamWriter(path)) {
+                writer.Write(text);
+                writer.Flush();
+            }
         }
     }
 }

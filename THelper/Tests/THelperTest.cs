@@ -2470,6 +2470,23 @@ namespace THelper {
             moqFile.Verify(x => x.OpenFolder(@"c:\test\testSolution"), Times.Once);
 
         }
+        [Test]
+        public void MakeApplicationProjectFirst() {
+            //arrange
+            string slnText = Properties.Resources.WrongSln;
+            ProjectProcessor proc = new ProjectProcessor(null);
+            moqFile = new Mock<IFileWorker>();
+            proc.MyFileWorker = moqFile.Object;
+            moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(slnText);
+            string tmp="";
+            moqFile.Setup(x => x.StreamWriterWriteLine(It.IsAny<string>(), It.IsAny<string>())).Callback<string, string>((x, y) => tmp = y);
+            
+            //act
+            proc.MakeApplicationProjectFirst();
+            //assert
+            var requiredString = Properties.Resources.RightSln;
+            moqFile.Verify(x => x.StreamWriterWriteLine(It.IsAny<string>(), requiredString), Times.Once);
+        }
 
     }
 }

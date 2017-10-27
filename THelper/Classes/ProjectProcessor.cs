@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -110,12 +111,17 @@ namespace THelper {
             }
         }
 
+        bool isXafSolution = false;
+
         private List<string> FindDXCsprojs(string[] solutionsFiles) {
             List<string> list = new List<string>();
             foreach (string st in solutionsFiles) {
                 var tx = MyFileWorker.StreamReaderReadToEnd(st);
                 if (tx.Contains(@"Reference Include=""DevExpress.")) {
                     list.Add(st);
+                }
+                if(!isXafSolution && tx.Contains(@"Reference Include=""DevExpress.ExpressApp")) {
+                    isXafSolution = true;
                 }
             }
             return list;
@@ -308,7 +314,9 @@ namespace THelper {
                 return;
             }
 
-            bool isXafSolution = GetIsXafSolution();
+            if(isXafSolution) {
+                MakeApplicationProjectFirst();
+            }
 
             csProjProcessor.DisableUseVSHostingProcess();
 
@@ -374,8 +382,32 @@ namespace THelper {
             OpenSolution();
 
         }
-        bool GetIsXafSolution() {
-            return false;
+       public void MakeApplicationProjectFirst() {
+
+            /*
+            Regex appsProjectsRegex = new Regex(@"Project((.|\n)(?!Module))+?EndProject");//++ app projects
+            Regex winProejctRegex= new Regex(@"Project(.(?!Module))+?Win\.(.|\n)+?EndProject");//++ win project
+            Regex webProjectRegex = new Regex(@"Project(.(?!Module))+?Web\.(.|\n)+?EndProject");//++ web project
+            Regex modulesProjectsRegex = new Regex(@"Project.+Module(.|\n)*?EndProject");//++ modules
+            Regex allProjectsRegex = new Regex(@"Project(.|\n)*?EndProject");//++ all projects modules
+            Regex allProjectsInOneStringRegex = new Regex(@"Project(.|\n)*EndProject");//++ all projects modules in one string
+            http://regexstorm.net/tester
+             */
+            var slnText = MyFileWorker.StreamReaderReadToEnd(slnPath);
+            Regex allProjectsInOneStringRegex = new Regex(@"\nProject(.|\n)*EndProject");//++ all projects modules in one string
+            Regex modulesProjectsRegex = new Regex(@"\nProject.+Module(.|\n)*?EndProject");//++ modules
+            Regex appsProjectsRegex = new Regex(@"\nProject((.|\n)(?!Module))+?EndProject");//++ app projects
+
+            var allModulesString = allProjectsInOneStringRegex.Match(slnText).Value;
+            var appProjects = appsProjectsRegex.Matches(slnText);
+            var modulesProjects = modulesProjectsRegex.Matches(slnText);
+      
+            var appsArray = appProjects.Cast<Match>().Select(x => x.Value).ToArray();
+            var modulesArray = modulesProjects.Cast<Match>().Select(x => x.Value).ToArray();
+            var st1 = string.Join(Environment.NewLine, appsArray);
+            var newModulesString = string.Join("\r", appsArray)  +"\r"+ string.Join("\r", modulesArray);
+            slnText = slnText.Replace(allModulesString, newModulesString);
+            MyFileWorker.StreamWriterWriteLine(slnPath, slnText);
         }
 
         private void ConvertToMainMajorLastVersion() {//13 tt 
