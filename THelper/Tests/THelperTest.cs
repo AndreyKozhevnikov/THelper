@@ -512,10 +512,10 @@ namespace THelper {
         void SetupVersionsXDocument(string vers) {
             var installedVersions = new XElement("InstalledVersions");
             var verString = vers.Split(',');
-            foreach (string s in verString) {
+            foreach(string s in verString) {
                 var xL = new XElement("Version");
                 xL.Add(new XAttribute("Version", s));
-                xL.Add(new XAttribute("Path", string.Format(@"C:\Program Files (x86)\DevExpress {0}\Components\Tools\Components\ProjectConverter-console.exe",s.Substring(0,4))));
+                xL.Add(new XAttribute("Path", string.Format(@"C:\Program Files (x86)\DevExpress {0}\Components\Tools\Components\ProjectConverter-console.exe", s.Substring(0, 4))));
                 installedVersions.Add(xL);
             }
 
@@ -531,7 +531,7 @@ namespace THelper {
         void SetupAllVersionsList(string vers) {
             var xl = xDoc.Element("Versions").Element("AllVersions");
             var verString = vers.Split(',');
-            foreach (string s in verString) {
+            foreach(string s in verString) {
                 var xL = new XElement("Version");
                 xL.Add(new XAttribute("Version", s));
                 xl.Add(xL);
@@ -2478,9 +2478,9 @@ namespace THelper {
             moqFile = new Mock<IFileWorker>();
             proc.MyFileWorker = moqFile.Object;
             moqFile.Setup(x => x.StreamReaderReadToEnd(It.IsAny<string>())).Returns(slnText);
-            string tmp="";
+            string tmp = "";
             moqFile.Setup(x => x.StreamWriterWriteLine(It.IsAny<string>(), It.IsAny<string>())).Callback<string, string>((x, y) => tmp = y);
-            
+
             //act
             proc.MakeApplicationProjectFirst();
             //assert

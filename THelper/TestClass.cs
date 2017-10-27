@@ -32,9 +32,9 @@ namespace THelper {
             Assert.AreEqual(orderCounter, callBackCounter);
         }
 
-        private void MyCallBack(object o,[CallerMemberName]string st2="") {
+        private void MyCallBack(object o, [CallerMemberName]string st2 = "") {
             var st = o as ITestInterFace;
-       
+
             throw new NotImplementedException();
         }
         private void MyCallBack2(object o, [CallerMemberName]string st2 = "") {
@@ -57,7 +57,7 @@ namespace THelper {
     }
     public static class MyExtensions {
         public static TI Do<TI>(this TI input, Action<TI> action) where TI : class {
-            if (input == null)
+            if(input == null)
                 return null;
             action(input);
             return input;
@@ -75,7 +75,7 @@ namespace THelper {
 
             MyProcessor.Test1();
             MyProcessor.Test2();
-        
+
             MyProcessor.Test3();
 
 

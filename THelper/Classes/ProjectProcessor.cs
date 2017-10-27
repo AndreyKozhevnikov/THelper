@@ -39,7 +39,7 @@ namespace THelper {
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
         }
-      protected internal  static string fileWithVersionsPath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.xml";
+        protected internal static string fileWithVersionsPath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.xml";
         internal void GetSettings() {
             string pathToSettingsFile = @"C:\MSSQLSettings.ini";
             StreamReader sr = new StreamReader(pathToSettingsFile);
@@ -76,23 +76,23 @@ namespace THelper {
 
 
         private void ProcessFolder() { //2
-           // csPaths = string.Empty;
-            //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
+                                       // csPaths = string.Empty;
+                                       //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
             string[] solutionFiles = TryGetSolutionFiles(solutionFolderInfo);
             var solutionCount = solutionFiles.Count();
-            if (solutionCount > 0) {
+            if(solutionCount > 0) {
                 slnPath = solutionFiles[0];
             }
-            if (solutionCount > 1) {
+            if(solutionCount > 1) {
                 MyMessageProcessor.ConsoleWrite("There are many sln files!", ConsoleColor.Red);
                 MyMessageProcessor.ConsoleWriteLine();
             }
 
             string[] projectFiles = TryGetProjectFiles(solutionFolderInfo);
             int projectsCount = projectFiles.Count();
-            switch (projectsCount) {
+            switch(projectsCount) {
                 case 1:
-                    csPaths =new List<string>() { projectFiles[0] };
+                    csPaths = new List<string>() { projectFiles[0] };
                     WorkWithSolution();
                     break;
                 case 0:
@@ -100,11 +100,10 @@ namespace THelper {
                     break;
                 default:
                     var dxPaths = FindDXCsprojs(projectFiles);
-                    if (dxPaths.Count>0) {
+                    if(dxPaths.Count > 0) {
                         csPaths = dxPaths;
                         WorkWithSolution();
-                    }
-                    else {
+                    } else {
                         OpenFolder();
                     }
                     break;
@@ -115,9 +114,9 @@ namespace THelper {
 
         private List<string> FindDXCsprojs(string[] solutionsFiles) {
             List<string> list = new List<string>();
-            foreach (string st in solutionsFiles) {
+            foreach(string st in solutionsFiles) {
                 var tx = MyFileWorker.StreamReaderReadToEnd(st);
-                if (tx.Contains(@"Reference Include=""DevExpress.")) {
+                if(tx.Contains(@"Reference Include=""DevExpress.")) {
                     list.Add(st);
                 }
                 if(!isXafSolution && tx.Contains(@"Reference Include=""DevExpress.ExpressApp")) {
@@ -135,7 +134,7 @@ namespace THelper {
 
         string[] TryGetProjectFiles(DirectoryInfo dirInfo) { //3 td
             var st = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*.csproj", SearchOption.AllDirectories).ToArray();
-            if (st.Count() == 0) {
+            if(st.Count() == 0) {
                 st = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).ToArray();
             }
             return st;
@@ -150,56 +149,48 @@ namespace THelper {
             GetInstalledVersions();
             GetProjectVersion();
             isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
-            if (isExample)
+            if(isExample)
                 MessagesList.Add(ConverterMessages.OpenSolution);
             else {
-                if (currentProjectVersion.CompareTo(Version.Zero) == 0) {
+                if(currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
-                }
-                else {
+                } else {
                     //#endif
                     currentInstalledMajor = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                     isCurrentVersionMajorInstalled = currentInstalledMajor != null;
-                    if (isCurrentVersionMajorInstalled) {
-                        if (isMainMajor) {
-                            if (currentProjectVersion.CompareTo(mainMajorLastVersion) == 0) {
+                    if(isCurrentVersionMajorInstalled) {
+                        if(isMainMajor) {
+                            if(currentProjectVersion.CompareTo(mainMajorLastVersion) == 0) {
                                 MessagesList.Add(ConverterMessages.OpenSolution);
-                            }
-                            else {
-                                if (currentProjectVersion.Minor == 0) {
+                            } else {
+                                if(currentProjectVersion.Minor == 0) {
                                     MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                                }
-                                else {
+                                } else {
                                     MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                                     MessagesList.Add(ConverterMessages.ExactConversion);
                                 }
                             }
-                        }
-                        else {
-                            if (currentProjectVersion.CompareTo(currentInstalledMajor) == 0) {
+                        } else {
+                            if(currentProjectVersion.CompareTo(currentInstalledMajor) == 0) {
                                 MessagesList.Add(ConverterMessages.OpenSolution);
                                 MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                            }
-                            else {
-                                if (currentProjectVersion.Minor == 0) {
+                            } else {
+                                if(currentProjectVersion.Minor == 0) {
                                     MessagesList.Add(ConverterMessages.LastMinor);
                                     MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                                }
-                                else {
+                                } else {
                                     MessagesList.Add(ConverterMessages.LastMinor);
                                     MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                                     MessagesList.Add(ConverterMessages.ExactConversion);
                                 }
                             }
                         }
-                    }
-                    else {
+                    } else {
                         LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
-                        if (currentProjectVersion.Minor == 0 || currentProjectVersion.Minor == LastMinorOfCurrentMajor.Minor) {
+                        if(currentProjectVersion.Minor == 0 || currentProjectVersion.Minor == LastMinorOfCurrentMajor.Minor) {
                             MessagesList.Add(ConverterMessages.LastMinor);
                             MessagesList.Add(ConverterMessages.MainMajorLastVersion);
-                        }
-                        else {
+                        } else {
                             MessagesList.Add(ConverterMessages.ExactConversion);
                             MessagesList.Add(ConverterMessages.LastMinor);
                             MessagesList.Add(ConverterMessages.MainMajorLastVersion);
@@ -212,7 +203,7 @@ namespace THelper {
         }
 
         private ICSProjProcessor CreateCSProjProcessor() { //how to get rid off?
-            if (csProjProcessor == null)
+            if(csProjProcessor == null)
                 csProjProcessor = new CSProjProcessor(csPaths, MyFileWorker);
             return csProjProcessor;
         }
@@ -236,39 +227,38 @@ namespace THelper {
             currentProjectVersion = csProjProcessor.GetCurrentVersion();
         }
         private ConverterMessages PrintMessage() { //7 tt
-            if (isExample) {
+            if(isExample) {
                 MyMessageProcessor.ConsoleWrite("The current project version is an ");
                 MyMessageProcessor.ConsoleWrite("example", ConsoleColor.Red);
-            }
-            else {
+            } else {
                 MyMessageProcessor.ConsoleWrite("The current project version is ");
                 MyMessageProcessor.ConsoleWrite(currentProjectVersion.ToString(), ConsoleColor.Red);
             }
             MyMessageProcessor.ConsoleWriteLine();
             int k = 1;
-            foreach (ConverterMessages msg in MessagesList) {
+            foreach(ConverterMessages msg in MessagesList) {
                 PrintConverterMessage(msg, k++.ToString());
             }
             int index = -1;
 
-            while (index == -1 || (index != 9 && index > MessagesList.Count - 1)) {
+            while(index == -1 || (index != 9 && index > MessagesList.Count - 1)) {
                 ConsoleKey enterKey = MyMessageProcessor.ConsoleReadKey(false);
                 index = GetValueFromConsoleKey(enterKey);
             }
-            if (index == 9)
+            if(index == 9)
                 return ConverterMessages.OpenFolder;
 
             return MessagesList[index - 1];
         }
 
         private void PrintConverterMessage(ConverterMessages msg, string key) {//8tt
-            if (msg == ConverterMessages.OpenSolution) {
+            if(msg == ConverterMessages.OpenSolution) {
                 MyMessageProcessor.ConsoleWrite("To open solution press: ");
                 MyMessageProcessor.ConsoleWrite(key, ConsoleColor.Red);
                 MyMessageProcessor.ConsoleWriteLine();
                 return;
             }
-            if (msg == ConverterMessages.OpenFolder) {
+            if(msg == ConverterMessages.OpenFolder) {
                 MyMessageProcessor.ConsoleWrite("To open folder press: ");
                 MyMessageProcessor.ConsoleWrite("9", ConsoleColor.Red);
                 MyMessageProcessor.ConsoleWriteLine();
@@ -282,11 +272,11 @@ namespace THelper {
             MyMessageProcessor.ConsoleWriteLine();
         }
         string GetMessageVersion(ConverterMessages msg) { //8.1 tt
-            switch (msg) {
+            switch(msg) {
                 case ConverterMessages.ExactConversion:
                     return currentProjectVersion.ToString();
                 case ConverterMessages.LastMinor:
-                    if (currentInstalledMajor == null) {
+                    if(currentInstalledMajor == null) {
                         return LastMinorOfCurrentMajor.ToString();
                     }
                     return currentInstalledMajor.ToString();
@@ -299,17 +289,16 @@ namespace THelper {
 
         int GetValueFromConsoleKey(ConsoleKey key) {//9 tt
             int value = -1;
-            if (key > (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
+            if(key > (ConsoleKey.NumPad0) && key <= (ConsoleKey.NumPad9)) { // numpad
                 value = (int)key - ((int)ConsoleKey.NumPad0);
-            }
-            else if ((int)key > ((int)ConsoleKey.D0) && (int)key <= ((int)ConsoleKey.D9)) { // regular numbers
+            } else if((int)key > ((int)ConsoleKey.D0) && (int)key <= ((int)ConsoleKey.D9)) { // regular numbers
                 value = (int)key - ((int)ConsoleKey.D0);
             }
             return value;
         }
 
         private void ProcessProject(ConverterMessages message) {//12
-            if (message == ConverterMessages.OpenFolder) {
+            if(message == ConverterMessages.OpenFolder) {
                 OpenFolder();
                 return;
             }
@@ -321,39 +310,35 @@ namespace THelper {
             csProjProcessor.DisableUseVSHostingProcess();
 
 
-            if (isExample) {
-                if (isMainMajor) {
+            if(isExample) {
+                if(isMainMajor) {
                     csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                     csProjProcessor.SaveNewCsProj();
-                }
-                else {
+                } else {
                     csProjProcessor.SaveNewCsProj();
                     ConvertToMainMajorLastVersion();
                 }
-            }
-            else { //check how to avoid csProjProcessor.SaveNewCsProj();
-                if (!(currentProjectVersion.CompareTo(Version.Zero) == 0)) { //there are dx libs
+            } else { //check how to avoid csProjProcessor.SaveNewCsProj();
+                if(!(currentProjectVersion.CompareTo(Version.Zero) == 0)) { //there are dx libs
                     csProjProcessor.RemoveLicense();
-                    switch (message) {
+                    switch(message) {
                         case ConverterMessages.MainMajorLastVersion:
-                            if (isMainMajor) {
+                            if(isMainMajor) {
                                 csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                                 csProjProcessor.SaveNewCsProj();
-                            }
-                            else {
+                            } else {
                                 csProjProcessor.SaveNewCsProj();
                                 ConvertToMainMajorLastVersion();
                             }
                             break;
                         case ConverterMessages.LastMinor:
-                            if (isCurrentVersionMajorInstalled) {
+                            if(isCurrentVersionMajorInstalled) {
                                 csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                                 csProjProcessor.SaveNewCsProj();
-                            }
-                            else {
+                            } else {
                                 csProjProcessor.SaveNewCsProj();
 
-                                if (GetIfLibrariesPersist()) {
+                                if(GetIfLibrariesPersist()) {
                                     break;
                                 }
                                 ConvertProjectWithDxConverter(LastMinorOfCurrentMajor);
@@ -362,7 +347,7 @@ namespace THelper {
                         case ConverterMessages.ExactConversion:
                             csProjProcessor.SaveNewCsProj();
 
-                            if (GetIfLibrariesPersist()) {
+                            if(GetIfLibrariesPersist()) {
                                 break;
                             }
                             ConvertProjectWithDxConverter(currentProjectVersion);
@@ -372,9 +357,7 @@ namespace THelper {
                             csProjProcessor.SaveNewCsProj();
                             break;
                     }
-                }
-
-                else {
+                } else {
                     csProjProcessor.SaveNewCsProj();
                 }
             }
@@ -382,7 +365,7 @@ namespace THelper {
             OpenSolution();
 
         }
-       public void MakeApplicationProjectFirst() {
+        public void MakeApplicationProjectFirst() {
 
             /*
             Regex appsProjectsRegex = new Regex(@"Project((.|\n)(?!Module))+?EndProject");//++ app projects
@@ -401,17 +384,17 @@ namespace THelper {
             var allModulesString = allProjectsInOneStringRegex.Match(slnText).Value;
             var appProjects = appsProjectsRegex.Matches(slnText);
             var modulesProjects = modulesProjectsRegex.Matches(slnText);
-      
+
             var appsArray = appProjects.Cast<Match>().Select(x => x.Value).ToArray();
             var modulesArray = modulesProjects.Cast<Match>().Select(x => x.Value).ToArray();
             var st1 = string.Join(Environment.NewLine, appsArray);
-            var newModulesString = string.Join("\r", appsArray)  +"\r"+ string.Join("\r", modulesArray);
+            var newModulesString = string.Join("\r", appsArray) + "\r" + string.Join("\r", modulesArray);
             slnText = slnText.Replace(allModulesString, newModulesString);
             MyFileWorker.StreamWriterWriteLine(slnPath, slnText);
         }
 
         private void ConvertToMainMajorLastVersion() {//13 tt 
-            ConvertProjectWithDxConverter(mainMajorLastVersion,mainMajorLastVersionConverterPath);
+            ConvertProjectWithDxConverter(mainMajorLastVersion, mainMajorLastVersionConverterPath);
         }
         private Version FindLastVersionOfMajor(int major) {//15tt
             var res = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).First().FirstAttribute.Value;
@@ -424,11 +407,11 @@ namespace THelper {
             return v.Count == csProjProcessor.DXLibrariesCount;
         }
 
-        private void ConvertProjectWithDxConverter(Version v,string converterPath=null) {//16
+        private void ConvertProjectWithDxConverter(Version v, string converterPath = null) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = Properties.Settings.Default.DXConverterPath;
             string versionConverterFormat = v.ToString(true);
-            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"0.0.0\" \"{2}\"", solutionFolderName, versionConverterFormat,converterPath);
+            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"0.0.0\" \"{2}\"", solutionFolderName, versionConverterFormat, converterPath);
             MyFileWorker.ProcessStart(psi.FileName, psi.Arguments);
         }
 
@@ -449,7 +432,7 @@ namespace THelper {
             MyFileWorker.OpenFolder(solutionFolderName);
         }
         private void OpenSolution() {//tt
-            if (slnPath != null)
+            if(slnPath != null)
                 MyFileWorker.ProcessStart(slnPath);
             else
                 MyFileWorker.ProcessStart(csPaths[0]);
@@ -475,7 +458,7 @@ namespace THelper {
 
         public int Compare(string x, string y) {
             int counter = 0, res = 0;
-            while (counter < 3 && res == 0) {
+            while(counter < 3 && res == 0) {
                 int versionX = Convert.ToInt32(x.Split('.')[counter].Replace("_new", ""));
                 int versionY = Convert.ToInt32(y.Split('.')[counter]);
                 res = Comparer.Default.Compare(versionX, versionY);

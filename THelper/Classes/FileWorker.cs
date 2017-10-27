@@ -53,7 +53,7 @@ namespace THelper {
             var regKey = Registry.LocalMachine.OpenSubKey(path);
             var lst = regKey.GetSubKeyNames();
             List<string> resList = new List<string>();
-            foreach (string st in lst) {
+            foreach(string st in lst) {
                 RegistryKey dxVersionKey = regKey.OpenSubKey(st);
                 string projectUpgradeToolPath = dxVersionKey.GetValue("RootDirectory") as string;
                 resList.Add(projectUpgradeToolPath);
@@ -76,7 +76,7 @@ namespace THelper {
 
         public void SaveXDocument(XDocument projDocument, string projectPath) {
             var fileInfo = new FileInfo(projectPath);
-            if (fileInfo.IsReadOnly)
+            if(fileInfo.IsReadOnly)
                 fileInfo.IsReadOnly = false;
             projDocument.Save(projectPath);
         }
@@ -102,7 +102,7 @@ namespace THelper {
 
 
         public void ProcessStart(string fileName, string arguments) {
-            var p = Process.Start(fileName,arguments);
+            var p = Process.Start(fileName, arguments);
             p.WaitForExit();
         }
 
@@ -112,7 +112,7 @@ namespace THelper {
             string st = sr.ReadToEnd();
             sr.Close();
             return st;
-        
+
         }
 
         public void OpenFolder(string path) {
@@ -123,7 +123,7 @@ namespace THelper {
         }
 
         public void StreamWriterWriteLine(string path, string text) {
-            using(StreamWriter writer=new StreamWriter(path)) {
+            using(StreamWriter writer = new StreamWriter(path)) {
                 writer.Write(text);
                 writer.Flush();
             }

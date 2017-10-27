@@ -38,15 +38,15 @@ namespace THelper {
             MyWorkWithFile = _workWithFile;
             RootDocuments = new List<DXProjDocument>();
             foreach(var fl in csProjFileNames) {
-                var doc= MyWorkWithFile.LoadXDocument(fl);
-                var dxDoc = new DXProjDocument(doc,fl);
+                var doc = MyWorkWithFile.LoadXDocument(fl);
+                var dxDoc = new DXProjDocument(doc, fl);
                 RootDocuments.Add(dxDoc);
             }
         }
 
 
         public List<DXProjDocument> RootDocuments;
-       // public IEnumerable<XElement> RootElements;
+        // public IEnumerable<XElement> RootElements;
 
         public int DXLibrariesCount {
             get; set;
@@ -57,16 +57,15 @@ namespace THelper {
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
             string _dxLibraryString = null;
             DXLibrariesCount = dxlibraries.Count();
-            if (DXLibrariesCount > 0) {
+            if(DXLibrariesCount > 0) {
                 var lstHasVersion = dxlibraries.Where(x => x.Attribute("Include").ToString().IndexOf("Version") > 0);
-                if (lstHasVersion.Count() > 0)
+                if(lstHasVersion.Count() > 0)
                     _dxLibraryString = lstHasVersion.First().Attribute("Include").ToString();
                 else
                     _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
                 Version v = new Version(_dxLibraryString, true);
                 return v;
-            }
-            else {
+            } else {
                 return Version.Zero;
             }
         }
@@ -118,7 +117,7 @@ namespace THelper {
                 MyWorkWithFile.SaveXDocument(doc.RootDocument, doc.csProjFileName);
             }
         }
-      
+
 
     }
 }

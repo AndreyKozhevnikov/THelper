@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace THelper {
-    public class Version :IComparable{
+    public class Version : IComparable {
         int major;
         string stringMajor;
         int minor;
@@ -42,18 +42,16 @@ namespace THelper {
         public bool IsZero { get { return major == 0 && minor == 0 && build == 0; } }
 
         public int CompareTo(Version other) {
-            if (other == null) {
+            if(other == null) {
                 return 1;
             }
-            if (this.major == other.major) {
-                if (this.minor == other.minor) {
+            if(this.major == other.major) {
+                if(this.minor == other.minor) {
                     return this.build.CompareTo(other.build);
-                }
-                else {
+                } else {
                     return this.minor.CompareTo(other.minor);
                 }
-            }
-            else {
+            } else {
                 return this.major.CompareTo(other.major);
             }
         }
@@ -61,11 +59,10 @@ namespace THelper {
             return String.Format("{0}.{1}.{2}", major, minor, build);
         }
         public string ToString(bool isSplittedMajor) {
-            if (isSplittedMajor) {
+            if(isSplittedMajor) {
                 var resultString = String.Format("{0}.{1}", stringMajor, minor);
                 return resultString;
-            }
-            else {
+            } else {
                 return this.ToString();
             }
         }
@@ -75,32 +72,29 @@ namespace THelper {
         }
 
         void ParseString(string _stringWithVersion, bool _isComplex) {
-            if (_isComplex) {
+            if(_isComplex) {
                 string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
                 Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
                 Match versionMatch = regexVersion.Match(_stringWithVersion);
-                if (versionMatch == null || !versionMatch.Success) {
+                if(versionMatch == null || !versionMatch.Success) {
                     string versionAssemblypatternShort = @".*DevExpress.*(?<Version>\d{2}\.\d)";
                     Regex regexVersionShort = new Regex(versionAssemblypatternShort, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
                     Match versionMatchShort = regexVersionShort.Match(_stringWithVersion);
-                    if (versionMatchShort != null && versionMatchShort.Success) {
+                    if(versionMatchShort != null && versionMatchShort.Success) {
                         string versValueShort = versionMatchShort.Groups["Version"].Value;
                         this.ParseString(versValueShort, false);
-                    }
-                    else {
+                    } else {
                         this.major = 0;
                         this.minor = 0;
                         this.build = 0;
                     }
-                }
-                else {
+                } else {
                     string versValue = versionMatch.Groups["Version"].Value;
                     this.ParseString(versValue, false);
                 }
-            }
-            else {
+            } else {
                 string[] versionParts = _stringWithVersion.Split('.');
-                if (versionParts.Length < 2) {
+                if(versionParts.Length < 2) {
                     this.major = 0;
                     this.minor = 0;
                     this.build = 0;
@@ -108,16 +102,14 @@ namespace THelper {
                 }
                 major = int.Parse(versionParts[0] + versionParts[1]);
                 stringMajor = string.Format("{0}.{1}", versionParts[0], versionParts[1]);
-                if (versionParts.Length >= 3) {
+                if(versionParts.Length >= 3) {
                     minor = int.Parse(versionParts[2]);
-                }
-                else {
+                } else {
                     minor = 0;
                 }
-                if (versionParts.Length > 3) {
+                if(versionParts.Length > 3) {
                     build = int.Parse(versionParts[3]);
-                }
-                else {
+                } else {
                     build = 0;
                 }
             }
