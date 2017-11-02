@@ -111,7 +111,7 @@ namespace THelper {
         }
 
         bool isXafSolution = false;
-
+     //   bool hasWebProject = false;
         private List<string> FindDXCsprojs(string[] solutionsFiles) {
             List<string> list = new List<string>();
             foreach(string st in solutionsFiles) {
@@ -122,6 +122,9 @@ namespace THelper {
                 if(!isXafSolution && tx.Contains(@"Reference Include=""DevExpress.ExpressApp")) {
                     isXafSolution = true;
                 }
+                //if(st.Contains(".Web"))
+                //    hasWebProject = true;
+
             }
             return list;
         }
@@ -323,7 +326,8 @@ namespace THelper {
                     csProjProcessor.RemoveLicense();
                     switch(message) {
                         case ConverterMessages.MainMajorLastVersion:
-                            if(isMainMajor) {
+                            // if(isMainMajor && !hasWebProject) {
+                            if(isMainMajor ) {
                                 csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                                 csProjProcessor.SaveNewCsProj();
                             } else {
@@ -365,6 +369,7 @@ namespace THelper {
             OpenSolution();
 
         }
+
         public void MakeApplicationProjectFirst() {
 
             /*
