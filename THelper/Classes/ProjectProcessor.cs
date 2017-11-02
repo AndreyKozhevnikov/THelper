@@ -387,7 +387,6 @@ namespace THelper {
 
             var appsArray = appProjects.Cast<Match>().Select(x => x.Value).ToArray();
             var modulesArray = modulesProjects.Cast<Match>().Select(x => x.Value).ToArray();
-            var st1 = string.Join(Environment.NewLine, appsArray);
             var newModulesString = string.Join("\r", appsArray) + "\r" + string.Join("\r", modulesArray);
             slnText = slnText.Replace(allModulesString, newModulesString);
             MyFileWorker.StreamWriterWriteLine(slnPath, slnText);
@@ -411,7 +410,7 @@ namespace THelper {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = Properties.Settings.Default.DXConverterPath;
             string versionConverterFormat = v.ToString(true);
-            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"0.0.0\" \"{2}\"", solutionFolderName, versionConverterFormat, converterPath);
+            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"{2}\"", solutionFolderName, versionConverterFormat, converterPath);
             MyFileWorker.ProcessStart(psi.FileName, psi.Arguments);
         }
 
