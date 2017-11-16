@@ -2,17 +2,22 @@
 <Containers>
   <Container Key="-1592402827">
     <Items>
-      <Item Id="{fcc3bbb6-9a66-4f36-84b6-36ddc8831aff}">
-        <Id>1</Id>
-        <File>THelper\Classes\ProjectProcessor.cs</File>
-        <Line>318</Line>
-        <Character>13</Character>
-      </Item>
-      <Item Id="{f4823be7-0664-4cf7-aeb0-92a5615e7132}">
+      <Item Id="{596c982a-a871-4dea-91a4-40c642facfe2}">
         <Id>2</Id>
         <File>THelper\Classes\ProjectProcessor.cs</File>
-        <Line>384</Line>
-        <Character>26</Character>
+        <Line>330</Line>
+      </Item>
+      <Item Id="{2422bc10-632c-4c01-be72-8a0b15cf9a23}">
+        <Id>3</Id>
+        <File>THelper\Tests\THelperTest.cs</File>
+        <Line>1740</Line>
+        <Character>42</Character>
+      </Item>
+      <Item Id="{8629a1b5-935e-4cf6-b1a8-4d10d73c850f}">
+        <Id>1</Id>
+        <File>THelper\Tests\THelperTest.cs</File>
+        <Line>1083</Line>
+        <Character>38</Character>
       </Item>
     </Items>
   </Container>
