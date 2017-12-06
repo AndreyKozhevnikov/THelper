@@ -39,7 +39,6 @@ namespace THelper {
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
         }
-        protected internal static string fileWithVersionsPath = Properties.Settings.Default.FileWithVersionsPath;
         internal void GetSettings() {
             LastReleasedVersion = Properties.Settings.Default.LastReleasedVersion;
         }
@@ -143,6 +142,7 @@ namespace THelper {
         void GetMessageInfo() {//4 td
             MessagesList = new List<ConverterMessages>();
             csProjProcessor = CreateCSProjProcessor();
+            GetAllVersions();
             GetInstalledVersions();
             GetProjectVersion();
             isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
@@ -205,17 +205,37 @@ namespace THelper {
             return csProjProcessor;
         }
         List<XElement> AllVersionsList;
-        protected internal void GetInstalledVersions() {//5 td
-            var xDoc = MyFileWorker.LoadXDocument(fileWithVersionsPath);
+        protected internal void GetAllVersions() {
+            var xDoc = MyFileWorker.LoadXDocument(Properties.Settings.Default.FileWithVersionsPath);
             var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
             AllVersionsList = allVersionElement.Elements().ToList();
-            var installVersionsElement = xDoc.Element("Versions").Element("InstalledVersions");
-            installedVersions = installVersionsElement.Elements().Select(x => new Version(x.FirstAttribute.Value)).ToList();
-            mainMajorLastVersion = installedVersions.Where(x => x.Major <= LastReleasedVersion).Max();
-            mainMajorLastVersionConverterPath = installVersionsElement.Elements().Where(x => x.FirstAttribute.Value == mainMajorLastVersion.ToString(true)).First().Attribute("Path").Value;
+        }
+        
+ 
+        protected internal void GetInstalledVersions() {//5 td
+            var internalInstalledVersions = new Dictionary<Version, string>();
+            installedVersions = new List<Version>();
+            List<string> versions =MyFileWorker.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
+            const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
+            foreach(string rootPath in versions) {
+                var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
+                string libVersion = GetProjectUpgradeVersion(rootPath2);
+                var vers = new Version(libVersion);
+                internalInstalledVersions[vers] = rootPath2;
+                installedVersions.Add(vers);
+            }
+            mainMajorLastVersion = installedVersions.Where(y => y.Major <= LastReleasedVersion).Max();
+            mainMajorLastVersionConverterPath = internalInstalledVersions[mainMajorLastVersion];
         }
         string mainMajorLastVersionConverterPath;
-      
+        string GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1 td
+            string assemblyFullName = MyFileWorker.AssemblyLoadFileFullName(projectUpgradeToolPath);
+            string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
+            Regex regexVersion = new Regex(versionAssemblypattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+            Match versionMatch = regexVersion.Match(assemblyFullName);
+            string versValue = versionMatch.Groups["Version"].Value;
+            return versValue;
+        }
 
         private void GetProjectVersion() {//6 td
             currentProjectVersion = csProjProcessor.GetCurrentVersion();

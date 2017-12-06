@@ -512,10 +512,16 @@ namespace THelper {
         void SetupVersionsXDocument(string vers) {
             var installedVersions = new XElement("InstalledVersions");
             var verString = vers.Split(',');
+            var versList = new List<String>();
             foreach(string s in verString) {
                 var xL = new XElement("Version");
                 xL.Add(new XAttribute("Version", s));
-                xL.Add(new XAttribute("Path", string.Format(@"C:\Program Files (x86)\DevExpress {0}\Components\Tools\Components\ProjectConverter-console.exe", s.Substring(0, 4))));
+                var stringVers= string.Format(@"C:\Program Files (x86)\DevExpress {0}\Components\Tools\Components\ProjectConverter-console.exe", s.Substring(0, 4));
+                var stringVersShort = string.Format(@"C:\Program Files (x86)\DevExpress {0}\Components\", s.Substring(0, 4));
+                versList.Add(stringVersShort);
+                var converterFullName = string.Format(@"ProjectConverter-console, Version={0}.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a",s);
+                moqFile.Setup(x => x.AssemblyLoadFileFullName(stringVers)).Returns(converterFullName);
+                xL.Add(new XAttribute("Path",stringVers ));
                 installedVersions.Add(xL);
             }
 
@@ -526,7 +532,8 @@ namespace THelper {
             xlRoot.Add(allVersions);
             xDoc = new XDocument();
             xDoc.Add(xlRoot);
-            moqFile.Setup(x => x.LoadXDocument(ProjectProcessor.fileWithVersionsPath)).Returns(xDoc);
+            moqFile.Setup(x => x.LoadXDocument(Properties.Settings.Default.FileWithVersionsPath)).Returns(xDoc);
+            moqFile.Setup(x => x.GetRegistryVersions(It.IsAny<string>())).Returns(versList);
         }
         void SetupAllVersionsList(string vers) {
             var xl = xDoc.Element("Versions").Element("AllVersions");
@@ -592,7 +599,7 @@ namespace THelper {
 
             moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Do((x3) => { callOrderDictionary["DisableUseVSHostingProcess"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DisableUseVSHostingProcess"])));
 
-            moqCSProj.Setup(x => x.SetSpecificVersionFalseAndRemoveHintPath()).Do((x3) => { callOrderDictionary["SetSpecificVersionFalse"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SetSpecificVersionFalse"])));
+            moqCSProj.Setup(x => x.SetSpecificVersionFalseAndRemoveHintPath()).Do((x3) => { callOrderDictionary["SetSpecificVersionFalse"] = orderCounter++; }).Callback(() => { Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SetSpecificVersionFalse"])); });
             moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
 
             moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));

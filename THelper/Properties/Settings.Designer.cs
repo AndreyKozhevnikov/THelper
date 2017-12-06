@@ -58,18 +58,5 @@ namespace THelper.Properties {
                 return ((int)(this["LastReleasedVersion"]));
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"  <InstalledVersions>
-    <Version Version=""17.2.1"" Path=""C:\Program Files (x86)\DevExpress 17.2\Components\Tools\Components\ProjectConverter-console.exe"" />
-    <Version Version=""17.1.7"" Path=""C:\Program Files (x86)\DevExpress 17.1\Components\Tools\Components\ProjectConverter-console.exe"" />
-    <Version Version=""16.2.10"" Path=""C:\Program Files (x86)\DevExpress 16.2\Components\Tools\Components\ProjectConverter-console.exe"" />
-  </InstalledVersions>")]
-        public string InstalledVersions {
-            get {
-                return ((string)(this["InstalledVersions"]));
-            }
-        }
     }
 }
