@@ -39,16 +39,9 @@ namespace THelper {
         public ProjectProcessor(string _filePath) {
             this.archiveFilePath = _filePath;
         }
-        protected internal static string fileWithVersionsPath = @"c:\Dropbox\Deploy\DXConverterDeploy\versions.xml";
+        protected internal static string fileWithVersionsPath = Properties.Settings.Default.FileWithVersionsPath;
         internal void GetSettings() {
-            string pathToSettingsFile = @"C:\MSSQLSettings.ini";
-            StreamReader sr = new StreamReader(pathToSettingsFile);
-            string st = sr.ReadToEnd();
-            sr.Close();
-
-            XElement xl = XElement.Parse(st);
-            var lastVersion = xl.Element("LastDXVersion").Value;
-            LastReleasedVersion = int.Parse(lastVersion);
+            LastReleasedVersion = Properties.Settings.Default.LastReleasedVersion;
         }
         internal void ProcessArchive() { //0
             SetIsExample();
@@ -222,10 +215,7 @@ namespace THelper {
             mainMajorLastVersionConverterPath = installVersionsElement.Elements().Where(x => x.FirstAttribute.Value == mainMajorLastVersion.ToString(true)).First().Attribute("Path").Value;
         }
         string mainMajorLastVersionConverterPath;
-        Version GetVersionFromFile(string projectUpgradeToolPath) {//5.1 td
-            string assemblyFullName = MyFileWorker.AssemblyLoadFileFullName(projectUpgradeToolPath);
-            return new Version(assemblyFullName, true);
-        }
+      
 
         private void GetProjectVersion() {//6 td
             currentProjectVersion = csProjProcessor.GetCurrentVersion();

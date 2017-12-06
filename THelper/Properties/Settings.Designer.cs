@@ -12,7 +12,7 @@ namespace THelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -34,10 +34,41 @@ namespace THelper.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("c:\\Dropbox\\Deploy\\DXConverterDeploy\\DXConverter.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\corp\\internal\\common\\4Kozhevnikov\\Deploy\\DXConverterDeploy\\DXConverter.exe")]
         public string DXConverterPath {
             get {
                 return ((string)(this["DXConverterPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\corp\\internal\\common\\4Kozhevnikov\\Deploy\\DXConverterDeploy\\versions.xml")]
+        public string FileWithVersionsPath {
+            get {
+                return ((string)(this["FileWithVersionsPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("172")]
+        public int LastReleasedVersion {
+            get {
+                return ((int)(this["LastReleasedVersion"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"  <InstalledVersions>
+    <Version Version=""17.2.1"" Path=""C:\Program Files (x86)\DevExpress 17.2\Components\Tools\Components\ProjectConverter-console.exe"" />
+    <Version Version=""17.1.7"" Path=""C:\Program Files (x86)\DevExpress 17.1\Components\Tools\Components\ProjectConverter-console.exe"" />
+    <Version Version=""16.2.10"" Path=""C:\Program Files (x86)\DevExpress 16.2\Components\Tools\Components\ProjectConverter-console.exe"" />
+  </InstalledVersions>")]
+        public string InstalledVersions {
+            get {
+                return ((string)(this["InstalledVersions"]));
             }
         }
     }

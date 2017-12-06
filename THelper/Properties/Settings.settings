@@ -6,7 +6,20 @@
       <Value Profile="(Default)">C:\Program Files\WinRAR\WinRAR.exe</Value>
     </Setting>
     <Setting Name="DXConverterPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">c:\Dropbox\Deploy\DXConverterDeploy\DXConverter.exe</Value>
+      <Value Profile="(Default)">\\corp\internal\common\4Kozhevnikov\Deploy\DXConverterDeploy\DXConverter.exe</Value>
+    </Setting>
+    <Setting Name="FileWithVersionsPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\corp\internal\common\4Kozhevnikov\Deploy\DXConverterDeploy\versions.xml</Value>
+    </Setting>
+    <Setting Name="LastReleasedVersion" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">172</Value>
+    </Setting>
+    <Setting Name="InstalledVersions" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">  &lt;InstalledVersions&gt;
+    &lt;Version Version="17.2.1" Path="C:\Program Files (x86)\DevExpress 17.2\Components\Tools\Components\ProjectConverter-console.exe" /&gt;
+    &lt;Version Version="17.1.7" Path="C:\Program Files (x86)\DevExpress 17.1\Components\Tools\Components\ProjectConverter-console.exe" /&gt;
+    &lt;Version Version="16.2.10" Path="C:\Program Files (x86)\DevExpress 16.2\Components\Tools\Components\ProjectConverter-console.exe" /&gt;
+  &lt;/InstalledVersions&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>
