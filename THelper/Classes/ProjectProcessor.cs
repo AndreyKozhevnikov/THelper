@@ -213,7 +213,6 @@ namespace THelper {
         
  
         protected internal void GetInstalledVersions() {//5 td
-            var internalInstalledVersions = new Dictionary<Version, string>();
             installedVersions = new List<Version>();
             List<string> versions =MyFileWorker.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
@@ -221,13 +220,11 @@ namespace THelper {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
                 string libVersion = GetProjectUpgradeVersion(rootPath2);
                 var vers = new Version(libVersion);
-                internalInstalledVersions[vers] = rootPath2;
+                vers.Path = rootPath2;
                 installedVersions.Add(vers);
             }
             mainMajorLastVersion = installedVersions.Where(y => y.Major <= LastReleasedVersion).Max();
-            mainMajorLastVersionConverterPath = internalInstalledVersions[mainMajorLastVersion];
         }
-        string mainMajorLastVersionConverterPath;
         string GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1 td
             string assemblyFullName = MyFileWorker.AssemblyLoadFileFullName(projectUpgradeToolPath);
             string versionAssemblypattern = @"version=(?<Version>\d+\.\d.\d+)";
@@ -330,7 +327,7 @@ namespace THelper {
                     csProjProcessor.SaveNewCsProj();
                 } else {
                     csProjProcessor.SaveNewCsProj();
-                    ConvertToMainMajorLastVersion();
+                    ConvertProjectWithDxConverter(mainMajorLastVersion);
                 }
             } else { //check how to avoid csProjProcessor.SaveNewCsProj();
                 if(!(currentProjectVersion.CompareTo(Version.Zero) == 0)) { //there are dx libs
@@ -342,13 +339,18 @@ namespace THelper {
                                 csProjProcessor.SaveNewCsProj();
                             } else {
                                 csProjProcessor.SaveNewCsProj();
-                                ConvertToMainMajorLastVersion();
+                                ConvertProjectWithDxConverter(mainMajorLastVersion);
                             }
                             break;
                         case ConverterMessages.LastMinor:
-                            if(isCurrentVersionMajorInstalled) {
-                                csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
-                                csProjProcessor.SaveNewCsProj();
+                            if(isCurrentVersionMajorInstalled ) {
+                                if(!hasWebProject) {
+                                    csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
+                                    csProjProcessor.SaveNewCsProj();
+                                } else {
+                                    csProjProcessor.SaveNewCsProj();
+                                    ConvertProjectWithDxConverter(currentInstalledMajor);
+                                }
                             } else {
                                 csProjProcessor.SaveNewCsProj();
 
@@ -407,9 +409,6 @@ namespace THelper {
             MyFileWorker.StreamWriterWriteLine(slnPath, slnText);
         }
 
-        private void ConvertToMainMajorLastVersion() {//13 tt 
-            ConvertProjectWithDxConverter(mainMajorLastVersion, mainMajorLastVersionConverterPath);
-        }
         private Version FindLastVersionOfMajor(int major) {//15tt
             var res = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).First().FirstAttribute.Value;
             return new Version(res);
@@ -421,11 +420,11 @@ namespace THelper {
             return v.Count == csProjProcessor.DXLibrariesCount;
         }
 
-        private void ConvertProjectWithDxConverter(Version v, string converterPath = null) {//16
+        private void ConvertProjectWithDxConverter(Version v) {//16
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = Properties.Settings.Default.DXConverterPath;
             string versionConverterFormat = v.ToString(true);
-            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"{2}\"", solutionFolderName, versionConverterFormat, converterPath);
+            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"{2}\"", solutionFolderName, versionConverterFormat, v.Path);
             MyFileWorker.ProcessStart(psi.FileName, psi.Arguments);
         }
 

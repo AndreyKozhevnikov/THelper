@@ -41,6 +41,8 @@ namespace THelper {
         }
         public bool IsZero { get { return major == 0 && minor == 0 && build == 0; } }
 
+        public string Path { get; set; }
+
         public int CompareTo(Version other) {
             if(other == null) {
                 return 1;
