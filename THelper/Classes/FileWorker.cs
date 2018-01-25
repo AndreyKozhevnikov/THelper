@@ -26,7 +26,7 @@ namespace THelper {
         string[] DirectoryGetDirectories(string path);
         string StreamReaderReadToEnd(string path);
         void StreamWriterWriteLine(string path, string text);
-       
+        string[] DirectoryGetFiles(string path, string pattern);
     }
 
     public class FileWorker : IFileWorker {
@@ -40,7 +40,9 @@ namespace THelper {
                 return null;
             }
         }
-
+        public string[] DirectoryGetFiles(string path, string pattern) {
+            return Directory.GetFiles(path, pattern,SearchOption.AllDirectories);
+        }
         public DirectoryInfo CreateDirectory(string _path) {
             return Directory.CreateDirectory(_path);
         }
@@ -60,7 +62,7 @@ namespace THelper {
             }
             return resList;
         }
-       
+
         public string[] GetSubKeyNames(string key) {
             var regKey = Registry.LocalMachine.OpenSubKey(key);
             return regKey.GetSubKeyNames();

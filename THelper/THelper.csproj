@@ -117,6 +117,8 @@
   <ItemGroup>
     <Content Include="rar.ico" />
     <None Include="Resources\WrongSln.txt" />
+    <None Include="Resources\AppRight.config" />
+    <None Include="Resources\AppWrong.config" />
     <Resource Include="Resources\RightSln.txt" />
     <Resource Include="Resources\dxSampleGrid.csproj" />
   </ItemGroup>

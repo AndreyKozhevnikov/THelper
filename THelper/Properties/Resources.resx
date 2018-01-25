@@ -127,4 +127,10 @@
   <data name="WrongSln" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\WrongSln.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="AppRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AppRight.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="AppWrong" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AppWrong.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

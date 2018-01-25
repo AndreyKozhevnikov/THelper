@@ -255,7 +255,44 @@ namespace THelper {
             //assert
             moqFile.Verify(x => x.SaveXDocument(It.IsAny<XDocument>(), st), Times.AtLeastOnce);
         }
+        [Test]
+        public void CorrectConnectionStringTest() {
+            //arrange
+            string st= Properties.Resources.RightSln;
+            //act
 
+            //assert
+
+        }
+
+    }
+
+    [TestFixture]
+    public class ProjectProcessor_Test {
+        [Test]
+        public void CorrectConnectionStringTest() {
+            //arrange
+            string st = Properties.Resources.AppWrong;
+            var proc = new ProjectProcessor(null);
+            //act
+            var newSt = proc.CorrectConnectionString(st, "dxT598706");
+            //assert
+            Assert.AreEqual(Properties.Resources.AppRight, newSt);
+        }
+
+        [Test]
+        public void GetTicketNameFromSlnPathTest() {
+            //arrange
+            string st = @"c:\!Tickets\T598825 How to use state code table as a\SupportTickets\StateCodesPropertyEditor.vb";
+            string stWithoutNumber = @"c:\!Tickets\SupportTickets\StateCodesPropertyEditor.vb";
+            var proc = new ProjectProcessor(null);
+            //act
+            var newSt = proc.GetTicketNameFromSlnPath(st);
+            var newStWithout = proc.GetTicketNameFromSlnPath(stWithoutNumber);
+            //assert
+            Assert.AreEqual("dxT598825", newSt);
+            Assert.IsTrue(newStWithout.Contains("dx"));
+        }
     }
 
     [TestFixture]

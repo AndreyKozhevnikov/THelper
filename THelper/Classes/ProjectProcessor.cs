@@ -210,11 +210,11 @@ namespace THelper {
             var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
             AllVersionsList = allVersionElement.Elements().ToList();
         }
-        
- 
+
+
         protected internal void GetInstalledVersions() {//5 td
             installedVersions = new List<Version>();
-            List<string> versions =MyFileWorker.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
+            List<string> versions = MyFileWorker.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
             foreach(string rootPath in versions) {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
@@ -316,6 +316,7 @@ namespace THelper {
 
             if(isXafSolution) {
                 MakeApplicationProjectFirst();
+                CorrectConnectionStringsInConfigFiles();
             }
 
             csProjProcessor.DisableUseVSHostingProcess();
@@ -343,7 +344,7 @@ namespace THelper {
                             }
                             break;
                         case ConverterMessages.LastMinor:
-                            if(isCurrentVersionMajorInstalled ) {
+                            if(isCurrentVersionMajorInstalled) {
                                 if(!hasWebProject) {
                                     csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                                     csProjProcessor.SaveNewCsProj();
@@ -380,6 +381,34 @@ namespace THelper {
 
             OpenSolution();
 
+        }
+
+        public string CorrectConnectionString(string configText, string dbName) {
+            Regex connectionStringRX = new Regex(@"<add name=""ConnectionString"".*>");
+            string oldConnectionString = connectionStringRX.Match(configText).Value;
+            string newConnectionString = string.Format(@"<add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}"" />", dbName);
+            configText = configText.Replace(oldConnectionString, newConnectionString);
+            return configText;
+        }
+        public string GetTicketNameFromSlnPath(string slnPath) {
+            Regex ticketRegex = new Regex(@"T\d{6}");
+            Match ticketMatch = ticketRegex.Match(slnPath);
+            if(ticketMatch.Success) {
+                return "dx" + ticketMatch.Value;
+            } else {
+                return "dxSolution" + new Random().Next(12, 1234);
+            }
+        }
+        private void CorrectConnectionStringsInConfigFiles() {
+            List<string> configFiles = new List<string>();
+            configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "app.config"));
+            configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "web.config"));
+            string dbName = GetTicketNameFromSlnPath(slnPath);
+            foreach(string configFile in configFiles) {
+                string configText = MyFileWorker.StreamReaderReadToEnd(configFile);
+                configText = CorrectConnectionString(configText, dbName);
+                MyFileWorker.StreamWriterWriteLine(configFile, configText);
+            }
         }
 
         public void MakeApplicationProjectFirst() {

@@ -104,5 +104,17 @@ namespace THelper.Properties {
                 return ResourceManager.GetString("WrongSln", resourceCulture);
             }
         }
+
+        internal static string AppRight {
+            get {
+                return ResourceManager.GetString("AppRight", resourceCulture);
+            }
+        }
+
+        internal static string AppWrong {
+            get {
+                return ResourceManager.GetString("AppWrong", resourceCulture);
+            }
+        }
     }
 }
