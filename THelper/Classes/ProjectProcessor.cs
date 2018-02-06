@@ -386,6 +386,9 @@ namespace THelper {
         public string CorrectConnectionString(string configText, string dbName) {
             Regex connectionStringRX = new Regex(@"<add name=""ConnectionString"".*>");
             string oldConnectionString = connectionStringRX.Match(configText).Value;
+            if (string.IsNullOrEmpty(oldConnectionString)) {
+                return configText;
+            }
             string newConnectionString = string.Format(@"<add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}"" />", dbName);
             configText = configText.Replace(oldConnectionString, newConnectionString);
             return configText;

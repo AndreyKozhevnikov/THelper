@@ -281,6 +281,18 @@ namespace THelper {
         }
 
         [Test]
+        public void CorrectConnectionStringTestWithout() {
+            //arrange
+            string st = "config without connection string";
+            var proc = new ProjectProcessor(null);
+            //act
+            //assert
+          Assert.DoesNotThrow(()=>  proc.CorrectConnectionString(st, "dxT598706"));
+            
+           // Assert.AreEqual(Properties.Resources.AppRight, newSt);
+        }
+
+        [Test]
         public void GetTicketNameFromSlnPathTest() {
             //arrange
             string st = @"c:\!Tickets\T598825 How to use state code table as a\SupportTickets\StateCodesPropertyEditor.vb";
