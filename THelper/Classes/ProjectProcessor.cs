@@ -389,7 +389,7 @@ namespace THelper {
             if (string.IsNullOrEmpty(oldConnectionString)) {
                 return configText;
             }
-            string newConnectionString = string.Format(@"<add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}"" />", dbName);
+            string newConnectionString = string.Format(@"<add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr"" />", dbName);
             configText = configText.Replace(oldConnectionString, newConnectionString);
             return configText;
         }
