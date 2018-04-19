@@ -255,16 +255,6 @@ namespace THelper {
             //assert
             moqFile.Verify(x => x.SaveXDocument(It.IsAny<XDocument>(), st), Times.AtLeastOnce);
         }
-        [Test]
-        public void CorrectConnectionStringTest() {
-            //arrange
-            string st= Properties.Resources.RightSln;
-            //act
-
-            //assert
-
-        }
-
     }
 
     [TestFixture]
