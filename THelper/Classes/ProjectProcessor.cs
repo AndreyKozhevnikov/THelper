@@ -14,7 +14,8 @@ using System.Collections;
 
 namespace THelper {
     public class ProjectProcessor {
-        protected internal int LastReleasedVersion;
+        protected internal int lastReleasedVersion;
+        protected internal string filesToDetect;
         string archiveFilePath;
         List<string> csPaths;
         string slnPath;
@@ -40,7 +41,8 @@ namespace THelper {
             this.archiveFilePath = _filePath;
         }
         internal void GetSettings() {
-            LastReleasedVersion = Properties.Settings.Default.LastReleasedVersion;
+            lastReleasedVersion = Properties.Settings.Default.LastReleasedVersion;
+            filesToDetect = Properties.Settings.Default.FilesToDetect;
         }
         internal void ProcessArchive() { //0
             SetIsExample();
@@ -70,6 +72,15 @@ namespace THelper {
         private void ProcessFolder() { //2
                                        // csPaths = string.Empty;
                                        //  bool isSoluiton = TryGetSolutionFiles(solutionFolderInfo, out slnPath, out cspath);
+            MyMessageProcessor.Setup();
+
+            List<string> unexpectedFiles = GetUnexpectedFiles(solutionFolderInfo);
+            if(unexpectedFiles.Count > 0) {
+                MyMessageProcessor.ConsoleWrite("There are unexpected files!", ConsoleColor.Red,true);
+                foreach(var fl in unexpectedFiles) {
+                    MyMessageProcessor.ConsoleWrite(fl, ConsoleColor.Red,true);
+                }
+            }
             string[] solutionFiles = TryGetSolutionFiles(solutionFolderInfo);
             var solutionCount = solutionFiles.Count();
             if(solutionCount > 0) {
@@ -134,6 +145,15 @@ namespace THelper {
                 st = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*.vbproj", SearchOption.AllDirectories).ToArray();
             }
             return st;
+        }
+        List<string> GetUnexpectedFiles(DirectoryInfo dirInfo) {
+            List<string> result = new List<string>();
+            var filesArray = filesToDetect.Split(';');
+            foreach(var pattern in filesArray) {
+                var tmpResult= MyFileWorker.EnumerateFiles(dirInfo.FullName, "*."+pattern, SearchOption.AllDirectories).ToArray();
+                result.AddRange(tmpResult);
+            }
+            return result;
         }
         string[] TryGetSolutionFiles(DirectoryInfo dirInfo) {
             var st = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*.sln", SearchOption.AllDirectories).ToArray();
@@ -223,7 +243,7 @@ namespace THelper {
                 vers.Path = rootPath2;
                 installedVersions.Add(vers);
             }
-            mainMajorLastVersion = installedVersions.Where(y => y.Major <= LastReleasedVersion).Max();
+            mainMajorLastVersion = installedVersions.Where(y => y.Major <= lastReleasedVersion).Max();
         }
         string GetProjectUpgradeVersion(string projectUpgradeToolPath) {//5.1 td
             string assemblyFullName = MyFileWorker.AssemblyLoadFileFullName(projectUpgradeToolPath);

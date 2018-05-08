@@ -14,5 +14,8 @@
     <Setting Name="LastReleasedVersion" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">172</Value>
     </Setting>
+    <Setting Name="FilesToDetect" Type="System.String" Scope="User">
+      <Value Profile="(Default)">doc;docx;bak;txt;pdf;jpg;png</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

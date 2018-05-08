@@ -589,7 +589,7 @@ namespace THelper {
         public void GetInstalledVersions() {
             //arrange
             InitializeProcessor(null);
-            proc.LastReleasedVersion = 162;
+            proc.lastReleasedVersion = 162;
             SetupVersionsXDocument("17.1.2,16.2.6,15.2.13");
             //act
             proc.GetInstalledVersions();
@@ -598,14 +598,17 @@ namespace THelper {
         }
         void InitializeProcessor(string st) {
             proc = new ProjectProcessor(st);
-            proc.LastReleasedVersion = 162;
+            proc.lastReleasedVersion = 162;
+            proc.filesToDetect = "doc";
             moqFile = new Mock<IFileWorker>();
             proc.MyFileWorker = moqFile.Object;
             SetupVersionsXDocument("15.2.7,16.1.4");
-
+             moqMessage = new Mock<IMessageProcessor>();
+            proc.MyMessageProcessor = moqMessage.Object;
         }
         ProjectProcessor proc;
         Mock<IFileWorker> moqFile;
+        Mock<IMessageProcessor> moqMessage;
 
         [Test]
         public void Example_MMLVinstalled_OpenSolution() {
@@ -623,8 +626,6 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -664,8 +665,6 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -707,8 +706,6 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is an ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -741,8 +738,7 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2"));
-            var moqMessage = new Mock<IMessageProcessor>();
-            proc.MyMessageProcessor = moqMessage.Object;
+        
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is an "));
             moqMessage.Setup(x => x.ConsoleWrite("example", ConsoleColor.Red));
@@ -778,8 +774,7 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+     
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("0.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -805,8 +800,7 @@ namespace THelper {
         public void Solution_with_several_projects_open_solution() {
             //arrange  
             InitializeProcessor(@"c:\test\dxExample.zip");
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+      
             int callBackCounter = 0;
             int orderCounter = 0;
             Dictionary<string, int> callOrderDictionary = new Dictionary<string, int>();
@@ -860,8 +854,7 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(Version.Zero).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+      
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("0.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -897,8 +890,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.4")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -938,8 +931,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.4")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite5"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite5"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.4.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite4"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite4"])));
@@ -974,8 +967,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1018,8 +1011,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1057,8 +1050,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1108,8 +1101,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1157,8 +1150,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1208,8 +1201,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1258,8 +1251,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("16.1.2")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("161.2.0", ConsoleColor.Red));
@@ -1301,8 +1294,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1346,8 +1339,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite8"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite8"])));
@@ -1395,8 +1388,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite8"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite8"])));
@@ -1447,8 +1440,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite9"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite9"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.0.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite8"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite8"])));
@@ -1490,8 +1483,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1545,8 +1538,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1603,8 +1596,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1659,8 +1652,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1716,8 +1709,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1775,8 +1768,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -1824,8 +1817,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1874,8 +1867,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.7")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite7"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite7"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.7.0", ConsoleColor.Red)).Do((x3) => { callOrderDictionary["ConsoleWrite6"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite6"])));
@@ -1918,8 +1911,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -1975,8 +1968,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2032,8 +2025,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2088,8 +2081,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2150,8 +2143,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
             //  string lst = "15.1.16\r,14.2.3\r,16.1.1\r,14.2.13\r,9.8.1";
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
@@ -2212,8 +2205,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2262,8 +2255,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2315,8 +2308,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             string lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2373,8 +2366,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.13")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2427,8 +2420,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2481,8 +2474,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
             SetupAllVersionsList(lst);
@@ -2529,8 +2522,8 @@ namespace THelper {
 
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("14.2.0")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>();
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
             moqMessage.SetupSequence(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.Home).Returns(ConsoleKey.D9);
 
             var lst = "16.1.1,15.1.16,14.2.13,14.2.8,14.2.3,9.8.1";
@@ -2563,8 +2556,8 @@ namespace THelper {
             proc.csProjProcessor = moqCSProj.Object;
 
             moqCSProj.Setup(x => x.GetCurrentVersion()).Returns(new Version("15.2.5")).Do((x3) => { callOrderDictionary["GetCurrentVersion"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["GetCurrentVersion"])));
-            var moqMessage = new Mock<IMessageProcessor>(MockBehavior.Strict);
-            proc.MyMessageProcessor = moqMessage.Object;
+           
+          
 
             moqMessage.Setup(x => x.ConsoleWrite("The current project version is ")).Do((x3) => { callOrderDictionary["ConsoleWrite11"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleWrite11"])));
             moqMessage.Setup(x => x.ConsoleWrite("152.5.0", ConsoleColor.Red));
@@ -2620,6 +2613,7 @@ namespace THelper {
             moqFile.Setup(x => x.StreamReaderReadToEnd(@"c:\test\testSolution\testSolution\solution2\solution2.csproj")).Returns("test string Xpf.Grid TestAppDevExpress").Do((x3) => { callOrderDictionary["StreamReaderReadToEnd2"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["StreamReaderReadToEnd2"])));
 
             moqFile.Setup(x => x.OpenFolder(@"c:\test\testSolution")).Do((x3) => { callOrderDictionary[ReturnNameDelete(x3)] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["OpenFolder"])));
+         
             //act
             proc.ProcessArchive();
             //assert

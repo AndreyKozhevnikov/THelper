@@ -8,8 +8,10 @@ namespace THelper {
     public interface IMessageProcessor {
         void ConsoleWrite(string _message);
         void ConsoleWrite(string _message, ConsoleColor color);
+        void ConsoleWrite(string _message, ConsoleColor color,bool addNewLine);
         void ConsoleWriteLine();
         ConsoleKey ConsoleReadKey(bool intercept);
+        void Setup();
     }
     public class MessageProcessor : IMessageProcessor {
         public void ConsoleWrite(string _message) { //10
@@ -28,6 +30,15 @@ namespace THelper {
 
         public ConsoleKey ConsoleReadKey(bool intercept) {
             return Console.ReadKey(intercept).Key;
+        }
+
+        public void ConsoleWrite(string _message, ConsoleColor color, bool addNewLine) {
+            this.ConsoleWrite(_message, color);
+            this.ConsoleWriteLine();
+        }
+
+        public void Setup() {
+            Console.OutputEncoding = Encoding.UTF8;
         }
     }
 }
