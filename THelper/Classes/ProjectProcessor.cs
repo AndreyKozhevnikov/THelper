@@ -410,7 +410,10 @@ namespace THelper {
                 return configText;
             }
             string newConnectionString = string.Format(@" <add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr"" />", dbName);
-            configText = configText.Replace(oldConnectionString, newConnectionString);
+            string commentedOldConnectionString = " <!--" + oldConnectionString.Remove(0,1) + "-->"+Environment.NewLine;
+            string resultConnections = commentedOldConnectionString +"   "+ newConnectionString;
+            configText = configText.Replace(oldConnectionString, resultConnections);
+            
             return configText;
         }
         public string GetTicketNameFromSlnPath(string slnPath) {
