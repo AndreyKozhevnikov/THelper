@@ -265,9 +265,9 @@ namespace THelper {
             //arrange
             var proc = new ProjectProcessor(null);
             var moqFile = new Mock<IFileWorker>();
-            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.bak", It.IsAny<SearchOption>())).Returns(new string[]{"mybak.bak" });
-            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.jpg", It.IsAny<SearchOption>())).Returns(new string[]{"picture.jpg" });
-            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.png", It.IsAny<SearchOption>())).Returns(new string[]{"watch.png","Logo.png","test.png" });
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.bak", It.IsAny<SearchOption>())).Returns(new string[]{@"C:\mybak.bak" });
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.jpg", It.IsAny<SearchOption>())).Returns(new string[]{ @"C:\picture.jpg" });
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.png", It.IsAny<SearchOption>())).Returns(new string[]{ @"C:\watch.png", @"C:\Logo.png", @"C:\test.png" });
             proc.MyFileWorker = moqFile.Object;
             proc.filesToDetect = Properties.Settings.Default.FilesToDetect;
             proc.namesToExclude = Properties.Settings.Default.NamesToExclude;

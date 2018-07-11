@@ -155,9 +155,10 @@ namespace THelper {
             foreach(var pattern in filesArray) {
                 var tmpResult = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*." + pattern, SearchOption.AllDirectories).ToArray();
                 foreach(var candidate in tmpResult) {
+                    var fi = new FileInfo(candidate);
                     bool flag = false;
                     foreach(var nameEx in namesToEx) {
-                        if(candidate == nameEx) {
+                        if(fi.Name == nameEx) {
                             flag = true;
                             break;
                         }
