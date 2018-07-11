@@ -259,6 +259,25 @@ namespace THelper {
 
     [TestFixture]
     public class ProjectProcessor_Test {
+
+        [Test]
+        public void GetUnexpectedFiles_Test() {
+            //arrange
+            var proc = new ProjectProcessor(null);
+            var moqFile = new Mock<IFileWorker>();
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.bak", It.IsAny<SearchOption>())).Returns(new string[]{"mybak.bak" });
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.jpg", It.IsAny<SearchOption>())).Returns(new string[]{"picture.jpg" });
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(),"*.png", It.IsAny<SearchOption>())).Returns(new string[]{"watch.png","Logo.png","test.png" });
+            proc.MyFileWorker = moqFile.Object;
+            proc.filesToDetect = Properties.Settings.Default.FilesToDetect;
+            proc.namesToExclude = Properties.Settings.Default.NamesToExclude;
+            //act
+            var di=new DirectoryInfo(@"C:\");
+            var lst = proc.GetUnexpectedFiles(di);
+            //assert
+            Assert.AreEqual(4, lst.Count);
+        }
+
         [Test]
         public void CorrectConnectionStringTest() {
             //arrange
@@ -599,7 +618,8 @@ namespace THelper {
         void InitializeProcessor(string st) {
             proc = new ProjectProcessor(st);
             proc.lastReleasedVersion = 162;
-            proc.filesToDetect = "doc";
+            proc.filesToDetect = Properties.Settings.Default.FilesToDetect;
+            proc.namesToExclude = Properties.Settings.Default.NamesToExclude;
             moqFile = new Mock<IFileWorker>();
             proc.MyFileWorker = moqFile.Object;
             SetupVersionsXDocument("15.2.7,16.1.4");

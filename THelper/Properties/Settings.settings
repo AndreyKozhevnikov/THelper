@@ -17,5 +17,8 @@
     <Setting Name="FilesToDetect" Type="System.String" Scope="User">
       <Value Profile="(Default)">doc;docx;bak;txt;pdf;jpg;png</Value>
     </Setting>
+    <Setting Name="NamesToExclude" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Logo.png</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

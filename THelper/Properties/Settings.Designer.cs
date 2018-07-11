@@ -70,5 +70,17 @@ namespace THelper.Properties {
                 this["FilesToDetect"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Logo.png")]
+        public string NamesToExclude {
+            get {
+                return ((string)(this["NamesToExclude"]));
+            }
+            set {
+                this["NamesToExclude"] = value;
+            }
+        }
     }
 }

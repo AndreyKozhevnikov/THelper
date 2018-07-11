@@ -16,6 +16,7 @@ namespace THelper {
     public class ProjectProcessor {
         protected internal int lastReleasedVersion;
         protected internal string filesToDetect;
+        protected internal string namesToExclude;
         string archiveFilePath;
         List<string> csPaths;
         string slnPath;
@@ -43,6 +44,7 @@ namespace THelper {
         internal void GetSettings() {
             lastReleasedVersion = Properties.Settings.Default.LastReleasedVersion;
             filesToDetect = Properties.Settings.Default.FilesToDetect;
+            namesToExclude = Properties.Settings.Default.NamesToExclude;
         }
         internal void ProcessArchive() { //0
             SetIsExample();
@@ -76,9 +78,9 @@ namespace THelper {
 
             List<string> unexpectedFiles = GetUnexpectedFiles(solutionFolderInfo);
             if(unexpectedFiles.Count > 0) {
-                MyMessageProcessor.ConsoleWrite("There are unexpected files!", ConsoleColor.Red,true);
+                MyMessageProcessor.ConsoleWrite("There are unexpected files!", ConsoleColor.Red, true);
                 foreach(var fl in unexpectedFiles) {
-                    MyMessageProcessor.ConsoleWrite(fl, ConsoleColor.Red,true);
+                    MyMessageProcessor.ConsoleWrite(fl, ConsoleColor.Red, true);
                 }
             }
             string[] solutionFiles = TryGetSolutionFiles(solutionFolderInfo);
@@ -146,12 +148,26 @@ namespace THelper {
             }
             return st;
         }
-        List<string> GetUnexpectedFiles(DirectoryInfo dirInfo) {
+        protected internal List<string> GetUnexpectedFiles(DirectoryInfo dirInfo) {
             List<string> result = new List<string>();
             var filesArray = filesToDetect.Split(';');
+            var namesToEx = namesToExclude.Split(';');
             foreach(var pattern in filesArray) {
-                var tmpResult= MyFileWorker.EnumerateFiles(dirInfo.FullName, "*."+pattern, SearchOption.AllDirectories).ToArray();
-                result.AddRange(tmpResult);
+                var tmpResult = MyFileWorker.EnumerateFiles(dirInfo.FullName, "*." + pattern, SearchOption.AllDirectories).ToArray();
+                foreach(var candidate in tmpResult) {
+                    bool flag = false;
+                    foreach(var nameEx in namesToEx) {
+                        if(candidate == nameEx) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag) {
+                        continue;
+                    }
+                    result.Add(candidate);
+                }
+                
             }
             return result;
         }
@@ -406,14 +422,14 @@ namespace THelper {
         public string CorrectConnectionString(string configText, string dbName) {
             Regex connectionStringRX = new Regex(@" <add name=""ConnectionString"".*>");
             string oldConnectionString = connectionStringRX.Match(configText).Value;
-            if (string.IsNullOrEmpty(oldConnectionString)) {
+            if(string.IsNullOrEmpty(oldConnectionString)) {
                 return configText;
             }
             string newConnectionString = string.Format(@" <add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr"" />", dbName);
-            string commentedOldConnectionString = " <!--" + oldConnectionString.Remove(0,1) + "-->"+Environment.NewLine;
-            string resultConnections = commentedOldConnectionString +"   "+ newConnectionString;
+            string commentedOldConnectionString = " <!--" + oldConnectionString.Remove(0, 1) + "-->" + Environment.NewLine;
+            string resultConnections = commentedOldConnectionString + "   " + newConnectionString;
             configText = configText.Replace(oldConnectionString, resultConnections);
-            
+
             return configText;
         }
         public string GetTicketNameFromSlnPath(string slnPath) {
