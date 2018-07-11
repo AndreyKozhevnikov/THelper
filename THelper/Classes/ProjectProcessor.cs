@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Collections;
+using System.Threading;
 
 namespace THelper {
     public class ProjectProcessor {
@@ -47,24 +48,56 @@ namespace THelper {
             namesToExclude = Properties.Settings.Default.NamesToExclude;
         }
         internal void ProcessArchive() { //0
+                                         // SetIsExample();
             SetIsExample();
             ExtractFiles();
             ProcessFolder();
         }
         void SetIsExample() {//1.1 //tt
-            isExample = archiveFilePath.EndsWith(".dxsample");
+            isExample = GetIsExample(archiveFilePath);
         }
+
+        protected internal bool GetIsExample(string st) {
+            Regex exampleRX = new Regex(@"\d.\d.\d-.zip");
+            var res = exampleRX.Match(st);
+            var isExample = res.Success;
+            return isExample;
+        }
+
         void ExtractFiles() { //1.2
             string winRarPath = Properties.Settings.Default.WinRarPath;
             string argsFullWinRar = GetArgsForWinRar();
             MyFileWorker.ProcessStart(winRarPath, argsFullWinRar);
-        }
+            if(isExample) {
+                var oldSolutionFolderName = Path.Combine(solutionFolderName, archiveFileName);
+                var newFolderName = Path.Combine(solutionFolderName, "dxExampl-" + archiveFileName.Substring(0, 10));
+                while(true) {
+                    var allProcesses = Process.GetProcesses();
+                    var wRarProc = allProcesses.Where(x => x.ProcessName == "WinRAR");
+                    if(wRarProc.Count() == 0) {
+                        break;
+                    }
+                    Thread.Sleep(500);
+                }
+                MyFileWorker.DirectoryMove(oldSolutionFolderName, newFolderName);
 
+                solutionFolderName = Path.Combine(newFolderName, "CS");
+                solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
+            } else {
+                solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
+            }
+        }
+        string archiveFileName;
         string GetArgsForWinRar() {//1.2.1 /tt
             string argumentsFilePath = " x \"" + archiveFilePath + "\"";
-            var archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
-            solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
-            solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
+            archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
+            if(!isExample) {
+                solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
+            } else {
+                var fi = new FileInfo(archiveFilePath);
+                var folderName = fi.DirectoryName;
+                solutionFolderName = folderName;
+            }
             var argsFullWinRar = argumentsFilePath + " " + @"""" + solutionFolderName + @"""";
             return argsFullWinRar;
         }
@@ -168,7 +201,7 @@ namespace THelper {
                     }
                     result.Add(candidate);
                 }
-                
+
             }
             return result;
         }

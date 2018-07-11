@@ -21,6 +21,7 @@ namespace THelper {
         void ProcessStart(string fileName, string arguments, bool _wait);
         void ProcessStart(ProcessStartInfo startInfo);
         void ProcessStart(string fileName, string arguments);
+        void DirectoryMove(string sourceDirName, string destDirName);
         void OpenFolder(string path);
         IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption);
         string[] DirectoryGetDirectories(string path);
@@ -31,6 +32,11 @@ namespace THelper {
 
     public class FileWorker : IFileWorker {
         static string totalCmdPath = @"C:\Program Files (x86)\totalcmd\TOTALCMD64.EXE";
+
+        public void DirectoryMove(string sourceDirName, string destDirName) {
+            Directory.Move(sourceDirName, destDirName);
+        }
+
         public string AssemblyLoadFileFullName(string path) {
             try {
                 var assembly = Assembly.LoadFile(path);
@@ -41,7 +47,7 @@ namespace THelper {
             }
         }
         public string[] DirectoryGetFiles(string path, string pattern) {
-            return Directory.GetFiles(path, pattern,SearchOption.AllDirectories);
+            return Directory.GetFiles(path, pattern, SearchOption.AllDirectories);
         }
         public DirectoryInfo CreateDirectory(string _path) {
             return Directory.CreateDirectory(_path);
@@ -85,7 +91,9 @@ namespace THelper {
 
         public void ProcessStart(string fileName, string arguments, bool wait) { //???
             var p = Process.Start(fileName, arguments);
-            p.WaitForExit();
+            if(wait) {
+                p.WaitForExit();
+            }
         }
 
         public IEnumerable<string> DirectoryEnumerateFiles(string path, string searchPattern, SearchOption searchOption) {
