@@ -83,9 +83,7 @@ namespace THelper {
 
                 solutionFolderName = Path.Combine(newFolderName, "CS");
                 solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
-            } else {
-                solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
-            }
+            } 
         }
         string archiveFileName;
         string GetArgsForWinRar() {//1.2.1 /tt
@@ -93,6 +91,7 @@ namespace THelper {
             archiveFileName = Path.GetFileNameWithoutExtension(archiveFilePath);
             if(!isExample) {
                 solutionFolderName = Directory.GetParent(archiveFilePath) + "\\" + archiveFileName.Replace(" ", "_");
+                solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
             } else {
                 var fi = new FileInfo(archiveFilePath);
                 var folderName = fi.DirectoryName;
