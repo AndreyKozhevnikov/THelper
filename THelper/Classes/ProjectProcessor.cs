@@ -453,16 +453,15 @@ namespace THelper {
         }
 
         public string CorrectConnectionString(string configText, string dbName) {
-            Regex connectionStringRX = new Regex(@" <add name=""ConnectionString"".*>");
+            Regex connectionStringRX = new Regex(@"(?<!<!--\r\n    )(?<!<!--)<add name=""ConnectionString"".*>");
             string oldConnectionString = connectionStringRX.Match(configText).Value;
             if(string.IsNullOrEmpty(oldConnectionString)) {
                 return configText;
             }
-            string newConnectionString = string.Format(@" <add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr"" />", dbName);
-            string commentedOldConnectionString = " <!--" + oldConnectionString.Remove(0, 1) + "-->" + Environment.NewLine;
-            string resultConnections = commentedOldConnectionString + "   " + newConnectionString;
+            string newConnectionString = string.Format(@"<add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr"" />", dbName);
+            string commentedOldConnectionString = "<!--" + oldConnectionString + "-->" + Environment.NewLine;
+            string resultConnections = commentedOldConnectionString + "    " + newConnectionString;
             configText = configText.Replace(oldConnectionString, resultConnections);
-
             return configText;
         }
         public string GetTicketNameFromSlnPath(string slnPath) {
