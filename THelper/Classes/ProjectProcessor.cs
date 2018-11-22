@@ -83,7 +83,7 @@ namespace THelper {
 
                 solutionFolderName = Path.Combine(newFolderName, "CS");
                 solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
-            } 
+            }
         }
         string archiveFileName;
         string GetArgsForWinRar() {//1.2.1 /tt
@@ -221,7 +221,7 @@ namespace THelper {
                 if(currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
                 } else {
-                    //#endif
+                    //endif
                     currentInstalledMajor = installedVersions.Where(x => x.Major == currentProjectVersion.Major).FirstOrDefault();
                     isCurrentVersionMajorInstalled = currentInstalledMajor != null;
                     if(isCurrentVersionMajorInstalled) {
@@ -255,6 +255,8 @@ namespace THelper {
                         LastMinorOfCurrentMajor = FindLastVersionOfMajor(currentProjectVersion.Major);
                         if(currentProjectVersion.Minor == 0 || currentProjectVersion.Minor == LastMinorOfCurrentMajor.Minor) {
                             MessagesList.Add(ConverterMessages.LastMinor);
+                            MessagesList.Add(ConverterMessages.MainMajorLastVersion);
+                        } else if(LastMinorOfCurrentMajor.Major == 0) {
                             MessagesList.Add(ConverterMessages.MainMajorLastVersion);
                         } else {
                             MessagesList.Add(ConverterMessages.ExactConversion);
@@ -513,7 +515,10 @@ namespace THelper {
         }
 
         private Version FindLastVersionOfMajor(int major) {//15tt
-            var res = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).First().FirstAttribute.Value;
+            var tmpRes = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).FirstOrDefault();
+            string res = "";
+            if(tmpRes != null)
+                res = tmpRes.FirstAttribute.Value;
             return new Version(res);
         }
 
