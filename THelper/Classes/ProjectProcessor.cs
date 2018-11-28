@@ -457,7 +457,7 @@ namespace THelper {
         public string CorrectConnectionString(string configText, string dbName) {
             configText = configText.Replace("\t", "  ");
             configText = configText.Replace("\r\n", "\n");
-            Regex connectionStringRX = new Regex(@"(?<!<!--\n    )(?<!<!--)<add name=""ConnectionString"".*\/>(?!\n    -->)");
+            Regex connectionStringRX = new Regex(@"(?<!<!--\n    )(?<!<!--)<add name=""ConnectionString"".*\/>(?!\n +-->)(?!\n +\w)");
             string oldConnectionString = connectionStringRX.Match(configText).Value;
             if(string.IsNullOrEmpty(oldConnectionString)) {
                 return configText;
