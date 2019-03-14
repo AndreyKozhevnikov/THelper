@@ -28,6 +28,8 @@ namespace THelper {
         string StreamReaderReadToEnd(string path);
         void StreamWriterWriteLine(string path, string text);
         string[] DirectoryGetFiles(string path, string pattern);
+        DirectoryInfo[] DirectoryGetDirectories(DirectoryInfo solutionFolderInfo, string v, SearchOption allDirectories);
+        void DirectoryDelete(string fullName, bool v);
     }
 
     public class FileWorker : IFileWorker {
@@ -137,6 +139,14 @@ namespace THelper {
                 writer.Write(text);
                 writer.Flush();
             }
+        }
+
+        public DirectoryInfo[] DirectoryGetDirectories(DirectoryInfo solutionFolderInfo, string v, SearchOption allDirectories) {
+            return solutionFolderInfo.GetDirectories(v, allDirectories);
+        }
+
+        public void DirectoryDelete(string fullName, bool v) {
+            Directory.Delete(fullName, v);
         }
     }
 }

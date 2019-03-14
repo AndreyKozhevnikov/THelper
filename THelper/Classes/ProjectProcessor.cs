@@ -84,6 +84,10 @@ namespace THelper {
                 solutionFolderName = Path.Combine(newFolderName, "CS");
                 solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
             }
+            var vsDirectories = MyFileWorker.DirectoryGetDirectories(solutionFolderInfo,".vs",SearchOption.AllDirectories);
+            if(vsDirectories.Count()> 0){
+                MyFileWorker.DirectoryDelete(vsDirectories[0].FullName,true);
+            }
         }
         string archiveFileName;
         string GetArgsForWinRar() {//1.2.1 /tt
