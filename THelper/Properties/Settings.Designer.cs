@@ -52,22 +52,10 @@ namespace THelper.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("172")]
+        [global::System.Configuration.DefaultSettingValueAttribute("181")]
         public int LastReleasedVersion {
             get {
                 return ((int)(this["LastReleasedVersion"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("doc;docx;bak;txt;pdf;jpg;png")]
-        public string FilesToDetect {
-            get {
-                return ((string)(this["FilesToDetect"]));
-            }
-            set {
-                this["FilesToDetect"] = value;
             }
         }
         
@@ -80,6 +68,18 @@ namespace THelper.Properties {
             }
             set {
                 this["NamesToExclude"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("doc;docx;pdf;jpg;png;swf;gif;bak;mp4")]
+        public string FilesToDetect {
+            get {
+                return ((string)(this["FilesToDetect"]));
+            }
+            set {
+                this["FilesToDetect"] = value;
             }
         }
     }
