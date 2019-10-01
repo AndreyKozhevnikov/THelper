@@ -18,6 +18,7 @@ namespace THelper {
         protected internal int lastReleasedVersion;
         protected internal string filesToDetect;
         protected internal string namesToExclude;
+        string frameworkVersion;
         string archiveFilePath;
         List<string> csPaths;
         string slnPath;
@@ -46,6 +47,7 @@ namespace THelper {
             lastReleasedVersion = Properties.Settings.Default.LastReleasedVersion;
             filesToDetect = Properties.Settings.Default.FilesToDetect;
             namesToExclude = Properties.Settings.Default.NamesToExclude;
+            frameworkVersion = Properties.Settings.Default.FrameworkVersion;
         }
         internal void ProcessArchive() { //0
                                          // SetIsExample();
@@ -219,8 +221,9 @@ namespace THelper {
             GetInstalledVersions();
             GetProjectVersion();
             isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
-            if(isExample)
+            if(isExample){
                 MessagesList.Add(ConverterMessages.OpenSolution);
+            }
             else {
                 if(currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
@@ -273,6 +276,7 @@ namespace THelper {
             MessagesList.Add(ConverterMessages.OpenFolder);
 
         }
+
 
         private ICSProjProcessor CreateCSProjProcessor() { //how to get rid off?
             if(csProjProcessor == null)
@@ -402,6 +406,7 @@ namespace THelper {
                     csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                     csProjProcessor.SaveNewCsProj();
                 } else {
+                    csProjProcessor.CorrectFrameworkVersionIfNeeded();
                     csProjProcessor.SaveNewCsProj();
                     ConvertProjectWithDxConverter(mainMajorLastVersion);
                 }
@@ -458,6 +463,7 @@ namespace THelper {
 
         }
 
+       
         public string CorrectConnectionString(string configText, string dbName) {
             configText = configText.Replace("\t", "  ");
             configText = configText.Replace("\r\n", "\n");

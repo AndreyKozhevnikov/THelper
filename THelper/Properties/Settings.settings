@@ -20,5 +20,8 @@
     <Setting Name="FilesToDetect" Type="System.String" Scope="User">
       <Value Profile="(Default)">doc;docx;pdf;jpg;png;swf;gif;bak;mp4</Value>
     </Setting>
+    <Setting Name="FrameworkVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">4.5.2</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

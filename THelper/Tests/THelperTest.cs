@@ -12,11 +12,24 @@ using System.IO;
 using Moq;
 using System.Xml.Linq;
 using System.Diagnostics;
+using THelper.Classes;
 
 namespace THelper {
 
     [TestFixture]
     public class CSProjProcessor_Tests {
+        [Test]
+public void FindTargetFramework_Test() {
+            //arrange
+            var doc =XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+            var dxDoc = new DXProjDocument(doc, null);
+            //act
+            var res = proc.FindTargetFramework(dxDoc);
+            //assert
+            var desiredResult = new Tuple<string, string>("<TargetFrameworkVersion>v2.0</TargetFrameworkVersion>", "2.0");
+            Assert.AreEqual(desiredResult, res);
+        }
         [Test]
         public void CSProjProcessor() {
             //arrange
@@ -720,11 +733,10 @@ namespace THelper {
             moqMessage.Setup(x => x.ConsoleReadKey(false)).Returns(ConsoleKey.D1).Do((x3) => { callOrderDictionary["ConsoleReadKey"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ConsoleReadKey"])));
 
             moqCSProj.Setup(x => x.DisableUseVSHostingProcess()).Do((x3) => { callOrderDictionary["DisableUseVSHostingProcess"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["DisableUseVSHostingProcess"])));
-
-            moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj"])));
+            moqCSProj.Setup(x => x.CorrectFrameworkVersionIfNeeded()).Do((x3) => { callOrderDictionary["CorrectFrameworkVersionIfNeeded"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["CorrectFrameworkVersionIfNeeded"])));
+            moqCSProj.Setup(x => x.SaveNewCsProj()).Do((x3) => { callOrderDictionary["SaveNewCsProj1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["SaveNewCsProj1"])));
             var arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"{2}\"", @"c:\test\dxExample", "16.1.4", @"C:\Program Files (x86)\DevExpress 16.1\Components\Tools\Components\ProjectConverter-console.exe");
             moqFile.Setup(x => x.ProcessStart(Properties.Settings.Default.DXConverterPath, arguments)).Do((x3) => { callOrderDictionary["ProcessStart1"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart1"])));
-
             moqFile.Setup(x => x.ProcessStart(@"c:\test\dxExample\dxExample.sln")).Do((x3) => { callOrderDictionary["ProcessStart"] = orderCounter++; }).Callback(() => Assert.That(callBackCounter++, Is.EqualTo(callOrderDictionary["ProcessStart"])));
             //act  
             proc.ProcessArchive();

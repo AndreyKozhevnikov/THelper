@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using THelper.Classes;
@@ -28,6 +29,7 @@ namespace THelper {
         void SaveNewCsProj();
         void SetSpecificVersionFalseAndRemoveHintPath();
         int DXLibrariesCount { get; }
+        void CorrectFrameworkVersionIfNeeded();
     }
     public class CSProjProcessor : ICSProjProcessor {
         public List<string> csProjFileNames;
@@ -110,6 +112,20 @@ namespace THelper {
                         hintPathNode.Remove();
                 }
             }
+        }
+
+        public void CorrectFrameworkVersionIfNeeded() {
+            foreach(var doc in RootDocuments) {
+                var currFramework = FindTargetFramework(doc);
+            }
+        }
+
+        public Tuple<string,string> FindTargetFramework(DXProjDocument doc) {
+            Regex frameworkRX = new Regex(@"<TargetFrameworkVersion>v(?<version>.*)<\/TargetFrameworkVersion>");
+            Match matchFramework = frameworkRX.Match(doc.RootDocument.ToString());
+            var fullMatchValue = matchFramework.Value;
+            var frameworkVersion = matchFramework.Groups["version"].Value;
+            return new Tuple<string, string>(fullMatchValue, frameworkVersion);
         }
 
         public void SaveNewCsProj() {
