@@ -115,9 +115,33 @@ namespace THelper {
         }
 
         public void CorrectFrameworkVersionIfNeeded() {
+            var minFrameworkValue = Properties.Settings.Default.FrameworkVersion;
             foreach(var doc in RootDocuments) {
-                var currFramework = FindTargetFramework(doc);
+                var currFrameworkValues = FindTargetFramework(doc);
+
             }
+        }
+
+        public bool GetIsFirstVersionGreaterOrEqual(string ver1, string ver2) {
+            var res1 = ver1.Split('.');
+            var res2 = ver2.Split('.');
+            var l1 = res1.Count();
+            var l2 = res2.Count();
+            var l = Math.Min(l1, l2);
+            for(int i = 0; i < l; i++) {
+                var c1 = int.Parse(res1[i]);
+                var c2 = int.Parse(res2[i]);
+                if(c1 > c2) {
+                    return true;
+                }
+                if(c2 > c1) {
+                    return false;
+                }
+            }
+            if(res1.Count()>=res2.Count()) {
+                return true;
+            }
+            return false;
         }
 
         public Tuple<string,string> FindTargetFramework(DXProjDocument doc) {

@@ -19,6 +19,83 @@ namespace THelper {
     [TestFixture]
     public class CSProjProcessor_Tests {
         [Test]
+        public void GetIsFirstVersionGreater_1_Test() {
+            //arrange
+            var doc = XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+
+            //act
+            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "2.0");
+            //assert
+            Assert.AreEqual(true, res);
+        }
+        [Test]
+        public void GetIsFirstVersionGreater_2_Test() {
+            //arrange
+            var doc = XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+
+            //act
+            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.5.3");
+            //assert
+            Assert.AreEqual(false, res);
+        }
+        [Test]
+        public void GetIsFirstVersionGreater_3_Test() {
+            //arrange
+            var doc = XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+
+            //act
+            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.6.1");
+            //assert
+            Assert.AreEqual(false, res);
+        }
+        [Test]
+        public void GetIsFirstVersionGreater_4_Test() {
+            //arrange
+            var doc = XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+
+            //act
+            var res = proc.GetIsFirstVersionGreaterOrEqual( "2.0", "4.5.2");
+            //assert
+            Assert.AreEqual(false, res);
+        }
+        [Test]
+        public void GetIsFirstVersionGreater_5_Test() {
+            //arrange
+            var doc = XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+
+            //act
+            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.5.2");
+            //assert
+            Assert.AreEqual(true, res);
+        }
+        [Test]
+        public void GetIsFirstVersionGreater_6_Test() {
+            //arrange
+            var doc = XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+
+            //act
+            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5", "4.5.2");
+            //assert
+            Assert.AreEqual(false, res);
+        }
+        [Test]
+        public void GetIsFirstVersionGreater_7_Test() {
+            //arrange
+            var doc = XDocument.Parse(Properties.Resources.OldFramework);
+            var proc = new CSProjProcessor(new List<string>(), null);
+
+            //act
+            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.5");
+            //assert
+            Assert.AreEqual(true, res);
+        }
+        [Test]
 public void FindTargetFramework_Test() {
             //arrange
             var doc =XDocument.Parse(Properties.Resources.OldFramework);

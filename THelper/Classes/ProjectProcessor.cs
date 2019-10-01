@@ -18,7 +18,6 @@ namespace THelper {
         protected internal int lastReleasedVersion;
         protected internal string filesToDetect;
         protected internal string namesToExclude;
-        string frameworkVersion;
         string archiveFilePath;
         List<string> csPaths;
         string slnPath;
@@ -47,7 +46,6 @@ namespace THelper {
             lastReleasedVersion = Properties.Settings.Default.LastReleasedVersion;
             filesToDetect = Properties.Settings.Default.FilesToDetect;
             namesToExclude = Properties.Settings.Default.NamesToExclude;
-            frameworkVersion = Properties.Settings.Default.FrameworkVersion;
         }
         internal void ProcessArchive() { //0
                                          // SetIsExample();
