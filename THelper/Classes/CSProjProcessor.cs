@@ -117,14 +117,19 @@ namespace THelper {
         public void CorrectFrameworkVersionIfNeeded() {
             var minFrameworkValue = Properties.Settings.Default.FrameworkVersion;
             foreach(var doc in RootDocuments) {
-                var currFrameworkValue = FindTargetFramework(doc);
-           
-                //var oldFrameworkVersionString = currFrameworkValues.Item1;
-                var isUpdateFrameworkNeeded = GetIsFirstVersionGreaterOrEqual(currFrameworkValue.Value, minFrameworkValue);
-                if(isUpdateFrameworkNeeded) {
-                       
-                    //    newFrameworkVersionString = newFrameworkVersionString.Replace(currFrameVersion, minFrameworkValue);
+                var targetFrameworkXML = FindTargetFramework(doc);
+                if(targetFrameworkXML == null) {
+                    var someElement = doc.RootElements.First();
+                    XName xName = XName.Get("TargetFrameworkVersion", someElement.Name.Namespace.NamespaceName);
+                    XElement xFrame = new XElement(xName, minFrameworkValue);
+                    var firstGroup = doc.RootDocument.Elements().Elements().First();
+                    firstGroup.Add(xFrame);
 
+                } else {
+                    var isUpdateFrameworkNeeded = !GetIsFirstVersionGreaterOrEqual(targetFrameworkXML.Value, minFrameworkValue);
+                    if(isUpdateFrameworkNeeded) {
+                        targetFrameworkXML.SetValue(minFrameworkValue);
+                    }
                 }
             }
         }
@@ -153,7 +158,7 @@ namespace THelper {
 
         public XElement FindTargetFramework(DXProjDocument doc) {
             var lst2 = doc.RootDocument.Elements().Elements().Elements();
-            var el = lst2.Where(x => x.Name.LocalName == "TargetFrameworkVersion").First();
+            var el = lst2.Where(x => x.Name.LocalName == "TargetFrameworkVersion").FirstOrDefault();
             return el;
         }
 

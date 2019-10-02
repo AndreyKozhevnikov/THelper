@@ -52,7 +52,7 @@ namespace THelper.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("181")]
+        [global::System.Configuration.DefaultSettingValueAttribute("191")]
         public int LastReleasedVersion {
             get {
                 return ((int)(this["LastReleasedVersion"]));
