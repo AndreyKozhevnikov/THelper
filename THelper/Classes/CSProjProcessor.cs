@@ -117,14 +117,21 @@ namespace THelper {
         public void CorrectFrameworkVersionIfNeeded() {
             var minFrameworkValue = Properties.Settings.Default.FrameworkVersion;
             foreach(var doc in RootDocuments) {
-                var currFrameworkValues = FindTargetFramework(doc);
+                var currFrameworkValue = FindTargetFramework(doc);
+           
+                //var oldFrameworkVersionString = currFrameworkValues.Item1;
+                var isUpdateFrameworkNeeded = GetIsFirstVersionGreaterOrEqual(currFrameworkValue.Value, minFrameworkValue);
+                if(isUpdateFrameworkNeeded) {
+                       
+                    //    newFrameworkVersionString = newFrameworkVersionString.Replace(currFrameVersion, minFrameworkValue);
 
+                }
             }
         }
 
         public bool GetIsFirstVersionGreaterOrEqual(string ver1, string ver2) {
-            var res1 = ver1.Split('.');
-            var res2 = ver2.Split('.');
+            var res1 = ver1.Substring(1).Split('.');
+            var res2 = ver2.Substring(1).Split('.');
             var l1 = res1.Count();
             var l2 = res2.Count();
             var l = Math.Min(l1, l2);
@@ -138,18 +145,16 @@ namespace THelper {
                     return false;
                 }
             }
-            if(res1.Count()>=res2.Count()) {
+            if(res1.Count() >= res2.Count()) {
                 return true;
             }
             return false;
         }
 
-        public Tuple<string,string> FindTargetFramework(DXProjDocument doc) {
-            Regex frameworkRX = new Regex(@"<TargetFrameworkVersion>v(?<version>.*)<\/TargetFrameworkVersion>");
-            Match matchFramework = frameworkRX.Match(doc.RootDocument.ToString());
-            var fullMatchValue = matchFramework.Value;
-            var frameworkVersion = matchFramework.Groups["version"].Value;
-            return new Tuple<string, string>(fullMatchValue, frameworkVersion);
+        public XElement FindTargetFramework(DXProjDocument doc) {
+            var lst2 = doc.RootDocument.Elements().Elements().Elements();
+            var el = lst2.Where(x => x.Name.LocalName == "TargetFrameworkVersion").First();
+            return el;
         }
 
         public void SaveNewCsProj() {
@@ -157,7 +162,7 @@ namespace THelper {
                 MyWorkWithFile.SaveXDocument(doc.RootDocument, doc.csProjFileName);
             }
         }
-
-
     }
+
+
 }

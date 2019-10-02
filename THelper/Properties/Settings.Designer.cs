@@ -85,7 +85,7 @@ namespace THelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4.5.2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("v4.5.2")]
         public string FrameworkVersion {
             get {
                 return ((string)(this["FrameworkVersion"]));

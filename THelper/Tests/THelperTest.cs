@@ -25,7 +25,7 @@ namespace THelper {
             var proc = new CSProjProcessor(new List<string>(), null);
 
             //act
-            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "2.0");
+            var res = proc.GetIsFirstVersionGreaterOrEqual("v4.5.2", "v2.0");
             //assert
             Assert.AreEqual(true, res);
         }
@@ -36,7 +36,7 @@ namespace THelper {
             var proc = new CSProjProcessor(new List<string>(), null);
 
             //act
-            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.5.3");
+            var res = proc.GetIsFirstVersionGreaterOrEqual("v4.5.2", "v4.5.3");
             //assert
             Assert.AreEqual(false, res);
         }
@@ -47,7 +47,7 @@ namespace THelper {
             var proc = new CSProjProcessor(new List<string>(), null);
 
             //act
-            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.6.1");
+            var res = proc.GetIsFirstVersionGreaterOrEqual("v4.5.2", "v4.6.1");
             //assert
             Assert.AreEqual(false, res);
         }
@@ -58,7 +58,7 @@ namespace THelper {
             var proc = new CSProjProcessor(new List<string>(), null);
 
             //act
-            var res = proc.GetIsFirstVersionGreaterOrEqual( "2.0", "4.5.2");
+            var res = proc.GetIsFirstVersionGreaterOrEqual( "v2.0", "v4.5.2");
             //assert
             Assert.AreEqual(false, res);
         }
@@ -69,7 +69,7 @@ namespace THelper {
             var proc = new CSProjProcessor(new List<string>(), null);
 
             //act
-            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.5.2");
+            var res = proc.GetIsFirstVersionGreaterOrEqual("v4.5.2", "v4.5.2");
             //assert
             Assert.AreEqual(true, res);
         }
@@ -80,7 +80,7 @@ namespace THelper {
             var proc = new CSProjProcessor(new List<string>(), null);
 
             //act
-            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5", "4.5.2");
+            var res = proc.GetIsFirstVersionGreaterOrEqual("v4.5", "v4.5.2");
             //assert
             Assert.AreEqual(false, res);
         }
@@ -91,7 +91,7 @@ namespace THelper {
             var proc = new CSProjProcessor(new List<string>(), null);
 
             //act
-            var res = proc.GetIsFirstVersionGreaterOrEqual("4.5.2", "4.5");
+            var res = proc.GetIsFirstVersionGreaterOrEqual("v4.5.2", "v4.5");
             //assert
             Assert.AreEqual(true, res);
         }
@@ -104,8 +104,8 @@ public void FindTargetFramework_Test() {
             //act
             var res = proc.FindTargetFramework(dxDoc);
             //assert
-            var desiredResult = new Tuple<string, string>("<TargetFrameworkVersion>v2.0</TargetFrameworkVersion>", "2.0");
-            Assert.AreEqual(desiredResult, res);
+            
+            Assert.AreEqual("v2.0", res.Value);
         }
         [Test]
         public void CSProjProcessor() {
