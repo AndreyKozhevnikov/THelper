@@ -387,25 +387,19 @@ public void FindTargetFramework_Test() {
         [Test]
         public void CorrectConnectionStringTest() {
             //arrange
-            string st = Properties.Resources.AppWrong;
+            XDocument doc =XDocument.Parse(Properties.Resources.AppWrong);
             var proc = new ProjectProcessor(null);
             //act
-            var newSt = proc.CorrectConnectionString(st, "dxT598706");
+            proc.CorrectConnectionString(doc, "dxT598706");
+            var stringBuild = new StringBuilder();
+            var writer = new StringWriter(stringBuild);
+            doc.Save(writer);
+            var st = stringBuild.ToString();
+            var st2 = doc.Declaration.ToString() +Environment.NewLine+ doc.ToString();
             //assert
-            Assert.AreEqual(Properties.Resources.AppRight, newSt);
+            Assert.AreEqual(Properties.Resources.AppRight, st2);
         }
 
-        [Test]
-        public void CorrectConnectionStringTestWithout() {
-            //arrange
-            string st = "config without connection string";
-            var proc = new ProjectProcessor(null);
-            //act
-            //assert
-            Assert.DoesNotThrow(() => proc.CorrectConnectionString(st, "dxT598706"));
-
-            // Assert.AreEqual(Properties.Resources.AppRight, newSt);
-        }
 
         [Test]
         public void GetTicketNameFromSlnPathTest() {

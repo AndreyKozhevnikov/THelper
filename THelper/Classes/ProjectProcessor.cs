@@ -462,19 +462,26 @@ namespace THelper {
         }
 
        
-        public string CorrectConnectionString(string configText, string dbName) {
-            configText = configText.Replace("\t", "  ");
-            configText = configText.Replace("\r\n", "\n");
-            Regex connectionStringRX = new Regex(@"(?<!<!--\n    )(?<!<!--)<add name=""ConnectionString"".*\/>(?!\n +-->)(?!\n +\w)");
-            string oldConnectionString = connectionStringRX.Match(configText).Value;
-            if(string.IsNullOrEmpty(oldConnectionString)) {
-                return configText;
+        public void CorrectConnectionString(XDocument xDocument, string dbName) {
+            var el = xDocument.Root;
+            var el2 = xDocument.Root.Elements();
+            var configNode = xDocument.Root.Elements().Where(x => x.Name.LocalName == "connectionStrings").First();
+            var configs = configNode.Elements();
+            var nameXName = XName.Get("name", configNode.Name.Namespace.NamespaceName);
+            var oldConfig = configs.Where(x => x.Attribute(nameXName).Value== "ConnectionString").FirstOrDefault();
+            if(oldConfig != null) {
+                oldConfig.Attribute(nameXName).Value = "xOldConnectionString";
             }
-            string newConnectionString = string.Format(@"<add name=""ConnectionString"" connectionString=""Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr"" />", dbName);
-            string commentedOldConnectionString = "<!--" + oldConnectionString + "-->" + "\n";
-            string resultConnections = commentedOldConnectionString + "    " + newConnectionString;
-            configText = configText.Replace(oldConnectionString, resultConnections);
-            return configText;
+            
+            XName addXName = XName.Get("add", configNode.Name.Namespace.NamespaceName);
+            XElement newConfigElement = new XElement(addXName);
+            XAttribute connNameAttr = new XAttribute(nameXName, "ConnectionString");
+            newConfigElement.Add(connNameAttr);
+            XName connStringXName= XName.Get("connectionString", configNode.Name.Namespace.NamespaceName);
+            string newConnectionString= string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr", dbName);
+            XAttribute connAttr = new XAttribute(connStringXName, newConnectionString);
+            newConfigElement.Add(connAttr);
+            configNode.Add(newConfigElement);
         }
         public string GetTicketNameFromSlnPath(string slnPath) {
             Regex ticketRegex = new Regex(@"T\d{6}");
@@ -491,9 +498,9 @@ namespace THelper {
             configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "web.config"));
             string dbName = GetTicketNameFromSlnPath(slnPath);
             foreach(string configFile in configFiles) {
-                string configText = MyFileWorker.StreamReaderReadToEnd(configFile);
-                configText = CorrectConnectionString(configText, dbName);
-                MyFileWorker.StreamWriterWriteLine(configFile, configText);
+                var configXML = MyFileWorker.LoadXDocument(configFile);
+                CorrectConnectionString(configXML, dbName);
+                MyFileWorker.SaveXDocument(configXML, configFile);
             }
         }
 
