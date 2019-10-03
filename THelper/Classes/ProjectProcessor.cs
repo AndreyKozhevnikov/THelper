@@ -194,7 +194,7 @@ namespace THelper {
                     var fi = new FileInfo(candidate);
                     bool flag = false;
                     foreach(var nameEx in namesToEx) {
-                        if(fi.Name == nameEx) {
+                        if(fi.Name.Contains(nameEx)) {
                             flag = true;
                             break;
                         }

@@ -385,6 +385,23 @@ public void FindTargetFramework_Test() {
         }
 
         [Test]
+        public void GetUnexpectedFiles_2_Test() {
+            //arrange
+            var proc = new ProjectProcessor(null);
+            var moqFile = new Mock<IFileWorker>();
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(), "*.bak", It.IsAny<SearchOption>())).Returns(new string[] { @"C:\mybak.bak",@"C:\mybak.csproj.bak" });
+            moqFile.Setup(x => x.EnumerateFiles(It.IsAny<string>(), "*.png", It.IsAny<SearchOption>())).Returns(new string[] { @"C:\watch.png", @"C:\Logo.png", @"C:\test.png", @"C:\ExpressAppLogo.png" });
+            proc.MyFileWorker = moqFile.Object;
+            proc.filesToDetect = Properties.Settings.Default.FilesToDetect;
+            proc.namesToExclude = Properties.Settings.Default.NamesToExclude;
+            //act
+            var di = new DirectoryInfo(@"C:\");
+            var lst = proc.GetUnexpectedFiles(di);
+            //assert
+            Assert.AreEqual(3, lst.Count);
+        }
+
+        [Test]
         public void CorrectConnectionStringTest() {
             //arrange
             XDocument doc =XDocument.Parse(Properties.Resources.AppWrong);

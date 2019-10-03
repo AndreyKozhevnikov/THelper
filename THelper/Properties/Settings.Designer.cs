@@ -61,7 +61,7 @@ namespace THelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Logo.png")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Logo.png;csproj.bak;ExpressAppLogo.png")]
         public string NamesToExclude {
             get {
                 return ((string)(this["NamesToExclude"]));

@@ -15,7 +15,7 @@
       <Value Profile="(Default)">191</Value>
     </Setting>
     <Setting Name="NamesToExclude" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Logo.png</Value>
+      <Value Profile="(Default)">Logo.png;csproj.bak;ExpressAppLogo.png</Value>
     </Setting>
     <Setting Name="FilesToDetect" Type="System.String" Scope="User">
       <Value Profile="(Default)">doc;docx;pdf;jpg;png;swf;gif;bak;mp4</Value>
