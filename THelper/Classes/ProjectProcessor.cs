@@ -21,6 +21,7 @@ namespace THelper {
         string archiveFilePath;
         List<string> csPaths;
         string slnPath;
+        string gitBatchFile = null;
         Version currentInstalledMajor;
         Version currentProjectVersion;
         public List<Version> installedVersions;
@@ -84,9 +85,9 @@ namespace THelper {
                 solutionFolderName = Path.Combine(newFolderName, "CS");
                 solutionFolderInfo = MyFileWorker.CreateDirectory(solutionFolderName);
             }
-            var vsDirectories = MyFileWorker.DirectoryGetDirectories(solutionFolderInfo,".vs",SearchOption.AllDirectories);
-            if(vsDirectories.Count()> 0){
-                MyFileWorker.DirectoryDelete(vsDirectories[0].FullName,true);
+            var vsDirectories = MyFileWorker.DirectoryGetDirectories(solutionFolderInfo, ".vs", SearchOption.AllDirectories);
+            if(vsDirectories.Count() > 0) {
+                MyFileWorker.DirectoryDelete(vsDirectories[0].FullName, true);
             }
         }
         string archiveFileName;
@@ -219,10 +220,9 @@ namespace THelper {
             GetInstalledVersions();
             GetProjectVersion();
             isMainMajor = currentProjectVersion.Major == mainMajorLastVersion.Major;
-            if(isExample){
+            if(isExample) {
                 MessagesList.Add(ConverterMessages.OpenSolution);
-            }
-            else {
+            } else {
                 if(currentProjectVersion.CompareTo(Version.Zero) == 0) {
                     MessagesList.Add(ConverterMessages.OpenSolution);
                 } else {
@@ -385,12 +385,22 @@ namespace THelper {
             return value;
         }
 
+        void CopyBatchFiles() {
+            var dropBoxPath = Properties.Settings.Default.DropboxPath;
+            var slnFolder = Path.GetDirectoryName(slnPath);
+            if(slnFolder != null) {
+                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\delbinobj.bat"), Path.Combine(slnFolder, "delbinobj.bat"));
+                gitBatchFile = Path.Combine(slnFolder, "createGit.bat");
+                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\createGit.bat"), gitBatchFile);
+                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\.gitignore"), Path.Combine(slnFolder, ".gitignore"));
+            }
+        }
         private void ProcessProject(ConverterMessages message) {//12
             if(message == ConverterMessages.OpenFolder) {
                 OpenFolder();
                 return;
             }
-
+            CopyBatchFiles();
             if(isXafSolution) {
                 MakeApplicationProjectFirst();
                 CorrectConnectionStringsInConfigFiles();
@@ -461,24 +471,24 @@ namespace THelper {
 
         }
 
-       
+
         public void CorrectConnectionString(XDocument xDocument, string dbName) {
             var el = xDocument.Root;
             var el2 = xDocument.Root.Elements();
             var configNode = xDocument.Root.Elements().Where(x => x.Name.LocalName == "connectionStrings").First();
             var configs = configNode.Elements();
             var nameXName = XName.Get("name", configNode.Name.Namespace.NamespaceName);
-            var oldConfig = configs.Where(x => x.Attribute(nameXName).Value== "ConnectionString").FirstOrDefault();
+            var oldConfig = configs.Where(x => x.Attribute(nameXName).Value == "ConnectionString").FirstOrDefault();
             if(oldConfig != null) {
                 oldConfig.Attribute(nameXName).Value = "xOldConnectionString";
             }
-            
+
             XName addXName = XName.Get("add", configNode.Name.Namespace.NamespaceName);
             XElement newConfigElement = new XElement(addXName);
             XAttribute connNameAttr = new XAttribute(nameXName, "ConnectionString");
             newConfigElement.Add(connNameAttr);
-            XName connStringXName= XName.Get("connectionString", configNode.Name.Namespace.NamespaceName);
-            string newConnectionString= string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr", dbName);
+            XName connStringXName = XName.Get("connectionString", configNode.Name.Namespace.NamespaceName);
+            string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr", dbName);
             XAttribute connAttr = new XAttribute(connStringXName, newConnectionString);
             newConfigElement.Add(connAttr);
             configNode.Add(newConfigElement);
@@ -552,44 +562,17 @@ namespace THelper {
             psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"{2}\"", solutionFolderName, versionConverterFormat, v.Path);
             MyFileWorker.ProcessStart(psi.FileName, psi.Arguments);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private void OpenFolder() { //tt
             MyFileWorker.OpenFolder(solutionFolderName);
         }
         private void OpenSolution() {//tt
-            if(slnPath != null)
+            if(slnPath != null) {
                 MyFileWorker.ProcessStart(slnPath);
-            else
+            } else {
                 MyFileWorker.ProcessStart(csPaths[0]);
+            }
+            MyFileWorker.ProcessStart(gitBatchFile);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     public class VersionComparer : IComparer<string> {

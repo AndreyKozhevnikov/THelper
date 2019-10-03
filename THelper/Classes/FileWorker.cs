@@ -30,6 +30,7 @@ namespace THelper {
         string[] DirectoryGetFiles(string path, string pattern);
         DirectoryInfo[] DirectoryGetDirectories(DirectoryInfo solutionFolderInfo, string v, SearchOption allDirectories);
         void DirectoryDelete(string fullName, bool v);
+        void FileCopy(string source, string destination);
     }
 
     public class FileWorker : IFileWorker {
@@ -147,6 +148,10 @@ namespace THelper {
 
         public void DirectoryDelete(string fullName, bool v) {
             Directory.Delete(fullName, v);
+        }
+
+        public void FileCopy(string source, string destination) {
+            File.Copy(source, destination);
         }
     }
 }

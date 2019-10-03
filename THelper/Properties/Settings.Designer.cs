@@ -94,5 +94,17 @@ namespace THelper.Properties {
                 this["FrameworkVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Dropbox\\")]
+        public string DropboxPath {
+            get {
+                return ((string)(this["DropboxPath"]));
+            }
+            set {
+                this["DropboxPath"] = value;
+            }
+        }
     }
 }

@@ -23,5 +23,8 @@
     <Setting Name="FrameworkVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)">v4.5.2</Value>
     </Setting>
+    <Setting Name="DropboxPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Dropbox\</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
