@@ -407,7 +407,7 @@ namespace THelper {
             }
 
             csProjProcessor.DisableUseVSHostingProcess();
-
+            csProjProcessor.AddImagesLibraries();
 
             if(isExample) {
                 if(isMainMajor) {
