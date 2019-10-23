@@ -475,7 +475,10 @@ namespace THelper {
         public void CorrectConnectionString(XDocument xDocument, string dbName) {
             var el = xDocument.Root;
             var el2 = xDocument.Root.Elements();
-            var configNode = xDocument.Root.Elements().Where(x => x.Name.LocalName == "connectionStrings").First();
+            var configNode = xDocument.Root.Elements().Where(x => x.Name.LocalName == "connectionStrings").FirstOrDefault();
+            if(configNode == null) {
+                return;
+            }
             var configs = configNode.Elements();
             var nameXName = XName.Get("name", configNode.Name.Namespace.NamespaceName);
             var oldConfig = configs.Where(x => x.Attribute(nameXName).Value == "ConnectionString").FirstOrDefault();
