@@ -145,8 +145,8 @@ namespace THelper {
                 if(IsModuleProject(doc.csProjFileName)) {
                     continue;
                 }
-                var itemGroups = doc.RootDocument.Elements().Elements().Where(x => x.Name == "ItemGroup");
-                var referencesGroup = itemGroups.Where(x => x.Elements().Where(y => y.Name == "Reference").Count() > 0).First();
+                var itemGroups = doc.RootDocument.Elements().Elements().Where(x => x.Name.LocalName == "ItemGroup");
+                var referencesGroup = itemGroups.Where(x => x.Elements().Where(y => y.Name.LocalName == "Reference").Count() > 0).First();
                 if(referencesGroup.Elements().Where(x => x.Attribute("Include").Value.Contains("DevExpress.Images")).Count() > 0) {
                     continue;
                 }
