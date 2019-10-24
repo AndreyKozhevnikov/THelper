@@ -134,10 +134,15 @@ namespace THelper {
                 }
             }
         }
-
+        public bool IsModuleProject(string csProjName) {
+            var fileName = Path.GetFileName(csProjName);
+            if(fileName.Contains("Module"))
+                return true;
+            return false;
+        }
         public void AddImagesLibraries() {
             foreach (var doc in RootDocuments) {
-                if(doc.csProjFileName.Contains("Module")) {
+                if(IsModuleProject(doc.csProjFileName)) {
                     return;
                 }
                 var itemGroups = doc.RootDocument.Elements().Elements().Where(x => x.Name == "ItemGroup");

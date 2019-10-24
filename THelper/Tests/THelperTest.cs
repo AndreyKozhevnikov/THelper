@@ -429,6 +429,20 @@ namespace THelper {
             //assert
             moqFile.Verify(x => x.SaveXDocument(It.IsAny<XDocument>(), st), Times.AtLeastOnce);
         }
+
+        [Test]
+        public void IsModuleProject_0() {
+            //arrange
+            var csProjWin = @"c:\temp\Module\OfficeApplication.Web\OfficeApplication.Win\OfficeApplication.Win.csproj";
+            var csProjModule = @"c:\temp\OfficeApplication.Web\OfficeApplication.Module.Win\OfficeApplication.Module.Win.csproj";
+            CSProjProcessor proc = new CSProjProcessor(new List<string>(),new FileWorker());
+            //act
+            var bProjWin = proc.IsModuleProject(csProjWin);
+            var bProjModule = proc.IsModuleProject(csProjModule);
+            //assert
+            Assert.AreEqual(false, bProjWin);
+            Assert.AreEqual(true, bProjModule);
+        }
     }
 
     [TestFixture]
