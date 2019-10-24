@@ -305,6 +305,50 @@ namespace THelper {
         }
 
         [Test]
+        public void AddImagesLibraries_NotExist_SeveralProjs() {
+            string st = @"
+<Project>
+<PropertyGroup>
+</PropertyGroup>
+ <ItemGroup>
+    <Reference Include=""DevExpress.Data.v19.1"">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+<ItemGroup>
+ <Content Include=""Default.aspx"" />
+</ItemGroup>
+</Project>
+";
+            string st2 = @"
+<Project>
+<PropertyGroup>
+</PropertyGroup>
+ <ItemGroup>
+    <Reference Include=""DevExpress.Data.v19.1"">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+<ItemGroup>
+ <Content Include=""Default.aspx"" />
+</ItemGroup>
+</Project>
+";
+            var moqFile = new Mock<IFileWorker>();
+            moqFile.Setup(x => x.LoadXDocument("1.csproj")).Returns(XDocument.Parse(st));
+            moqFile.Setup(x => x.LoadXDocument("Module2.csproj")).Returns(XDocument.Parse(st2));
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "Module2.csproj","1.csproj"  }, moqFile.Object);
+            //act
+            proc.AddImagesLibraries();
+            //assert
+            var countImages = proc.RootDocuments[1].RootElements.SelectMany(x => x.Elements()).SelectMany(x => x.Attributes()).Select(x => x.Value).Where(y => y == "DevExpress.Images.v19.1").Count();
+            Assert.AreEqual(1, countImages);
+        }
+
+
+        [Test]
         public void AddImagesLibraries_VersionCheck() {
             string st = @"
 <Project>

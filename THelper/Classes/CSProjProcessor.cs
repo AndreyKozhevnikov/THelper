@@ -143,12 +143,12 @@ namespace THelper {
         public void AddImagesLibraries() {
             foreach (var doc in RootDocuments) {
                 if(IsModuleProject(doc.csProjFileName)) {
-                    return;
+                    continue;
                 }
                 var itemGroups = doc.RootDocument.Elements().Elements().Where(x => x.Name == "ItemGroup");
                 var referencesGroup = itemGroups.Where(x => x.Elements().Where(y => y.Name == "Reference").Count() > 0).First();
                 if(referencesGroup.Elements().Where(x => x.Attribute("Include").Value.Contains("DevExpress.Images")).Count() > 0) {
-                    return;
+                    continue;
                 }
                 var referenceElement = referencesGroup.Elements().First();
                 var refNameString = referenceElement.Attribute("Include").Value;
