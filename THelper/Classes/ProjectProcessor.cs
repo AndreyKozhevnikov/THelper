@@ -389,7 +389,10 @@ namespace THelper {
             var dropBoxPath = Properties.Settings.Default.DropboxPath;
             var slnFolder = Path.GetDirectoryName(slnPath);
             if(slnFolder != null) {
-                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\delbinobj.bat"), Path.Combine(slnFolder, "delbinobj.bat"));
+                var delFileName = Path.Combine(slnFolder, "delbinobj.bat");
+                if(MyFileWorker.FileExist(delFileName))
+                    return;
+                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\delbinobj.bat"), delFileName);
                 gitBatchFile = Path.Combine(slnFolder, "createGit.bat");
                 MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\createGit.bat"), gitBatchFile);
                 MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\.gitignore"), Path.Combine(slnFolder, ".gitignore"));
@@ -408,13 +411,13 @@ namespace THelper {
 
             csProjProcessor.DisableUseVSHostingProcess();
             csProjProcessor.AddImagesLibraries();
-
+            csProjProcessor.CorrectFrameworkVersionIfNeeded();
             if(isExample) {
                 if(isMainMajor) {
                     csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
                     csProjProcessor.SaveNewCsProj();
                 } else {
-                    csProjProcessor.CorrectFrameworkVersionIfNeeded();
+
                     csProjProcessor.SaveNewCsProj();
                     ConvertProjectWithDxConverter(mainMajorLastVersion);
                 }
@@ -574,7 +577,9 @@ namespace THelper {
             } else {
                 MyFileWorker.ProcessStart(csPaths[0]);
             }
-            MyFileWorker.ProcessStart(gitBatchFile);
+            if(gitBatchFile != null) {
+                MyFileWorker.ProcessStart(gitBatchFile);
+            }
         }
     }
 

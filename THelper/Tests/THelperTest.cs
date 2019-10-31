@@ -2375,6 +2375,7 @@ namespace THelper {
         Mock<ICSProjProcessor> CreateICSProjProcMock() {
             var mock = new Mock<ICSProjProcessor>(MockBehavior.Strict);
             mock.Setup(x => x.AddImagesLibraries());
+            mock.Setup(x => x.CorrectFrameworkVersionIfNeeded());
             return mock;
         }
         [Test]
