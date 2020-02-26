@@ -570,7 +570,7 @@ namespace THelper {
             var newSt = proc.GetTicketNameFromSlnPath(st);
             var newStWithout = proc.GetTicketNameFromSlnPath(stWithoutNumber);
             //assert
-            Assert.AreEqual("dxT598825", newSt);
+            Assert.IsTrue(newSt.Contains("dxT598825"));
             Assert.IsTrue(newStWithout.Contains("dx"));
         }
     }

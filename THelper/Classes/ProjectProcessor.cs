@@ -502,11 +502,17 @@ namespace THelper {
         public string GetTicketNameFromSlnPath(string slnPath) {
             Regex ticketRegex = new Regex(@"T\d{6}");
             Match ticketMatch = ticketRegex.Match(slnPath);
+            string folderNumber;
             if(ticketMatch.Success) {
-                return "dx" + ticketMatch.Value;
+                folderNumber = "dx" + ticketMatch.Value;
             } else {
-                return "dxSolution" + new Random().Next(12, 1234);
+                folderNumber = "dxSolution" + new Random().Next(12, 1234);
             }
+            var st = DateTime.Now.Day;
+            var rnd = new Random(DateTime.Now.Millisecond);
+            var rndValue = rnd.Next(1, 99);
+            var dbName = string.Format("{0}-{1}-{2}", st, rndValue, folderNumber);
+            return dbName;
         }
         private void CorrectConnectionStringsInConfigFiles() {
             List<string> configFiles = new List<string>();
