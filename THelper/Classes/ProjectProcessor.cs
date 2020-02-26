@@ -483,7 +483,9 @@ namespace THelper {
                 return;
             }
             var configs = configNode.Elements();
-            var nameXName = XName.Get("name", configNode.Name.Namespace.NamespaceName);
+            // var nameXName = XName.Get("name", configNode.Name.Namespace.NamespaceName); // problem config file here e244
+            var nameXName = "name";
+            //  var oldConfig = configs.Where(x => x.Attribute(nameXName)!=null && x.Attribute(nameXName).Value == "ConnectionString").FirstOrDefault();
             var oldConfig = configs.Where(x => x.Attribute(nameXName).Value == "ConnectionString").FirstOrDefault();
             if(oldConfig != null) {
                 oldConfig.Attribute(nameXName).Value = "xOldConnectionString";
