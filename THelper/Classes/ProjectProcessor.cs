@@ -573,7 +573,7 @@ namespace THelper {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = Properties.Settings.Default.DXConverterPath;
             string versionConverterFormat = v.ToString(true);
-            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"{2}\"", solutionFolderName, versionConverterFormat, v.Path);
+            psi.Arguments = string.Format("\"{0}\" \"{1}\" \"false\" \"{2}\" \"true\"", solutionFolderName, versionConverterFormat, v.Path);
             MyFileWorker.ProcessStart(psi.FileName, psi.Arguments);
         }
         private void OpenFolder() { //tt
