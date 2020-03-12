@@ -567,8 +567,8 @@ namespace THelper {
             string stWithoutNumber = @"c:\!Tickets\SupportTickets\StateCodesPropertyEditor.vb";
             var proc = new ProjectProcessor(null);
             //act
-            var newSt = proc.GetTicketNameFromSlnPath(st);
-            var newStWithout = proc.GetTicketNameFromSlnPath(stWithoutNumber);
+            var newSt = proc.GetDBNameFromSlnPath(st);
+            var newStWithout = proc.GetDBNameFromSlnPath(stWithoutNumber);
             //assert
             Assert.IsTrue(newSt.Contains("dxT598825"));
             Assert.IsTrue(newStWithout.Contains("dx"));

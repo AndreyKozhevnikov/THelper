@@ -501,7 +501,7 @@ namespace THelper {
             newConfigElement.Add(connAttr);
             configNode.Add(newConfigElement);
         }
-        public string GetTicketNameFromSlnPath(string slnPath) {
+        public string GetDBNameFromSlnPath(string slnPath) {
             Regex ticketRegex = new Regex(@"T\d{6}");
             Match ticketMatch = ticketRegex.Match(slnPath);
             string folderNumber;
@@ -511,16 +511,15 @@ namespace THelper {
                 folderNumber = "dxSolution" + new Random().Next(12, 1234);
             }
             var st = DateTime.Now.Day;
-            var rnd = new Random(DateTime.Now.Millisecond);
-            var rndValue = rnd.Next(1, 99);
-            var dbName = string.Format("{0}-{1}-{2}", st, rndValue, folderNumber);
+            var hrValue = DateTime.Now.Hour;
+            var dbName = string.Format("d{0}-{1}-{2}", st, hrValue, folderNumber);
             return dbName;
         }
         private void CorrectConnectionStringsInConfigFiles() {
             List<string> configFiles = new List<string>();
             configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "app.config"));
             configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "web.config"));
-            string dbName = GetTicketNameFromSlnPath(slnPath);
+            string dbName = GetDBNameFromSlnPath(slnPath);
             foreach(string configFile in configFiles) {
                 var configXML = MyFileWorker.LoadXDocument(configFile);
                 CorrectConnectionString(configXML, dbName);
