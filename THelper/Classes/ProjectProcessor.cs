@@ -510,9 +510,7 @@ namespace THelper {
             } else {
                 folderNumber = "dxSolution" + new Random().Next(12, 1234);
             }
-            var st = DateTime.Now.Day;
-            var hrValue = DateTime.Now.Hour;
-            var dbName = string.Format("d{0}-{1}-{2}", st, hrValue, folderNumber);
+            var dbName = string.Format("d{0}-{1}", DateTime.Today.DayOfYear, folderNumber);
             return dbName;
         }
         private void CorrectConnectionStringsInConfigFiles() {
