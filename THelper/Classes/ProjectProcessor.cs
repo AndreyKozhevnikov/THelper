@@ -395,7 +395,11 @@ namespace THelper {
                 MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\delbinobj.bat"), delFileName);
                 gitBatchFile = Path.Combine(slnFolder, "createGit.bat");
                 MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\createGit.bat"), gitBatchFile);
-                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\.gitignoreToCopy"), Path.Combine(slnFolder, ".gitignore"));
+                var gitIgnoreDestination = Path.Combine(slnFolder, ".gitignore");
+                if(File.Exists(gitIgnoreDestination)) {
+                    File.Delete(gitIgnoreDestination);
+                }
+                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\.gitignoreToCopy"), gitIgnoreDestination);
             }
         }
         private void ProcessProject(ConverterMessages message) {//12
