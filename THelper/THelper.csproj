@@ -87,7 +87,7 @@
     <Compile Include="Classes\DXProjDocument.cs" />
     <Compile Include="Classes\IMessager.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Properties\Resources1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="rar.ico" />
+    <None Include="Resources\versions.xml" />
     <None Include="Resources\WrongSln.txt" />
     <None Include="Resources\AppRight.config" />
     <None Include="Resources\AppWrong.config" />

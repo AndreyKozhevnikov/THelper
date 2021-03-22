@@ -573,6 +573,34 @@ namespace THelper {
             Assert.IsTrue(newSt.Contains("dxT598825"));
             Assert.IsTrue(newStWithout.Contains("dx"));
         }
+
+        [Test]
+        public void FindLastVersionOfMajor() {
+            //arrange
+            var proc = new ProjectProcessor(null);
+            var xDoc = XDocument.Parse(Properties.Resources.versions);
+            var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
+            proc.AllVersionsList = allVersionElement.Elements().ToList();
+            //act
+            var vers = proc.FindLastVersionOfMajor(191);
+            //assert
+            Assert.AreEqual("191.12.0", vers.ToString());
+        }
+
+        [Test]
+        public void FindLastVersionOfMajor_1() {
+            //arrange
+            var proc = new ProjectProcessor(null);
+            var xDoc = XDocument.Parse(Properties.Resources.versions);
+            var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
+            proc.AllVersionsList = allVersionElement.Elements().ToList();
+            //act
+            var vers = proc.FindLastVersionOfMajor(202);
+
+            //assert
+            Assert.AreEqual("202.5.0", vers.ToString());
+
+        }
     }
 
     [TestFixture]

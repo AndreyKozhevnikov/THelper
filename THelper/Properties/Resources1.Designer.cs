@@ -19,7 +19,7 @@ namespace THelper.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -64,14 +64,14 @@ namespace THelper.Properties {
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;configuration&gt;
         ///  &lt;appSettings&gt;
-        ///    &lt;add key=&quot;Modules&quot; value=&quot;&quot;/&gt;
-        ///    &lt;add key=&quot;NewVersionServer&quot; value=&quot;&quot;/&gt;
-        ///    &lt;add key=&quot;EnableDiagnosticActions&quot; value=&quot;False&quot;/&gt;
+        ///    &lt;add key=&quot;Modules&quot; value=&quot;&quot; /&gt;
+        ///    &lt;add key=&quot;NewVersionServer&quot; value=&quot;&quot; /&gt;
+        ///    &lt;add key=&quot;EnableDiagnosticActions&quot; value=&quot;False&quot; /&gt;
         ///    &lt;!--
         ///    Use the one of predefined values: None, ApplicationFolder, CurrentUserApplicationDataFolder. The default value is ApplicationFolder.
         ///    &lt;add key=&quot;TraceLogLocation&quot; value=&quot;CurrentUserApplicationDataFolder&quot;/&gt;
         ///    &lt;add key=&quot;UserModelDiffsLocation&quot; value=&quot;CurrentUserApplicationDataFolder&quot;/&gt;
-        ///    &lt;add key=&quot;Languages&quot; [rest of string was truncated]&quot;;.
+        ///    &lt;add ke [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AppRight {
             get {
@@ -147,6 +147,30 @@ namespace THelper.Properties {
         internal static string RightSln {
             get {
                 return ResourceManager.GetString("RightSln", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;Versions&gt;
+        ///  &lt;AllVersions&gt;
+        ///    &lt;Version Version=&quot;21.1.2005&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.2.2005&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.2.5&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.2.4&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.2.3&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.2.2&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.1.2005&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.1.10&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.1.9&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.1.8&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.1.7&quot; /&gt;
+        ///    &lt;Version Version=&quot;20.1.6&quot; /&gt;
+        ///    &lt;Version Version=&quot;20. [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string versions {
+            get {
+                return ResourceManager.GetString("versions", resourceCulture);
             }
         }
         

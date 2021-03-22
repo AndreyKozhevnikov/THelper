@@ -281,7 +281,7 @@ namespace THelper {
                 csProjProcessor = new CSProjProcessor(csPaths, MyFileWorker);
             return csProjProcessor;
         }
-        List<XElement> AllVersionsList;
+        public List<XElement> AllVersionsList;
         protected internal void GetAllVersions() {
             var xDoc = MyFileWorker.LoadXDocument(Properties.Settings.Default.FileWithVersionsPath);
             var allVersionElement = xDoc.Element("Versions").Element("AllVersions");
@@ -556,7 +556,7 @@ namespace THelper {
             MyFileWorker.StreamWriterWriteLine(slnPath, slnText);
         }
 
-        private Version FindLastVersionOfMajor(int major) {//15tt
+        public Version FindLastVersionOfMajor(int major) {//15tt
             var tmpRes = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).FirstOrDefault();
             string res = "";
             if(tmpRes != null)
