@@ -557,7 +557,7 @@ namespace THelper {
         }
 
         public Version FindLastVersionOfMajor(int major) {//15tt
-            var tmpRes = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString()).FirstOrDefault();
+            var tmpRes = AllVersionsList.Where(x => x.FirstAttribute.Value.Split('.')[0] + x.FirstAttribute.Value.Split('.')[1] == major.ToString() && x.FirstAttribute.Value.Split('.')[2].Length < 3).FirstOrDefault();
             string res = "";
             if(tmpRes != null)
                 res = tmpRes.FirstAttribute.Value;
