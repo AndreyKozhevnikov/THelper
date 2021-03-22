@@ -148,7 +148,15 @@ namespace THelper {
         }
 
         public void DirectoryDelete(string fullName, bool v) {
-            Directory.Delete(fullName, v);
+            try {
+                Directory.Delete(fullName, v);
+            }
+            catch(IOException) {
+                Directory.Delete(fullName, v);
+            }
+            catch(UnauthorizedAccessException) {
+                Directory.Delete(fullName, v);
+            }
         }
 
         public void FileCopy(string source, string destination) {
