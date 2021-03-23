@@ -88,6 +88,7 @@ namespace THelper {
             var vsDirectories = MyFileWorker.DirectoryGetDirectories(solutionFolderInfo, ".vs", SearchOption.AllDirectories);
             if(vsDirectories.Count() > 0) {
                 MyFileWorker.DirectoryDelete(vsDirectories[0].FullName, true);
+                Thread.Sleep(100);
             }
         }
         string archiveFileName;
