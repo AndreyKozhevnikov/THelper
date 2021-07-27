@@ -78,10 +78,12 @@ namespace THelper {
                 if(UseVSHostingProcess != null) {
                     UseVSHostingProcess.SetValue("False");
                 } else {
-                    var pGroup = doc.RootElements.Where(x => x.Name.LocalName == "PropertyGroup" && x.HasAttributes && x.FirstAttribute.Value.Contains("Debug")).First();
-                    XName xName = XName.Get("UseVSHostingProcess", pGroup.Name.Namespace.NamespaceName);
-                    XElement useVSElement = new XElement(xName, "False");
-                    pGroup.Add(useVSElement);
+                    var pGroup = doc.RootElements.Where(x => x.Name.LocalName == "PropertyGroup" && x.HasAttributes && x.FirstAttribute.Value.Contains("Debug")).FirstOrDefault();
+                    if(pGroup != null) {
+                        XName xName = XName.Get("UseVSHostingProcess", pGroup.Name.Namespace.NamespaceName);
+                        XElement useVSElement = new XElement(xName, "False");
+                        pGroup.Add(useVSElement);
+                    }
                 }
             }
         }
@@ -141,12 +143,15 @@ namespace THelper {
             return false;
         }
         public void AddImagesLibraries() {
-            foreach (var doc in RootDocuments) {
+            foreach(var doc in RootDocuments) {
                 if(IsModuleProject(doc.csProjFileName)) {
                     continue;
                 }
                 var itemGroups = doc.RootDocument.Elements().Elements().Where(x => x.Name.LocalName == "ItemGroup");
-                var referencesGroup = itemGroups.Where(x => x.Elements().Where(y => y.Name.LocalName == "Reference").Count() > 0).First();
+                var referencesGroup = itemGroups.Where(x => x.Elements().Where(y => y.Name.LocalName == "Reference").Count() > 0).FirstOrDefault();
+                if(referencesGroup == null) {
+                    return;
+                }
                 if(referencesGroup.Elements().Where(x => x.Attribute("Include").Value.Contains("DevExpress.Images")).Count() > 0) {
                     continue;
                 }
@@ -154,7 +159,7 @@ namespace THelper {
                 var refNameString = referenceElement.Attribute("Include").Value;
                 var version = refNameString.Substring(refNameString.Length - 6, 6);
                 var imageRefElement = new XElement(referenceElement);
-                imageRefElement.Attribute("Include").Value = "DevExpress.Images"+ version;
+                imageRefElement.Attribute("Include").Value = "DevExpress.Images" + version;
                 referencesGroup.Add(imageRefElement);
             }
         }
