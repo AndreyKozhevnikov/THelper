@@ -35,7 +35,7 @@ namespace THelper {
     }
 
     public class FileWorker : IFileWorker {
-        static string totalCmdPath = @"C:\Program Files (x86)\totalcmd\TOTALCMD64.EXE";
+        static string totalCmdPath = @"C:\Program Files\totalcmd\TOTALCMD64.EXE";
 
         public void DirectoryMove(string sourceDirName, string destDirName) {
             Directory.Move(sourceDirName, destDirName);
