@@ -573,6 +573,19 @@ namespace THelper {
             Assert.IsTrue(newSt.Contains("dxT598825"));
             Assert.IsTrue(newStWithout.Contains("dx"));
         }
+        [Test]
+        public void GetTicketNameFromSlnPathTest_2() {
+            //arrange
+            string st = @"c:\!Tickets\T1109690 - SQLException 'Constant expression\SupportTickets\StateCodesPropertyEditor.vb";
+            string stWithoutNumber = @"c:\!Tickets\SupportTickets\StateCodesPropertyEditor.vb";
+            var proc = new ProjectProcessor(null);
+            //act
+            var newSt = proc.GetDBNameFromSlnPath(st);
+            var newStWithout = proc.GetDBNameFromSlnPath(stWithoutNumber);
+            //assert
+            Assert.IsTrue(newSt.Contains("dxT1109690"));
+            Assert.IsTrue(newStWithout.Contains("dx"));
+        }
 
         [Test]
         public void FindLastVersionOfMajor() {

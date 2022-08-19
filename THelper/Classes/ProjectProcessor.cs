@@ -507,7 +507,7 @@ namespace THelper {
             configNode.Add(newConfigElement);
         }
         public string GetDBNameFromSlnPath(string slnPath) {
-            Regex ticketRegex = new Regex(@"T\d{6}");
+            Regex ticketRegex = new Regex(@"T\d{6,7}");
             Match ticketMatch = ticketRegex.Match(slnPath);
             string folderNumber;
             if(ticketMatch.Success) {
