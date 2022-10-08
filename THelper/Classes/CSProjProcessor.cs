@@ -56,17 +56,24 @@ namespace THelper {
         }
 
         public Version GetCurrentVersion() {
-            var references = RootDocuments[0].RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName == "Reference");
+            var references = RootDocuments[0].RootElements.Where(x => x.Name.LocalName == "ItemGroup" && x.Elements().Count() > 0 && x.Elements().First().Name.LocalName.Contains("Reference"));
             var dxlibraries = references.Elements().Where(x => x.Attribute("Include").Value.IndexOf("DevExpress", StringComparison.OrdinalIgnoreCase) >= 0);
             string _dxLibraryString = null;
             DXLibrariesCount = dxlibraries.Count();
             if(DXLibrariesCount > 0) {
-                var lstHasVersion = dxlibraries.Where(x => x.Attribute("Include").ToString().IndexOf("Version") > 0);
-                if(lstHasVersion.Count() > 0)
-                    _dxLibraryString = lstHasVersion.First().Attribute("Include").ToString();
-                else
-                    _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
-                Version v = new Version(_dxLibraryString, true);
+                Version v;
+                var lstHasVersionAttrubute = dxlibraries.Where(x => x.Attributes("Version").Count() > 0).ToList();
+                if(lstHasVersionAttrubute.Count > 0) {
+                    _dxLibraryString = lstHasVersionAttrubute.First().Attribute("Version").Value;
+                    v = new Version(_dxLibraryString, false);
+                } else {
+                    var lstHasVersion = dxlibraries.Where(x => x.Attribute("Include").ToString().IndexOf("Version") > 0);
+                    if(lstHasVersion.Count() > 0)
+                        _dxLibraryString = lstHasVersion.First().Attribute("Include").ToString();
+                    else
+                        _dxLibraryString = dxlibraries.First().Attribute("Include").ToString();
+                    v = new Version(_dxLibraryString, true);
+                }
                 return v;
             } else {
                 return Version.Zero;

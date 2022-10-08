@@ -167,6 +167,27 @@ namespace THelper {
             Assert.AreEqual(152, v.Major);
             Assert.AreEqual(5, v.Minor);
         }
+
+        [Test]
+        public void GetCurrentversion_PackageReference() {
+            //assert
+            string st = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            st = st + "<Project ToolsVersion=\"4.0\" DefaultTargets=\"Build\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">";
+            st = st + "  <ItemGroup>";
+            st = st + "    <PackageReference Include=\"DevExpress.ExpressApp\" Version=\"22.1.5\" />";
+            st = st + "  </ItemGroup>";
+            st = st + " </Project>";
+            var moqFile = new Mock<IFileWorker>();
+            moqFile.Setup(x => x.LoadXDocument(It.IsAny<string>())).Returns(XDocument.Parse(st));
+            CSProjProcessor proc = new CSProjProcessor(new List<string>() { "anystring" }, moqFile.Object);
+
+            //act
+            Version v = proc.GetCurrentVersion();
+
+            //assert
+            Assert.AreEqual(221, v.Major);
+            Assert.AreEqual(5, v.Minor);
+        }
         [Test]
         public void GetCurrentversion_notFirstLibrary() {
             //assert
