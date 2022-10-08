@@ -13,6 +13,7 @@ using Moq;
 using System.Xml.Linq;
 using System.Diagnostics;
 using THelper.Classes;
+using Newtonsoft.Json.Linq;
 
 namespace THelper {
 
@@ -559,6 +560,23 @@ namespace THelper {
             Assert.AreEqual(Properties.Resources.AppRight, st2);
         }
 
+        [Test]
+        public void CorrectConnectionStringJsonTest() {
+            //arrange
+            //var jsonString = File.ReadAllText(Properties.Resources.appWrong1);
+            var doc =(JObject) Newtonsoft.Json.JsonConvert.DeserializeObject(Properties.Resources.appWrong1);
+          //  XDocument doc = XDocument.Parse(Properties.Resources.AppWrong);
+            var proc = new ProjectProcessor(null);
+            //act
+            proc.CorrectConnectionString(doc, "dxT598706");
+           // var stringBuild = new StringBuilder();
+            //var writer = new StringWriter(stringBuild);
+            //doc.Save(writer);
+            //var st = stringBuild.ToString();
+            var st2 = doc.ToString();
+            //assert
+            Assert.AreEqual(Properties.Resources.appRight1, st2);
+        }
 
         [Test]
         public void GetTicketNameFromSlnPathTest() {

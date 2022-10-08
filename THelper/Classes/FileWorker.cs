@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +12,8 @@ using System.Xml.Linq;
 
 namespace THelper {
     public interface IFileWorker {
+        JObject LoadJObject(string jsonPath);
+        void SaveJObject(string path, JObject jObj);
         XDocument LoadXDocument(string projectPath);
         void SaveXDocument(XDocument projDocument, string projectPath);
         DirectoryInfo CreateDirectory(string _path);
@@ -165,6 +168,16 @@ namespace THelper {
 
         public bool FileExist(string path) {
             return File.Exists(path);
+        }
+
+        public JObject LoadJObject(string jsonPath) {
+            var jsonString = File.ReadAllText(jsonPath);
+            var jsonObject = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+            return (JObject)jsonObject;
+        }
+
+        public void SaveJObject( string path,JObject jObj) {
+            File.WriteAllText(path, jObj.ToString());
         }
     }
 }

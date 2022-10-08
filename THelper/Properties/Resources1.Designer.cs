@@ -19,7 +19,7 @@ namespace THelper.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -80,6 +80,23 @@ namespace THelper.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;ConnectionStrings&quot;: {
+        ///    &quot;EasyTestConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestXAFApplicationEasyTest&quot;,
+        ///    &quot;xOldConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestXAFApplication&quot;,
+        ///    &quot;ConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestXAFApplication&quot;
+        ///  },
+        ///  &quot;Logging&quot;: {
+        ///    &quot;LogLevel&quot;: {
+        ///      &quot;De [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string appRight1 {
+            get {
+                return ResourceManager.GetString("appRight1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;configuration&gt;
         ///  &lt;appSettings&gt;
@@ -95,6 +112,25 @@ namespace THelper.Properties {
         internal static string AppWrong {
             get {
                 return ResourceManager.GetString("AppWrong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///  &quot;ConnectionStrings&quot;: {
+        ///    &quot;ConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestXAFApplication&quot;,
+        ///    &quot;EasyTestConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestXAFApplicationEasyTest&quot;
+        ///  },
+        ///  &quot;Logging&quot;: {
+        ///    &quot;LogLevel&quot;: {
+        ///      &quot;Default&quot;: &quot;Information&quot;,
+        ///      &quot;Microsoft&quot;: &quot;Warning&quot;,
+        ///      &quot;Microsoft.Hosting.Lifetime&quot;: &quot;Information&quot;,
+        ///      &quot;DevExpress.ExpressApp&quot;: &quot;Inf [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string appWrong1 {
+            get {
+                return ResourceManager.GetString("appWrong1", resourceCulture);
             }
         }
         

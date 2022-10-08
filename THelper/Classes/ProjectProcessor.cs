@@ -12,6 +12,7 @@ using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Collections;
 using System.Threading;
+using Newtonsoft.Json.Linq;
 
 namespace THelper {
     public class ProjectProcessor {
@@ -478,7 +479,16 @@ namespace THelper {
             OpenSolution();
 
         }
+        public void CorrectConnectionString(JObject jsonObject, string dbName) {
 
+            var connStrings = jsonObject.SelectToken("ConnectionStrings") as JObject;
+            var oldConnectionString = connStrings["ConnectionString"];
+            var oldConnValue = ((JValue)oldConnectionString).Value;
+            connStrings.Property("ConnectionString").Remove();
+            connStrings.Add(new JProperty("xOldConnectionString", oldConnValue));
+            string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr", dbName);
+            connStrings.Add(new JProperty("ConnectionString", newConnectionString));
+        }
 
         public void CorrectConnectionString(XDocument xDocument, string dbName) {
             var el = xDocument.Root;
@@ -528,6 +538,15 @@ namespace THelper {
                 CorrectConnectionString(configXML, dbName);
                 MyFileWorker.SaveXDocument(configXML, configFile);
             }
+
+            var jsonConfigFiles = MyFileWorker.DirectoryGetFiles(solutionFolderName, "appsettings.json");
+            foreach(var jsonFile in jsonConfigFiles) {
+                var jsonObject = MyFileWorker.LoadJObject(jsonFile);
+                CorrectConnectionString(jsonObject, dbName);
+
+                MyFileWorker.SaveJObject(jsonFile, jsonObject);
+            }
+
         }
 
         public void MakeApplicationProjectFirst() {
