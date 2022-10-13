@@ -105,7 +105,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Classes\FileWorker.cs" />
-    <Compile Include="Tests\THelperTest.cs" />
+    <Compile Include="Tests\HeavyTests.cs" />
+    <Compile Include="Tests\ProjectProcessor_Test.cs" />
+    <Compile Include="Tests\CSProjProcessor_Tests.cs" />
+    <Compile Include="Tests\VersionComparer_Tests.cs" />
+    <Compile Include="Tests\Versions_Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -119,6 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="rar.ico" />
+    <None Include="Resources\AppSettingsWrong3Correct.txt" />
+    <None Include="Resources\AppSettingsWrong3.txt" />
+    <None Include="Resources\AppSettingsWrong2.txt" />
     <None Include="Resources\appRight.json" />
     <None Include="Resources\appWrong.json" />
     <None Include="Resources\versions.xml" />
