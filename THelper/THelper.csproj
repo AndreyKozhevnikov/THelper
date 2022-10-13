@@ -123,6 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="rar.ico" />
+    <None Include="Resources\AppConfigWrong3Correct.txt" />
+    <None Include="Resources\AppConfigWrong3.txt" />
+    <None Include="Resources\AppConfigWrong2.txt" />
     <None Include="Resources\AppSettingsWrong3Correct.txt" />
     <None Include="Resources\AppSettingsWrong3.txt" />
     <None Include="Resources\AppSettingsWrong2.txt" />

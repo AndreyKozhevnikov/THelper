@@ -1,0 +1,5 @@
+{
+  "connectionStrings": {
+    "Prod-JasonSQL2019STANDARDTimeZoneOffsetTest": "XpoProvider=MSSqlServer;data source=Prod-Jason\\SQL2019STANDARD;integrated security=SSPI;initial catalog=TimeZoneOffsetTest"
+  }
+}

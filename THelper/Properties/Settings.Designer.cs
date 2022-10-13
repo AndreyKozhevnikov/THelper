@@ -12,7 +12,7 @@ namespace THelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -29,33 +29,6 @@ namespace THelper.Properties {
         public string WinRarPath {
             get {
                 return ((string)(this["WinRarPath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\corp\\internal\\common\\4Kozhevnikov\\Deploy\\DXConverterDeploy\\DXConverter.exe")]
-        public string DXConverterPath {
-            get {
-                return ((string)(this["DXConverterPath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\corp\\internal\\common\\4Kozhevnikov\\Deploy\\DXConverterDeploy\\versions.xml")]
-        public string FileWithVersionsPath {
-            get {
-                return ((string)(this["FileWithVersionsPath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("202")]
-        public int LastReleasedVersion {
-            get {
-                return ((int)(this["LastReleasedVersion"]));
             }
         }
         
@@ -104,6 +77,33 @@ namespace THelper.Properties {
             }
             set {
                 this["DropboxPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("c:\\Dropbox\\Deploy\\DXConverterDeploy\\DXConverter.exe")]
+        public string DXConverterPath {
+            get {
+                return ((string)(this["DXConverterPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("c:\\Dropbox\\Deploy\\DXConverterDeploy\\versions.xml")]
+        public string FileWithVersionsPath {
+            get {
+                return ((string)(this["FileWithVersionsPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("221")]
+        public int LastReleasedVersion {
+            get {
+                return ((int)(this["LastReleasedVersion"]));
             }
         }
     }

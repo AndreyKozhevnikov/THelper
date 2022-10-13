@@ -66,7 +66,7 @@ namespace THelper {
         }
 
         [Test]
-        public void CorrectConnectionStringTest() {
+        public void CorrectConnectionStringTestAppConfig() {
             //arrange
             XDocument doc = XDocument.Parse(Properties.Resources.AppWrong);
             var proc = new ProjectProcessor(null);
@@ -79,6 +79,33 @@ namespace THelper {
             var st2 = doc.Declaration.ToString() + Environment.NewLine + doc.ToString();
             //assert
             Assert.AreEqual(Properties.Resources.AppRight, st2);
+        }
+
+        [Test]
+        public void CorrectConnectionStringTestAppConfig_2() {
+            //arrange
+            XDocument doc = XDocument.Parse(Properties.Resources.AppConfigWrong2);
+            var proc = new ProjectProcessor(null);
+            //act
+            Assert.DoesNotThrow(() =>
+               proc.CorrectConnectionString(doc, "dxT598706")
+             );
+        }
+
+        [Test]
+        public void CorrectConnectionStringTestAppConfig_3() {
+            //arrange
+            XDocument doc = XDocument.Parse(Properties.Resources.AppConfigWrong3);
+            var proc = new ProjectProcessor(null);
+            //act
+            proc.CorrectConnectionString(doc, "dxT598706");
+            var stringBuild = new StringBuilder();
+            var writer = new StringWriter(stringBuild);
+            doc.Save(writer);
+            var st = stringBuild.ToString();
+            var st2 = doc.Declaration.ToString() + Environment.NewLine + doc.ToString();
+            //assert
+            Assert.AreEqual(Properties.Resources.AppConfigWrong3Correct, st2);
         }
 
         [Test]
@@ -118,7 +145,7 @@ namespace THelper {
         public void CorrectConnectionStringJsonTest_2() {
             //arrange
             //var jsonString = File.ReadAllText(Properties.Resources.appWrong1);
-            var doc = (JObject)Newtonsoft.Json.JsonConvert.DeserializeObject(Properties.Resources.AppSettingsWrong2);
+            var doc = (JObject)Newtonsoft.Json.JsonConvert.DeserializeObject(Properties.Resources.AppSettingsWrong3);
             //  XDocument doc = XDocument.Parse(Properties.Resources.AppWrong);
             var proc = new ProjectProcessor(null);
             //act
@@ -129,7 +156,7 @@ namespace THelper {
             //var st = stringBuild.ToString();
             var st2 = doc.ToString();
             //assert
-            Assert.AreEqual(Properties.Resources.appRight1, st2);
+            Assert.AreEqual(Properties.Resources.AppSettingsWrong3Correct, st2);
         }
 
         [Test]

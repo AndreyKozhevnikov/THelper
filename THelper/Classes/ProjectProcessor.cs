@@ -482,10 +482,15 @@ namespace THelper {
         public void CorrectConnectionString(JObject jsonObject, string dbName) {
 
             var connStrings = jsonObject.SelectToken("ConnectionStrings") as JObject;
+            //if(connStrings == null) {
+            //    return;
+            //}
             var oldConnectionString = connStrings["ConnectionString"];
-            var oldConnValue = ((JValue)oldConnectionString).Value;
-            connStrings.Property("ConnectionString").Remove();
-            connStrings.Add(new JProperty("xOldConnectionString", oldConnValue));
+           // if(oldConnectionString != null) {
+                var oldConnValue = ((JValue)oldConnectionString).Value;
+                connStrings.Property("ConnectionString").Remove();
+                connStrings.Add(new JProperty("xOldConnectionString", oldConnValue));
+         //   }
             string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr", dbName);
             connStrings.Add(new JProperty("ConnectionString", newConnectionString));
         }
