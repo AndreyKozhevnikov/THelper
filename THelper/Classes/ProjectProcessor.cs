@@ -433,38 +433,20 @@ namespace THelper {
                     csProjProcessor.RemoveLicense();
                     switch(message) {
                         case ConverterMessages.MainMajorLastVersion:
-                            if(isMainMajor && !hasWebProject) {
-                                csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
-                                csProjProcessor.SaveNewCsProj();
-                            } else {
-                                csProjProcessor.SaveNewCsProj();
-                                ConvertProjectWithDxConverter(mainMajorLastVersion);
-                            }
+                            csProjProcessor.SaveNewCsProj();
+                            ConvertProjectWithDxConverter(mainMajorLastVersion);
                             break;
                         case ConverterMessages.LastMinor:
                             if(isCurrentVersionMajorInstalled) {
-                                if(!hasWebProject) {
-                                    csProjProcessor.SetSpecificVersionFalseAndRemoveHintPath();
-                                    csProjProcessor.SaveNewCsProj();
-                                } else {
-                                    csProjProcessor.SaveNewCsProj();
-                                    ConvertProjectWithDxConverter(currentInstalledMajor);
-                                }
+                                csProjProcessor.SaveNewCsProj();
+                                ConvertProjectWithDxConverter(currentInstalledMajor);
                             } else {
                                 csProjProcessor.SaveNewCsProj();
-
-                                if(GetIfLibrariesPersist()) {
-                                    break;
-                                }
                                 ConvertProjectWithDxConverter(LastMinorOfCurrentMajor);
                             }
                             break;
                         case ConverterMessages.ExactConversion:
                             csProjProcessor.SaveNewCsProj();
-
-                            if(GetIfLibrariesPersist()) {
-                                break;
-                            }
                             ConvertProjectWithDxConverter(currentProjectVersion);
                             break;
                         default:
@@ -476,7 +458,7 @@ namespace THelper {
                     csProjProcessor.SaveNewCsProj();
                 }
             }
-            
+
             OpenSolution();
 
         }
@@ -517,7 +499,7 @@ namespace THelper {
             XAttribute connNameAttr = new XAttribute(nameXName, "ConnectionString");
             newConfigElement.Add(connNameAttr);
             XName connStringXName = XName.Get("connectionString", configNode.Name.Namespace.NamespaceName);
-            
+
             string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}", dbName);
             XAttribute connAttr = new XAttribute(connStringXName, newConnectionString);
             newConfigElement.Add(connAttr);
