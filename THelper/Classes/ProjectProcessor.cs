@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using DataBaseCreatorNameSpace;
 
 namespace THelper {
     public class ProjectProcessor {
@@ -475,23 +476,23 @@ namespace THelper {
                     csProjProcessor.SaveNewCsProj();
                 }
             }
-
+            
             OpenSolution();
 
         }
         public void CorrectConnectionString(JObject jsonObject, string dbName) {
 
             var connStrings = jsonObject.SelectToken("ConnectionStrings") as JObject;
-            //if(connStrings == null) {
-            //    return;
-            //}
+            if(connStrings == null) {
+                return;
+            }
             var oldConnectionString = connStrings["ConnectionString"];
-           // if(oldConnectionString != null) {
+            if(oldConnectionString != null) {
                 var oldConnValue = ((JValue)oldConnectionString).Value;
                 connStrings.Property("ConnectionString").Remove();
                 connStrings.Add(new JProperty("xOldConnectionString", oldConnValue));
-         //   }
-            string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr", dbName);
+            }
+            string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}", dbName);
             connStrings.Add(new JProperty("ConnectionString", newConnectionString));
         }
 
@@ -516,7 +517,8 @@ namespace THelper {
             XAttribute connNameAttr = new XAttribute(nameXName, "ConnectionString");
             newConfigElement.Add(connNameAttr);
             XName connStringXName = XName.Get("connectionString", configNode.Name.Namespace.NamespaceName);
-            string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}usr", dbName);
+            
+            string newConnectionString = string.Format(@"Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\mssqllocaldb;Initial Catalog={0}", dbName);
             XAttribute connAttr = new XAttribute(connStringXName, newConnectionString);
             newConfigElement.Add(connAttr);
             configNode.Add(newConfigElement);
@@ -538,6 +540,7 @@ namespace THelper {
             configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "app.config"));
             configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "web.config"));
             string dbName = GetDBNameFromSlnPath(slnPath);
+            dbName = dbName + "usr";
             foreach(string configFile in configFiles) {
                 var configXML = MyFileWorker.LoadXDocument(configFile);
                 CorrectConnectionString(configXML, dbName);
@@ -551,7 +554,7 @@ namespace THelper {
 
                 MyFileWorker.SaveJObject(jsonFile, jsonObject);
             }
-
+            DataBaseCreator.CreateSQLDataBaseIfNotExists(dbName);
         }
 
         public void MakeApplicationProjectFirst() {
