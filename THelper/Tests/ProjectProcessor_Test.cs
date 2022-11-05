@@ -71,7 +71,7 @@ namespace THelper {
             XDocument doc = XDocument.Parse(Properties.Resources.AppWrong);
             var proc = new ProjectProcessor(null);
             //act
-            proc.CorrectConnectionString(doc, "dxT598706");
+            proc.CorrectConnectionString(doc, "dxT598706usr");
             var stringBuild = new StringBuilder();
             var writer = new StringWriter(stringBuild);
             doc.Save(writer);
@@ -98,7 +98,7 @@ namespace THelper {
             XDocument doc = XDocument.Parse(Properties.Resources.AppConfigWrong3);
             var proc = new ProjectProcessor(null);
             //act
-            proc.CorrectConnectionString(doc, "dxT598706");
+            proc.CorrectConnectionString(doc, "dxT598706usr");
             var stringBuild = new StringBuilder();
             var writer = new StringWriter(stringBuild);
             doc.Save(writer);
@@ -116,7 +116,7 @@ namespace THelper {
             //  XDocument doc = XDocument.Parse(Properties.Resources.AppWrong);
             var proc = new ProjectProcessor(null);
             //act
-            proc.CorrectConnectionString(doc, "dxT598706");
+            proc.CorrectConnectionString(doc, "dxT598706usr");
             // var stringBuild = new StringBuilder();
             //var writer = new StringWriter(stringBuild);
             //doc.Save(writer);
@@ -149,7 +149,7 @@ namespace THelper {
             //  XDocument doc = XDocument.Parse(Properties.Resources.AppWrong);
             var proc = new ProjectProcessor(null);
             //act
-            proc.CorrectConnectionString(doc, "dxT598706");
+            proc.CorrectConnectionString(doc, "dxT598706usr");
             // var stringBuild = new StringBuilder();
             //var writer = new StringWriter(stringBuild);
             //doc.Save(writer);
