@@ -99,7 +99,17 @@ namespace THelper.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
+        ///&lt;configuration&gt;
+        ///  &lt;appSettings&gt;
+        ///    &lt;add key=&quot;Modules&quot; value=&quot;&quot; /&gt;
+        ///    &lt;add key=&quot;NewVersionServer&quot; value=&quot;&quot; /&gt;
+        ///    &lt;add key=&quot;EnableDiagnosticActions&quot; value=&quot;False&quot; /&gt;
+        ///    &lt;!--
+        ///    Use the one of predefined values: None, ApplicationFolder, CurrentUserApplicationDataFolder. The default value is ApplicationFolder.
+        ///    &lt;add key=&quot;TraceLogLocation&quot; value=&quot;CurrentUserApplicationDataFolder&quot;/&gt;
+        ///    &lt;add key=&quot;UserModelDiffsLocation&quot; value=&quot;CurrentUserApplicationDataFolder&quot;/&gt;
+        ///    &lt;add ke [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AppConfigWrong3Correct {
             get {
@@ -179,12 +189,12 @@ namespace THelper.Properties {
         ///   Looks up a localized string similar to {
         ///  &quot;ConnectionStrings&quot;: {
         ///    &quot;EasyTestConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TimeZoneOffsetTestEasyTest&quot;,
-        ///    &quot;ConnectionString2&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=d286-dxT1107307usr&quot;
-        ///    &quot;ConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=dxT598706&quot;
+        ///    &quot;ConnectionString2&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=d286-dxT1107307usr&quot;,
+        ///    &quot;ConnectionString&quot;: &quot;Integrated Security=SSPI;Pooling=false;Data Source=(localdb)\\mssqllocaldb;Initial Catalog=dxT598706usr&quot;
         ///  },
         ///  &quot;Authentication&quot;: {
         ///    &quot;Jwt&quot;: {
-        ///      &quot;Issuer&quot;: &quot;Xaf [rest of string was truncated]&quot;;.
+        ///      &quot;Issuer&quot;:  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AppSettingsWrong3Correct {
             get {

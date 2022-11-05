@@ -146,21 +146,21 @@
     <value>..\Resources\appWrong.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="AppSettingsWrong2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AppSettingsWrong2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\Resources\AppSettingsWrong2.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="AppSettingsWrong3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AppSettingsWrong3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\Resources\AppSettingsWrong3.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="AppSettingsWrong3Correct" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AppSettingsWrong3Correct.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\Resources\AppSettingsWrong3Correct.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="AppConfigWrong2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AppConfigWrong2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\Resources\AppConfigWrong2.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="AppConfigWrong3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AppConfigWrong3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\Resources\AppConfigWrong3.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="AppConfigWrong3Correct" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AppConfigWrong3Correct.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\Resources\AppConfigWrong3Correct.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>
