@@ -13,7 +13,8 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Threading;
 using Newtonsoft.Json.Linq;
-using DataBaseCreatorNameSpace;
+
+using DataBaseCreatorLib;
 
 namespace THelper {
     public class ProjectProcessor {
@@ -514,29 +515,31 @@ namespace THelper {
             } else {
                 folderNumber = "dxSolution" + new Random().Next(12, 1234);
             }
-            var dbName = string.Format("d{0}-{1}", DateTime.Today.DayOfYear, folderNumber);
-            return dbName;
+            return folderNumber;
+            //var dbName = string.Format("d{0}-{1}", DateTime.Today.DayOfYear, folderNumber);
+            //return dbName;
         }
         private void CorrectConnectionStringsInConfigFiles() {
             List<string> configFiles = new List<string>();
             configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "app.config"));
             configFiles.AddRange(MyFileWorker.DirectoryGetFiles(solutionFolderName, "web.config"));
-            string dbName = GetDBNameFromSlnPath(slnPath);
-            dbName = dbName + "usr";
+            string solutionName = GetDBNameFromSlnPath(slnPath);
+            string newDbName;
+            DataBaseCreator.CreateSQLDataBaseIfNotExists(solutionName,out newDbName, true);
             foreach(string configFile in configFiles) {
                 var configXML = MyFileWorker.LoadXDocument(configFile);
-                CorrectConnectionString(configXML, dbName);
+                CorrectConnectionString(configXML, newDbName);
                 MyFileWorker.SaveXDocument(configXML, configFile);
             }
 
             var jsonConfigFiles = MyFileWorker.DirectoryGetFiles(solutionFolderName, "appsettings.json");
             foreach(var jsonFile in jsonConfigFiles) {
                 var jsonObject = MyFileWorker.LoadJObject(jsonFile);
-                CorrectConnectionString(jsonObject, dbName);
+                CorrectConnectionString(jsonObject, newDbName);
 
                 MyFileWorker.SaveJObject(jsonFile, jsonObject);
             }
-            DataBaseCreator.CreateSQLDataBaseIfNotExists(dbName);
+
         }
 
         public void MakeApplicationProjectFirst() {

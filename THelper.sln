@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THelper", "THelper\THelper.csproj", "{E979B251-37F4-4B65-9E8B-800248B1434E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBaseCreatorLib", "DataBaseCreatorLib\DataBaseCreatorLib.csproj", "{38DAB24F-047F-4DC6-8853-B4866FA25777}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,8 +20,17 @@ Global
 		{E979B251-37F4-4B65-9E8B-800248B1434E}.MyTestConfig|Any CPU.Build.0 = MyTestConfig|Any CPU
 		{E979B251-37F4-4B65-9E8B-800248B1434E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E979B251-37F4-4B65-9E8B-800248B1434E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38DAB24F-047F-4DC6-8853-B4866FA25777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38DAB24F-047F-4DC6-8853-B4866FA25777}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38DAB24F-047F-4DC6-8853-B4866FA25777}.MyTestConfig|Any CPU.ActiveCfg = Debug|Any CPU
+		{38DAB24F-047F-4DC6-8853-B4866FA25777}.MyTestConfig|Any CPU.Build.0 = Debug|Any CPU
+		{38DAB24F-047F-4DC6-8853-B4866FA25777}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38DAB24F-047F-4DC6-8853-B4866FA25777}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE42E1AB-1694-44A2-B20F-49B8F576ED49}
 	EndGlobalSection
 EndGlobal
