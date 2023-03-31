@@ -175,11 +175,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>If $(ConfigurationName) == Release (  call $(SolutionDir)\..\..\..\Deploy\AssemblyInfoDeploy\AssemblyInfo.exe $(SolutionDir)THelper\Properties\AssemblyInfo.cs -set: 
+    <PreBuildEvent>If $(ConfigurationName) == Release (  call $(SolutionDir)\..\..\..\..\Deploy\AssemblyInfoDeploy\AssemblyInfo.exe $(SolutionDir)THelper\Properties\AssemblyInfo.cs -set: 
 echo "Release changed")</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>If $(ConfigurationName) == Release ( xcopy "$(TargetDir)*.exe" "$(SolutionDir)\..\..\..\Deploy\THelperDeploy" /y  /f
+    <PostBuildEvent>If $(ConfigurationName) == Release ( xcopy "$(TargetDir)*.exe" "$(SolutionDir)\..\..\..\..\Deploy\THelperDeploy" /y  /f
 echo "Release completed") else (echo "Debug completed")</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -104,10 +104,9 @@ namespace THelper {
                 }
                 major = int.Parse(versionParts[0] + versionParts[1]);
                 stringMajor = string.Format("{0}.{1}", versionParts[0], versionParts[1]);
+                minor = 0;
                 if(versionParts.Length >= 3) {
-                    minor = int.Parse(versionParts[2]);
-                } else {
-                    minor = 0;
+                    int.TryParse(versionParts[2],out minor);
                 }
                 if(versionParts.Length > 3) {
                     build = int.Parse(versionParts[3]);

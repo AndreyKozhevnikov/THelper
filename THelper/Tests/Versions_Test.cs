@@ -176,6 +176,18 @@ namespace THelper {
             Assert.AreEqual(296, v.Build);
 
         }
+
+        [Test]
+        public void ParseComplexString_1() {
+            //arrange
+            string stver = "22.1.*-*";
+            //act
+            var v = new Version(stver, false);
+            //assert
+            Assert.AreEqual(221, v.Major);
+            Assert.AreEqual(0, v.Minor);
+
+        }
     }
 }
 

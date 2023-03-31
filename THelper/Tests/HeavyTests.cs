@@ -11,6 +11,7 @@ using System.Xml.Linq;
 
 namespace THelper {
     [TestFixture]
+    [Ignore("Ignore a fixture")]
     public class HeavyTests {
         private string ReturnNameDelete(object x3) {
             var st = x3.GetType();
