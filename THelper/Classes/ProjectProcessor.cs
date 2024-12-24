@@ -400,7 +400,7 @@ namespace THelper {
                 if (MyFileWorker.FileExist(delFileNameWOS))
                     return;
                 MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\delbinobj.bat"), delFileName);
-                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\delbinobjWOVS.bat"), delFileName);
+                MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\delbinobjWOVS.bat"), delFileNameWOS);
                 gitBatchFile = Path.Combine(slnFolder, "createGit.bat");
                 MyFileWorker.FileCopy(Path.Combine(dropBoxPath, @"work\templates\MainSolution\createGit.bat"), gitBatchFile);
                 var gitIgnoreDestination = Path.Combine(slnFolder, ".gitignore");
