@@ -69,7 +69,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Moq">
-      <HintPath>..\..\..\DXConverter\DXConverter\bin\Debug\Moq.dll</HintPath>
+      <HintPath>..\packages\Moq.4.5.9\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
