@@ -296,9 +296,13 @@ namespace THelper {
         protected internal void GetInstalledVersions() {//5 td
             installedVersions = new List<Version>();
             List<string> versions = MyFileWorker.GetRegistryVersions("SOFTWARE\\DevExpress\\Components\\");
+            const string projectUpgradeToolRelativePath252 = "Tools\\Components\\ProjectConverter\\ProjectConverter-console.exe";
             const string projectUpgradeToolRelativePath = "Tools\\Components\\ProjectConverter-console.exe";
             foreach(string rootPath in versions) {
                 var rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath);
+                if(rootPath.Contains("25.2")) {
+                    rootPath2 = Path.Combine(rootPath, projectUpgradeToolRelativePath252);
+                }
                 string libVersion = GetProjectUpgradeVersion(rootPath2);
                 var vers = new Version(libVersion);
                 vers.Path = rootPath2;
@@ -417,7 +421,11 @@ namespace THelper {
             }
             CopyBatchFiles();
             if(isXafSolution) {
-                MakeApplicationProjectFirst();
+                try {
+                    MakeApplicationProjectFirst();
+                } catch {
+
+                }
                 CorrectConnectionStringsInConfigFiles();
             }
 

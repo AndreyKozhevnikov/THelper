@@ -24,7 +24,7 @@
       <Value Profile="(Default)">c:\Dropbox\Deploy\DXConverterDeploy\versions.xml</Value>
     </Setting>
     <Setting Name="LastReleasedVersion" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">242</Value>
+      <Value Profile="(Default)">252</Value>
     </Setting>
   </Settings>
 </SettingsFile>
